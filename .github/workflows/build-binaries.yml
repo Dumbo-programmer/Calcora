@@ -1,0 +1,72 @@
+name: Build and Release Calcora Binaries
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies and build binaries
+        shell: pwsh
+        run: |
+          python -m venv .venv
+          .\.venv\Scripts\Activate.ps1
+          python -m pip install --upgrade pip
+          python -m pip install ".[engine-sympy,cli,api]" pyinstaller
+          .\build.ps1 all
+          Get-ChildItem dist
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: calcora-binaries-${{ github.ref_name }}
+          path: |
+            dist/calcora.exe
+            dist/calcora-server.exe
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: Calcora ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+
+      - name: Upload CLI binary to Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: dist/calcora.exe
+          asset_name: calcora-${{ github.ref_name }}-windows-amd64.exe
+          asset_content_type: application/octet-stream
+
+      - name: Upload server binary to Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: dist/calcora-server.exe
+          asset_name: calcora-server-${{ github.ref_name }}-windows-amd64.exe
+          asset_content_type: application/octet-stream
