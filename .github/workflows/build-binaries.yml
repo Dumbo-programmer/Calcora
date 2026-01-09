@@ -36,37 +36,13 @@ jobs:
           path: |
             dist/calcora.exe
             dist/calcora-server.exe
-
-      - name: Create GitHub Release
+      
+      - name: Attach binaries to GitHub Release
         if: startsWith(github.ref, 'refs/tags/')
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref_name }}
-          release_name: Calcora ${{ github.ref_name }}
-          draft: false
-          prerelease: false
-
-      - name: Upload CLI binary to Release
-        if: startsWith(github.ref, 'refs/tags/')
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: dist/calcora.exe
-          asset_name: calcora-${{ github.ref_name }}-windows-amd64.exe
-          asset_content_type: application/octet-stream
-
-      - name: Upload server binary to Release
-        if: startsWith(github.ref, 'refs/tags/')
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: dist/calcora-server.exe
-          asset_name: calcora-server-${{ github.ref_name }}-windows-amd64.exe
-          asset_content_type: application/octet-stream
+          files: |
+            dist/calcora.exe
+            dist/calcora-server.exe
+          name: Calcora ${{ github.ref_name }}
+          fail_on_unmatched_files: true
