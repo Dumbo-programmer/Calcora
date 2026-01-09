@@ -36,7 +36,7 @@ if (-not (Test-Path "dist")) {
 function Build-CLI {
     Write-Host ""
     Write-Info "Building Calcora CLI executable..."
-    .\.venv\Scripts\pyinstaller.exe calcora-cli.spec --clean --noconfirm
+    .\.venv\Scripts\pyinstaller.exe src/calcora/cli/cli_entry.py --onefile --name calcora --clean --noconfirm
     
     if (Test-Path "dist\calcora.exe") {
         Write-Success "CLI executable created at dist\calcora.exe"
@@ -59,7 +59,7 @@ function Build-CLI {
 function Build-Server {
     Write-Host ""
     Write-Info "Building Calcora Server executable..."
-    .\.venv\Scripts\pyinstaller.exe calcora-server.spec --clean --noconfirm
+    .\.venv\Scripts\pyinstaller.exe src/calcora/api/server.py --onefile --name calcora-server --clean --noconfirm
     
     if (Test-Path "dist\calcora-server.exe") {
         Write-Success "Server executable created at dist\calcora-server.exe"
