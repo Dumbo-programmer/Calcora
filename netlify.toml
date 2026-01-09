@@ -1,6 +1,7 @@
 [build]
   publish = "site"
-  command = "echo 'No build needed'"
+  functions = "netlify/functions"
+  command = "pip install '.[engine-sympy]'"
 
 [context.production.environment]
   PYTHON_VERSION = "3.11"
