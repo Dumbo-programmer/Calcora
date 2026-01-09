@@ -1,0 +1,67 @@
+[build-system]
+requires = ["hatchling>=1.24.2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "calcora"
+version = "0.1.0"
+description = "Self-hosted computational mathematics engine: offline, private, explainable."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Calcora contributors" }]
+keywords = ["math", "symbolic", "sympy", "education", "offline", "explainable"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Education",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+]
+dependencies = [
+  "pydantic>=2.7",
+]
+
+[project.optional-dependencies]
+engine-sympy = ["sympy>=1.12"]
+cli = ["typer>=0.12", "rich>=13.7"]
+api = ["fastapi>=0.111", "uvicorn>=0.30"]
+dev = ["pytest>=8.2", "ruff>=0.5", "mypy>=1.10"]
+
+[project.urls]
+Homepage = "https://Dumbo-programmer.github.io/calcora/"
+Repository = "https://github.com/Dumbo-programmer/calcora"
+Issues = "https://github.com/Dumbo-programmer/calcora/issues"
+
+[project.scripts]
+calcora = "calcora.cli.main:app"
+
+[project.entry-points."calcora.rule_plugins"]
+# Third-party packages can register rule plugins here.
+
+[project.entry-points."calcora.solver_plugins"]
+# Third-party packages can register solver plugins here.
+
+[project.entry-points."calcora.renderer_plugins"]
+# Third-party packages can register renderers here.
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/calcora"]
+include = [
+  "src/calcora/web/*.html",
+  "src/calcora/web/*.css",
+  "src/calcora/web/*.js",
+]

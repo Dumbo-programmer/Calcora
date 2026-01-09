@@ -1,0 +1,61 @@
+dist/
+build/
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.venv/
+venv/
+ENV/
+.env
+.env.*
+
+# Build outputs
+build/
+dist/
+*.spec
+*.log
+*.tmp
+*.bak
+*.swp
+
+# VSCode
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test outputs
+*.coverage
+.coverage
+htmlcov/
+.tox/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Netlify
+node_modules/
+*.tsbuildinfo
+
+# Misc
+calcora_debug*.json
+secret plan.txt
+
+# Exclude local config
+pyrightconfig.json
+
+# Docs
+*.pdf
+*.docx
+
+# Exclude all except site for Netlify
+!/site/
+!/site/index.html
+!/site/style.css
+
+# NOTE: planning docs are intentionally tracked.

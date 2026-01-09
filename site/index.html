@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Calcora — Offline, Private, Explainable Math</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="container">
+      <h1>Calcora</h1>
+      <p class="tagline">Self-hosted computational mathematics engine — offline, private, explainable.</p>
+      <nav>
+        <a href="#overview">Overview</a>
+        <a href="#philosophy">Philosophy</a>
+        <a href="#features">Features</a>
+        <a href="#install">Install</a>
+        <a href="#examples">Examples</a>
+        <a href="#roadmap">Roadmap</a>
+        <a href="#docs">Docs</a>
+      </nav>
+    </header>
+
+    <main class="container">
+      <section id="overview">
+        <h2>Project overview</h2>
+        <p>
+          Calcora is an open-source platform for symbolic and numerical computation. The core differentiator is
+          explainability: every result is backed by a deterministic reasoning DAG (Directed Acyclic Graph) of steps.
+        </p>
+      </section>
+
+      <section id="philosophy">
+        <h2>Philosophy & mission</h2>
+        <ul>
+          <li><strong>Offline by default</strong>: no cloud dependency.</li>
+          <li><strong>Private</strong>: your inputs stay on your machine.</li>
+          <li><strong>Explainable</strong>: step-by-step reasoning, not just answers.</li>
+          <li><strong>Extensible</strong>: plugins add rules, solvers, and renderers without changing core logic.</li>
+        </ul>
+      </section>
+
+      <section id="features">
+        <h2>Feature list</h2>
+        <ul>
+          <li>Deterministic StepNode DAG model (auditable steps)</li>
+          <li>Verbosity levels: concise, detailed, teacher mode</li>
+          <li>Plugin system: rule plugins, solver plugins, renderer plugins</li>
+          <li>CLI + optional HTTP API for local deployments</li>
+        </ul>
+      </section>
+
+      <section id="install">
+        <h2>Installation</h2>
+        <p><strong>Python (development)</strong></p>
+        <pre><code>python -m pip install -e ".[engine-sympy,cli,api,dev]"</code></pre>
+        <p><strong>CLI</strong></p>
+        <pre><code>calcora differentiate "sin(x**2)" --verbosity detailed --format text</code></pre>
+        <p><strong>Docker</strong> (planned)</p>
+        <p>Docker deployment is part of the public roadmap; the repository will ship Compose-based self-hosting.</p>
+      </section>
+
+      <section id="examples">
+        <h2>Examples</h2>
+        <p>Differentiate a function (step-by-step):</p>
+        <pre><code>python -m calcora differentiate "sin(x**2)" --verbosity detailed --format text</code></pre>
+        <p>Export the reasoning DAG as JSON:</p>
+        <pre><code>python -m calcora differentiate "sin(x**2)" --format json</code></pre>
+      </section>
+
+      <section id="roadmap">
+        <h2>Roadmap</h2>
+        <p>Calcora is built in versions (v0.1 → v0.5):</p>
+        <ul>
+          <li><strong>v0.1</strong>: scaffolding + baseline step DAG</li>
+          <li><strong>v0.2</strong>: explainability engine (rule tags, verbosity, validation)</li>
+          <li><strong>v0.3</strong>: linear algebra + graph theory (Gaussian elimination, BFS/DFS/Dijkstra, Laplacians)</li>
+          <li><strong>v0.4</strong>: stable plugin SDK and community plugins</li>
+          <li><strong>v0.5</strong>: visualization + classroom mode</li>
+        </ul>
+        <p>Full details are in <a href="../ROADMAP.md">ROADMAP.md</a>.</p>
+      </section>
+
+      <section id="docs">
+        <h2>Documentation</h2>
+        <ul>
+          <li><a href="../README.md">README</a></li>
+          <li><a href="../ARCHITECTURE.md">Architecture</a></li>
+          <li><a href="../docs/PLUGINS.md">Plugins</a></li>
+        </ul>
+      </section>
+
+      <footer>
+        <p>
+          Calcora is open-source under MIT. Contributions welcome.
+        </p>
+      </footer>
+    </main>
+  </body>
+</html>

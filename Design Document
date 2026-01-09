@@ -1,0 +1,213 @@
+# Calcora: Internal Architecture & Public Roadmap
+
+This document defines Calcora’s **step-by-step engine**, **plugin system**, and **public roadmap**. It is designed to be readable by contributors, educators, and admissions reviewers.
+
+---
+
+## 1. Step Engine Architecture
+
+### 1.1 Core Idea
+
+Calcora does not just compute results — it produces a **reasoning trace**.
+
+Every computation is represented as a **directed reasoning graph**, not plain text.
+
+```
+Expression → Rule Application → Intermediate State → Result
+```
+
+This allows:
+
+* Step-by-step explanations
+* Multiple verbosity levels
+* Visualization of reasoning
+* Rule-level correctness checking
+
+---
+
+### 1.2 Internal Data Model
+
+Each operation produces a `StepNode`.
+
+```json
+{
+  "id": "step_03",
+  "operation": "differentiate",
+  "rule": "chain_rule",
+  "input": "sin(x^2)",
+  "output": "2*x*cos(x^2)",
+  "explanation": "Derivative of sin(u) is cos(u)·u' where u = x^2",
+  "dependencies": ["step_01", "step_02"]
+}
+```
+
+These nodes form a **DAG (Directed Acyclic Graph)**.
+
+---
+
+### 1.3 Reasoning Pipeline
+
+1. **Parse Expression** → AST
+2. **Normalize Expression**
+3. **Select Applicable Rule(s)**
+4. **Apply Rule**
+5. **Emit StepNode**
+6. **Repeat until terminal form**
+
+Rules are deterministic and auditable.
+
+---
+
+### 1.4 Verbosity Modes
+
+* **Concise**: only key transformations
+* **Detailed**: includes rule names and math intuition
+* **Teacher Mode**: includes definitions and side notes
+
+Same DAG, different renderers.
+
+---
+
+### 1.5 Why This Architecture Matters
+
+* Prevents hallucinated steps
+* Enables explainability
+* Makes Calcora research-grade
+* Strong educational optics
+
+---
+
+## 2. Plugin System
+
+### 2.1 Design Philosophy
+
+Calcora is a **math platform**, not a monolith.
+
+Plugins add:
+
+* New rules
+* New solvers
+* New output renderers
+
+Without touching core logic.
+
+---
+
+### 2.2 Plugin Types
+
+#### Rule Plugins
+
+Add symbolic transformation rules.
+
+#### Solver Plugins
+
+Add numeric or algorithmic solvers.
+
+#### Renderer Plugins
+
+Control how steps are displayed (text, LaTeX, JSON, graphs).
+
+---
+
+### 2.3 Plugin Interface (Python Example)
+
+```python
+from calcora.plugin import rule
+
+@rule(
+    name="chain_rule",
+    operation="differentiate",
+    priority=10
+)
+def chain_rule(expr):
+    if matches_chain(expr):
+        return transformed_expr, explanation
+```
+
+---
+
+### 2.4 Safety & Validation
+
+* Plugins must declare supported domains
+* Output is validated against AST rules
+* StepNodes are sanity-checked
+
+This prevents incorrect math from spreading.
+
+---
+
+### 2.5 Why This is Impressive
+
+* Contributor-friendly
+* Research extensibility
+* Admissions see system design maturity
+
+---
+
+## 3. Public Roadmap (For GitHub)
+
+### 🚀 Version 0.1 — MVP (Completed)
+
+* Symbolic differentiation
+* Basic integration
+* CLI interface
+* Local web UI
+* Docker deployment
+
+---
+
+### 🚀 Version 0.2 — Explainability Engine
+
+* Formal StepNode DAG
+* Rule-tagged explanations
+* Verbosity levels
+* JSON reasoning output
+
+---
+
+### 🚀 Version 0.3 — Linear Algebra & Graphs
+
+* Gaussian elimination (step-by-step)
+* Matrix operations
+* Graph algorithms (BFS, DFS, Dijkstra)
+* Graph → matrix transformations
+
+---
+
+### 🚀 Version 0.4 — Platform & Plugins
+
+* Plugin SDK
+* Community-contributed rules
+* Renderer plugins
+* API stability guarantee
+
+---
+
+### 🚀 Version 0.5 — Visualization & Education
+
+* Expression trees
+* Step graphs
+* Classroom mode
+* Export to LaTeX / PDF
+
+---
+
+## 4. Why This Roadmap Works Publicly
+
+* Shows long-term vision
+* Signals seriousness
+* Encourages contributors
+* Strengthens ECA narrative
+
+---
+
+## 5. How This Looks to Admissions
+
+They see:
+
+* Systems thinking
+* Mathematical rigor
+* Open-source leadership
+* Real-world adoption potential
+
+Calcora is positioned as a **platform**, not a project.
