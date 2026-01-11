@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use Calcora in your research or education, please cite it as below."
+title: "Calcora: Self-Hosted Computational Mathematics Engine"
+version: 0.1.0
+date-released: "2026-01-12"
+url: "https://github.com/Dumbo-programmer/calcora"
+repository-code: "https://github.com/Dumbo-programmer/calcora"
+license: MIT
+type: software
+authors:
+  - family-names: "Calcora Contributors"
+keywords:
+  - mathematics
+  - symbolic computation
+  - education
+  - step-by-step reasoning
+  - offline computation
+  - explainable AI
+abstract: "Calcora is an open-source, self-hosted computational mathematics engine designed to provide symbolic and numerical solutions with transparent, step-by-step reasoning. Unlike cloud-based tools, Calcora runs entirely on your own machine, making it ideal for classrooms, low-connectivity environments, and privacy-conscious users."

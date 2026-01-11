@@ -45,6 +45,12 @@ node_modules/
 # Misc
 calcora_debug*.json
 secret plan.txt
+Design Document
+post mvp.txt
+CRITICAL_ISSUES.md
+FINAL_STATUS.md
+PROJECT_REVIEW.md
+calcora_test.out
 
 # Exclude local config
 pyrightconfig.json

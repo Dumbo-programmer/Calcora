@@ -96,7 +96,17 @@ See [ROADMAP.md](ROADMAP.md) for v0.1 → v0.5.
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md).
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines.
+
+We follow a [Code of Conduct](CODE_OF_CONDUCT.md) to ensure a welcoming community.
+
+## Security
+
+For security concerns, please see our [Security Policy](SECURITY.md).
+
+## License
+
+Calcora is released under the [MIT License](LICENSE).
 
 ## License
 
