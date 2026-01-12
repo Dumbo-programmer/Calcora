@@ -115,9 +115,9 @@ Free & Open Source
 ### Google Search Console
 
 1. Go to https://search.google.com/search-console
-2. Add property: `https://calcora-demo.netlify.app`
+2. Add property: `https://calcoralive.netlify.app`
 3. Verify ownership (Netlify DNS or HTML tag)
-4. Submit sitemap: `https://calcora-demo.netlify.app/sitemap.xml`
+4. Submit sitemap: `https://calcoralive.netlify.app/sitemap.xml`
 5. Request indexing for key pages
 
 **Expected timeline:**
@@ -156,7 +156,7 @@ Free & Open Source
 **Add to `site/index.html` before `</head>`:**
 ```html
 <!-- Plausible Analytics -->
-<script defer data-domain="calcora-demo.netlify.app" src="https://plausible.io/js/script.js"></script>
+<script defer data-domain="calcoralive.netlify.app" src="https://plausible.io/js/script.js"></script>
 ```
 
 ### Monitor Rankings
@@ -208,7 +208,7 @@ I'm the developer of Calcora, an open-source math computation
 engine with step-by-step explanations. It's designed for 
 education and might be useful for your students.
 
-Demo: https://calcora-demo.netlify.app/demo.html
+Demo: https://calcoralive.netlify.app/demo.html
 
 Would you consider linking to it from your course resources?
 

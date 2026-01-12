@@ -6,13 +6,14 @@ Calcora is an open-source, self-hosted computational mathematics engine designed
 
 ## 🎥 Demo Video
 
-https://github.com/user-attachments/assets/demo.mp4
+<video src="https://github.com/Dumbo-programmer/Calcora/raw/refs/heads/main/media/demo.mp4" width="600" controls></video>
+
 
 *Watch Calcora in action: differentiation with step-by-step explanations, matrix operations, and symbolic computation*
 
 ## 🚀 Try the Live Demo
 
-**[Interactive Demo →](https://calcora-demo.netlify.app/demo.html)**
+**[Interactive Demo →](https://calcoralive.netlify.app/demo.html)**
 
 Test Calcora directly in your browser - no installation required. Try differentiation, matrix operations, and symbolic computation with step-by-step explanations.
 

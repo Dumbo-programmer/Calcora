@@ -22,7 +22,7 @@ Click "Deploy site" and wait 3-5 minutes for the first build.
 ### 4. Get Your URL
 You'll receive: `https://random-name.netlify.app`
 
-Optional: Customize to `calcora-demo.netlify.app` in Site settings → Domain management
+Optional: Customize to `calcoralive.netlify.app` in Site settings → Domain management
 
 ### 5. Test
 - Landing page: `https://YOUR-SITE.netlify.app/`
@@ -48,7 +48,7 @@ Example message:
 I've built Calcora, an open-source math computation engine with 
 step-by-step explanations. Try the live demo:
 
-https://calcora-demo.netlify.app/demo.html
+https://calcoralive.netlify.app/demo.html
 
 Test examples:
 - Differentiate: sin(x^2)

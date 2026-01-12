@@ -10,21 +10,21 @@
     <meta name="description" content="Try Calcora's free interactive math solver online. Differentiate functions, compute matrix operations, solve symbolic expressions with step-by-step explanations. No installation required." />
     <meta name="keywords" content="calcora demo, online math solver, free differentiation calculator, matrix calculator online, symbolic math solver, step by step calculator, derivative calculator, determinant calculator, matrix inverse calculator, online math tool, free math calculator" />
     <meta name="robots" content="index, follow" />
-    <link rel="canonical" href="https://calcora-demo.netlify.app/demo.html" />
+    <link rel="canonical" href="https://calcoralive.netlify.app/demo.html" />
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://calcora-demo.netlify.app/demo.html" />
+    <meta property="og:url" content="https://calcoralive.netlify.app/demo.html" />
     <meta property="og:title" content="Calcora Interactive Demo — Try Free Math Solver Online" />
     <meta property="og:description" content="Try Calcora's free interactive math solver. Differentiate functions, compute matrix operations with step-by-step explanations. No installation required." />
-    <meta property="og:image" content="https://calcora-demo.netlify.app/og-image.png" />
+    <meta property="og:image" content="https://calcoralive.netlify.app/og-image.png" />
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://calcora-demo.netlify.app/demo.html" />
+    <meta property="twitter:url" content="https://calcoralive.netlify.app/demo.html" />
     <meta property="twitter:title" content="Calcora Interactive Demo — Try Free Math Solver Online" />
     <meta property="twitter:description" content="Try Calcora's free interactive math solver. Differentiate functions, compute matrix operations with step-by-step explanations." />
-    <meta property="twitter:image" content="https://calcora-demo.netlify.app/og-image.png" />
+    <meta property="twitter:image" content="https://calcoralive.netlify.app/og-image.png" />
     
     <link rel="stylesheet" href="style.css">
     <style>
@@ -184,6 +184,22 @@
             text-align: center;
             padding: 20px;
             color: #6b7280;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e5e7eb;
+            border-top: 4px solid #2563eb;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         .tip {
             background: #eff6ff;
@@ -193,6 +209,19 @@
             margin-bottom: 15px;
             font-size: 14px;
             color: #1e40af;
+        }
+        .success-animation {
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
@@ -214,7 +243,7 @@
         <!-- Differentiation Tab -->
         <div class="tab-content active" id="differentiate">
             <div class="tip">
-                💡 Try symbolic differentiation with step-by-step explanations
+                💡 Try symbolic differentiation with step-by-step explanations. Click examples below or enter your own expression!
             </div>
             
             <div class="examples">
@@ -223,11 +252,15 @@
                 <button class="example-btn" data-expr="exp(x**2)">e^(x²)</button>
                 <button class="example-btn" data-expr="log(x**2 + 1)">ln(x² + 1)</button>
                 <button class="example-btn" data-expr="tan(x) + x**2">tan(x) + x²</button>
+                <button class="example-btn" data-expr="(x**2 + 1) / (x - 1)">Rational function</button>
             </div>
 
             <div class="input-group">
                 <label>Expression:</label>
-                <input type="text" id="diff-expr" placeholder="e.g., sin(x**2)" value="sin(x**2)">
+                <input type="text" id="diff-expr" placeholder="e.g., sin(x**2), x**3*exp(x), log(x)" value="sin(x**2)">
+                <small style="color: #6b7280; font-size: 12px; display: block; margin-top: 5px;">
+                    Use ** for exponents, * for multiplication. Functions: sin, cos, tan, exp, log, sqrt
+                </small>
             </div>
 
             <div class="input-group">
@@ -250,7 +283,7 @@
         <!-- Matrix Tab -->
         <div class="tab-content" id="matrix">
             <div class="tip">
-                💡 Supports numeric and symbolic matrices (use strings for symbols: [["a","b"],["c","d"]])
+                💡 Supports numeric and symbolic matrices. Use strings for symbols: [["a","b"],["c","d"]]
             </div>
 
             <div class="examples">
@@ -259,6 +292,7 @@
                 <button class="example-btn" data-operation="determinant" data-matrix='[["a","b"],["c","d"]]'>Symbolic Det</button>
                 <button class="example-btn" data-operation="multiply" data-matrix='[[1,2],[3,4]]' data-matrix-b='[[5,6],[7,8]]'>Multiply</button>
                 <button class="example-btn" data-operation="eigenvalues" data-matrix='[[3,1],[1,3]]'>Eigenvalues</button>
+                <button class="example-btn" data-operation="lu" data-matrix='[[2,1,1],[4,-6,0],[-2,7,2]]'>LU Decomposition</button>
             </div>
 
             <div class="input-group">
@@ -275,7 +309,10 @@
 
             <div class="input-group">
                 <label>Matrix A (JSON format):</label>
-                <textarea id="matrix-a" placeholder='[[1,2],[3,4]]'>[[1,2],[3,4]]</textarea>
+                <textarea id="matrix-a" placeholder='[[1,2],[3,4]] or [["a","b"],["c","d"]] for symbolic'>[[1,2],[3,4]]</textarea>
+                <small style="color: #6b7280; font-size: 12px; display: block; margin-top: 5px;">
+                    Format: [[row1_col1, row1_col2], [row2_col1, row2_col2]]. Use quotes for symbols.
+                </small>
             </div>
 
             <div class="input-group" id="matrix-b-group">
@@ -307,13 +344,73 @@
         </div>
 
         <div class="loading" id="loading" style="display: none;">
+            <div class="loading-spinner"></div>
             <p>Computing... ⏳</p>
         </div>
     </main>
 
     <script>
-        // API endpoint - will be Netlify function
+        // API endpoint - Netlify function
         const API_URL = '/.netlify/functions/calcora_engine';
+        
+        // Check if API is available on page load
+        let apiAvailable = false;
+        
+        async function checkApiAvailability() {
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        operation: 'differentiate',
+                        expression: 'x',
+                        verbosity: 'concise'
+                    })
+                });
+                apiAvailable = response.ok || response.status === 400; // 400 means API is there but bad input
+            } catch (error) {
+                apiAvailable = false;
+            }
+            
+            if (!apiAvailable) {
+                showApiUnavailableWarning();
+            }
+        }
+        
+        function showApiUnavailableWarning() {
+            const warning = document.createElement('div');
+            warning.style.cssText = `
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: #fef3c7;
+                border: 2px solid #f59e0b;
+                border-radius: 8px;
+                padding: 15px 25px;
+                max-width: 600px;
+                z-index: 1000;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            `;
+            warning.innerHTML = `
+                <strong style="color: #92400e;">⚠️ Demo Not Available</strong><br>
+                <span style="color: #78350f; font-size: 14px;">
+                    This demo requires the Netlify backend to be deployed. 
+                    <a href="https://github.com/YOUR-USERNAME/calcora" style="color: #2563eb; text-decoration: underline;">Download Calcora</a> 
+                    to run it locally or wait for the full deployment.
+                </span>
+            `;
+            document.body.appendChild(warning);
+            
+            // Disable compute buttons
+            document.querySelectorAll('.compute-btn').forEach(btn => {
+                btn.disabled = true;
+                btn.textContent = 'API Unavailable';
+            });
+        }
+        
+        // Check API on page load
+        setTimeout(checkApiAvailability, 500);
 
         // Tab switching
         document.querySelectorAll('.tab').forEach(tab => {
@@ -386,10 +483,10 @@
             const stepsContainer = document.getElementById('steps');
             stepsContainer.innerHTML = '';
             
-            if (data.graph && data.graph.nodes) {
-                data.graph.nodes.forEach(step => {
+            if (data.graph && data.graph.(step, index) => {
                     const stepDiv = document.createElement('div');
                     stepDiv.className = 'step';
+                    stepDiv.style.animationDelay = `${index * 0.1}s`;
                     stepDiv.innerHTML = `
                         <div class="step-rule">[${step.rule}]</div>
                         <div class="step-explanation">${step.explanation}</div>
@@ -398,6 +495,11 @@
                 });
             }
             
+            const resultContainer = document.getElementById('result');
+            resultContainer.classList.add('visible', 'success-animation');
+            
+            // Scroll to result
+            resultContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' }
             document.getElementById('result').classList.add('visible');
         }
 
@@ -425,6 +527,12 @@
                     })
                 });
 
+                // Check if response is JSON
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    throw new Error('API endpoint not available. Please ensure the site is deployed to Netlify with functions enabled.');
+                }
+
                 const data = await response.json();
 
                 if (!response.ok) {
@@ -434,7 +542,11 @@
 
                 showResult(data);
             } catch (error) {
-                showError('Network error: ' + error.message);
+                if (error.message.includes('API endpoint')) {
+                    showError(error.message + ' See installation guide in README for local setup.');
+                } else {
+                    showError('Error: ' + error.message);
+                }
             }
         }
 
@@ -473,6 +585,12 @@
                     body: JSON.stringify(body)
                 });
 
+                // Check if response is JSON
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    throw new Error('API endpoint not available. Please ensure the site is deployed to Netlify with functions enabled.');
+                }
+
                 const data = await response.json();
 
                 if (!response.ok) {
@@ -482,7 +600,11 @@
 
                 showResult(data);
             } catch (error) {
-                showError('Network error: ' + error.message);
+                if (error.message.includes('API endpoint')) {
+                    showError(error.message + ' See installation guide in README for local setup.');
+                } else {
+                    showError('Error: ' + error.message);
+                }
             }
         }
 

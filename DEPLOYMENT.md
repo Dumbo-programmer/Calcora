@@ -52,7 +52,7 @@ Click "Deploy site". The first build takes 3-5 minutes.
 
 After deployment:
 1. Go to Site settings → Domain management
-2. Add a custom domain like `calcora-demo.netlify.app` or your own domain
+2. Add a custom domain like `calcoralive.netlify.app` or your own domain
 3. Netlify provides free HTTPS certificates
 
 ## Testing the Deployment
