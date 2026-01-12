@@ -1493,22 +1493,6 @@
                 alert('Failed to copy to clipboard');
             });
         }
-                btn.style.background = 'var(--success)';
-                btn.style.color = 'white';
-                setTimeout(() => {
-                    btn.innerHTML = originalHTML;
-                    btn.style.background = '';
-                    btn.style.color = '';
-                }, 1500);
-            }).catch(err => {
-                console.error('Failed to copy:', err);
-            });
-        }
-
-        // Old function content continues here...
-        function showResultOldPart(data) {
-            // This part is now in displayResult above
-        }
 
         // Compute functions
         async function computeDifferentiate() {
