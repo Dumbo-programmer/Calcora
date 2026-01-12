@@ -1,0 +1,24 @@
+{
+  "name": "calcora",
+  "version": "1.0.0",
+  "description": "Calcora is an open-source, self-hosted computational mathematics engine designed to provide symbolic and numerical solutions with transparent, step-by-step reasoning. Unlike cloud-based tools, Calcora runs entirely on your own machine, making it ideal for classrooms, low-connectivity environments, and privacy-conscious users.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dumbo-programmer/Calcora.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Dumbo-programmer/Calcora/issues"
+  },
+  "homepage": "https://github.com/Dumbo-programmer/Calcora#readme"
+}
