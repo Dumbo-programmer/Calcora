@@ -87,6 +87,49 @@ def health():
     return {"status": "ok"}
 
 
+# Unified compute endpoint for frontend
+@app.post("/api/compute")
+def compute(request: dict):
+    """Unified compute endpoint that handles all operations.
+    
+    Accepts JSON body with:
+    - operation: 'differentiate', 'matrix_multiply', 'matrix_determinant', etc.
+    - expression: the expression or matrix
+    - variable: (for differentiate) variable to differentiate
+    - verbosity: 'concise', 'detailed', or 'teacher'
+    - matrix_b: (for multiply) second matrix
+    """
+    operation = request.get("operation")
+    expression = request.get("expression", "")
+    variable = request.get("variable", "x")
+    verbosity = request.get("verbosity", "detailed")
+    matrix_b = request.get("matrix_b")
+    
+    if not operation:
+        return {"error": "Missing 'operation' parameter"}
+    
+    engine = default_engine(load_entry_points=True)
+    
+    try:
+        if operation == "differentiate":
+            result = engine.run(operation="differentiate", expression=expression, variable=variable)
+        elif operation.startswith("matrix_"):
+            if operation == "matrix_multiply" and matrix_b:
+                result = engine.run(operation=operation, expression=expression, matrix_b=matrix_b)
+            else:
+                result = engine.run(operation=operation, expression=expression)
+        else:
+            return {"error": f"Unknown operation: {operation}"}
+    except ValueError as e:
+        return {"error": str(e)}
+    except Exception as e:
+        return {"error": f"Unexpected error: {str(e)}"}
+
+    renderer = JsonRenderer()
+    rendered = renderer.render(result=result, format="json", verbosity=verbosity)
+    return Response(content=rendered, media_type="application/json")
+
+
 @app.get("/differentiate")
 def differentiate(expr: str, variable: str = "x", order: int = 1, format: str = "json", verbosity: str = "detailed"):
     """Differentiate an expression with respect to a variable.
