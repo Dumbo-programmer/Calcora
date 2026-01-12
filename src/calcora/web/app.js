@@ -628,14 +628,39 @@ function showGraph(payload) {
 
 function evaluateExpression(expr, x) {
   let evaluated = expr.replace(/x/g, `(${x})`);
+  
+  // Replace ** with Math.pow
   evaluated = evaluated.replace(/(\d+\.?\d*)\*\*(\d+\.?\d*)/g, 'Math.pow($1,$2)');
   evaluated = evaluated.replace(/\(([^)]+)\)\*\*(\d+\.?\d*)/g, 'Math.pow($1,$2)');
-  evaluated = evaluated.replace(/sin/g, 'Math.sin');
-  evaluated = evaluated.replace(/cos/g, 'Math.cos');
-  evaluated = evaluated.replace(/tan/g, 'Math.tan');
-  evaluated = evaluated.replace(/exp/g, 'Math.exp');
-  evaluated = evaluated.replace(/log/g, 'Math.log');
-  evaluated = evaluated.replace(/sqrt/g, 'Math.sqrt');
+  
+  // Replace trigonometric functions
+  evaluated = evaluated.replace(/\bsin\b/g, 'Math.sin');
+  evaluated = evaluated.replace(/\bcos\b/g, 'Math.cos');
+  evaluated = evaluated.replace(/\btan\b/g, 'Math.tan');
+  
+  // Replace inverse trig functions
+  evaluated = evaluated.replace(/\basin\b/g, 'Math.asin');
+  evaluated = evaluated.replace(/\bacos\b/g, 'Math.acos');
+  evaluated = evaluated.replace(/\batan\b/g, 'Math.atan');
+  
+  // Replace hyperbolic functions
+  evaluated = evaluated.replace(/\bsinh\b/g, 'Math.sinh');
+  evaluated = evaluated.replace(/\bcosh\b/g, 'Math.cosh');
+  evaluated = evaluated.replace(/\btanh\b/g, 'Math.tanh');
+  evaluated = evaluated.replace(/\basinh\b/g, 'Math.asinh');
+  evaluated = evaluated.replace(/\bacosh\b/g, 'Math.acosh');
+  evaluated = evaluated.replace(/\batanh\b/g, 'Math.atanh');
+  
+  // Replace other functions
+  evaluated = evaluated.replace(/\bexp\b/g, 'Math.exp');
+  evaluated = evaluated.replace(/\blog\b/g, 'Math.log');
+  evaluated = evaluated.replace(/\bsqrt\b/g, 'Math.sqrt');
+  evaluated = evaluated.replace(/\bAbs\b/g, 'Math.abs');
+  evaluated = evaluated.replace(/\babs\b/g, 'Math.abs');
+  
+  // Replace constants
+  evaluated = evaluated.replace(/\bpi\b/g, 'Math.PI');
+  evaluated = evaluated.replace(/\be\b(?!\d)/g, 'Math.E');
   
   try {
     return eval(evaluated);
