@@ -1429,20 +1429,9 @@
             if (!output || !badge) return;
             
             if (window.isTypesetFormat) {
-                // Typeset format (LaTeX code)
+                // Typeset format (rendered math like in papers)
                 output.className = 'result-output typeset';
-                badge.innerHTML = '<i class="fas fa-subscript"></i> LaTeX Format';
-                
-                // Show LaTeX code
-                if (window.currentResultData.latex) {
-                    output.textContent = window.currentResultData.latex;
-                } else {
-                    output.textContent = window.currentResultData.output;
-                }
-            } else {
-                // Copyable format (rendered/formatted)
-                output.className = 'result-output copyable';
-                badge.innerHTML = '<i class="fas fa-font"></i> Rendered Format';
+                badge.innerHTML = '<i class="fas fa-font"></i> Typeset Format';
                 
                 // Check if it's a matrix
                 const isMatrix = window.currentResultData.output && 
@@ -1454,7 +1443,7 @@
                     const formatted = formatMatrixForDisplay(window.currentResultData.output);
                     output.innerHTML = formatted;
                 } else {
-                    // Try to render as LaTeX
+                    // Render as LaTeX
                     try {
                         katex.render(window.currentResultData.output, output, {
                             throwOnError: false,
@@ -1463,6 +1452,17 @@
                     } catch (e) {
                         output.textContent = window.currentResultData.output;
                     }
+                }
+            } else {
+                // Copyable format (raw LaTeX code)
+                output.className = 'result-output copyable';
+                badge.innerHTML = '<i class="fas fa-code"></i> LaTeX Code';
+                
+                // Show LaTeX code
+                if (window.currentResultData.latex) {
+                    output.textContent = window.currentResultData.latex;
+                } else {
+                    output.textContent = window.currentResultData.output;
                 }
             }
         }
