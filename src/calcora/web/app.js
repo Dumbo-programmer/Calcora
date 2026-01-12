@@ -629,9 +629,9 @@ function showGraph(payload) {
 function evaluateExpression(expr, x) {
   let evaluated = expr.replace(/x/g, `(${x})`);
   
-  // Replace ** with Math.pow
-  evaluated = evaluated.replace(/(\d+\.?\d*)\*\*(\d+\.?\d*)/g, 'Math.pow($1,$2)');
-  evaluated = evaluated.replace(/\(([^)]+)\)\*\*(\d+\.?\d*)/g, 'Math.pow($1,$2)');
+  // Replace ** with Math.pow - handle all cases
+  // Match: number**number, (expr)**number, variable**number
+  evaluated = evaluated.replace(/(\([^)]+\)|[\w.]+)\*\*([\d.]+|\([^)]+\))/g, 'Math.pow($1,$2)');
   
   // Replace trigonometric functions
   evaluated = evaluated.replace(/\bsin\b/g, 'Math.sin');
@@ -658,11 +658,30 @@ function evaluateExpression(expr, x) {
   evaluated = evaluated.replace(/\bAbs\b/g, 'Math.abs');
   evaluated = evaluated.replace(/\babs\b/g, 'Math.abs');
   
+  // Error function approximation
+  evaluated = evaluated.replace(/\berf\b/g, '__erf');
+  
   // Replace constants
   evaluated = evaluated.replace(/\bpi\b/g, 'Math.PI');
   evaluated = evaluated.replace(/\be\b(?!\d)/g, 'Math.E');
   
   try {
+    // Define erf function for evaluation
+    const __erf = (x) => {
+      // Abramowitz and Stegun approximation
+      const sign = x >= 0 ? 1 : -1;
+      x = Math.abs(x);
+      const a1 = 0.254829592;
+      const a2 = -0.284496736;
+      const a3 = 1.421413741;
+      const a4 = -1.453152027;
+      const a5 = 1.061405429;
+      const p = 0.3275911;
+      const t = 1.0 / (1.0 + p * x);
+      const y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
+      return sign * y;
+    };
+    
     return eval(evaluated);
   } catch (e) {
     return null;
