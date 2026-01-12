@@ -87,44 +87,6 @@ Test these endpoints:
 - **LU Decomposition**: LU factorization
 - **Symbolic matrices**: Variables as matrix entries (e.g., [["a","b"],["c","d"]])
 
-## Sharing with Universities
-
-### Example Email Template
-
-```
-Subject: Calcora Demo - Step-by-Step Math Computation Engine
-
-Hi [Professor/Admissions Committee],
-
-I'd like to share Calcora, an open-source computational mathematics 
-engine I've been developing. It provides step-by-step explanations for 
-mathematical operations, making it useful for education and learning.
-
-Live Demo: https://YOUR-SITE-NAME.netlify.app/demo.html
-
-Try these examples:
-- Differentiate: sin(x^2), x^3*cos(x), exp(x^2)
-- Matrix determinant: [[1,2],[3,4]]
-- Symbolic matrix: [["a","b"],["c","d"]]
-
-The demo runs entirely in your browser with no installation required.
-
-Source code: https://github.com/Dumbo-programmer/calcora
-Documentation: https://YOUR-SITE-NAME.netlify.app/
-
-Key features:
-✓ Step-by-step reasoning DAG
-✓ Symbolic and numeric computation
-✓ Plugin architecture for extensibility
-✓ CLI, API, and web interfaces
-✓ Offline-capable (self-hostable)
-
-I'm happy to discuss the technical architecture or provide additional 
-examples.
-
-Best regards,
-[Your Name]
-```
 
 ## Monitoring and Logs
 
@@ -238,7 +200,42 @@ Netlify automatically rate-limits abusive requests. For additional protection:
 5. **Documentation**: Link to GitHub repo for source code exploration
 
 ## Support
+## Sharing with Universities
 
+```
+Subject: Calcora Demo - Step-by-Step Math Computation Engine
+
+Hi [Professor/Admissions Committee],
+
+I'd like to share Calcora, an open-source computational mathematics 
+engine I've been developing. It provides step-by-step explanations for 
+mathematical operations, making it useful for education and learning.
+
+Live Demo: https://YOUR-SITE-NAME.netlify.app/demo.html
+
+Try these examples:
+- Differentiate: sin(x^2), x^3*cos(x), exp(x^2)
+- Matrix determinant: [[1,2],[3,4]]
+- Symbolic matrix: [["a","b"],["c","d"]]
+
+The demo runs entirely in your browser with no installation required.
+
+Source code: https://github.com/Dumbo-programmer/calcora
+Documentation: https://YOUR-SITE-NAME.netlify.app/
+
+Key features:
+✓ Step-by-step reasoning DAG
+✓ Symbolic and numeric computation
+✓ Plugin architecture for extensibility
+✓ CLI, API, and web interfaces
+✓ Offline-capable (self-hostable)
+
+I'm happy to discuss the technical architecture or provide additional 
+examples.
+
+Best regards,
+[Your Name]
+```
 If universities have questions:
 - Point to GitHub Issues: `https://github.com/Dumbo-programmer/calcora/issues`
 - Provide this deployment guide
