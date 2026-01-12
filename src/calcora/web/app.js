@@ -229,10 +229,7 @@ function renderResult(payload, verbosity, timing) {
   
   // Store both raw and formatted output
   let formattedOutput;
-  let rawOutput = payload.output ?? '(no output)';
-  
-  // Preprocess LaTeX for proper typesetting
-  rawOutput = preprocessLatex(rawOutput);
+  const rawOutput = payload.output ?? '(no output)';
   
   // Check if it's a matrix
   const isMatrix = rawOutput && rawOutput.includes('[') && rawOutput.includes(']');
@@ -268,9 +265,17 @@ function renderResult(payload, verbosity, timing) {
     output.innerHTML = formattedOutput;
   }
   
+  // Display using KaTeX or formatted HTML via displayCurrentResult
+  displayCurrentResult();
+  
   // Set timing
   if (timing) {
     timingEl.textContent = `${timing}ms`;
+  }
+
+  // Show graph for differentiation
+  if (payload.operation === 'differentiate') {
+    showGraph(payload);
   }
 
   // Clear and render steps
@@ -522,3 +527,119 @@ window.addEventListener('load', () => {
     }
   }
 });
+
+// Graph rendering
+let currentChart = null;
+
+function showGraph(payload) {
+  const graphPanel = document.getElementById('graphPanel');
+  const canvas = document.getElementById('graphCanvas');
+  
+  if (!graphPanel || !canvas) return;
+  
+  graphPanel.style.display = 'block';
+
+  // Generate x values
+  const xMin = -10;
+  const xMax = 10;
+  const points = 200;
+  const xValues = [];
+  const yOriginal = [];
+  const yDerivative = [];
+
+  for (let i = 0; i <= points; i++) {
+    const x = xMin + (i / points) * (xMax - xMin);
+    xValues.push(x);
+    
+    try {
+      const originalValue = evaluateExpression(payload.input, x);
+      const derivativeValue = evaluateExpression(payload.output, x);
+      yOriginal.push(originalValue);
+      yDerivative.push(derivativeValue);
+    } catch (e) {
+      yOriginal.push(null);
+      yDerivative.push(null);
+    }
+  }
+
+  if (currentChart) {
+    currentChart.destroy();
+  }
+
+  const isDark = document.body.classList.contains('dark-theme');
+  const ctx = canvas.getContext('2d');
+  
+  currentChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: xValues,
+      datasets: [
+        {
+          label: `f(x) = ${payload.input}`,
+          data: yOriginal,
+          borderColor: '#6366f1',
+          backgroundColor: 'rgba(99, 102, 241, 0.1)',
+          borderWidth: 3,
+          tension: 0.4,
+          pointRadius: 0
+        },
+        {
+          label: `f'(x) = ${payload.output}`,
+          data: yDerivative,
+          borderColor: '#10b981',
+          backgroundColor: 'rgba(16, 185, 129, 0.1)',
+          borderWidth: 3,
+          tension: 0.4,
+          pointRadius: 0
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: true,
+          labels: {
+            color: isDark ? '#e5e7eb' : '#0f172a',
+            font: { size: 14, family: 'JetBrains Mono' }
+          }
+        },
+        tooltip: {
+          enabled: true,
+          mode: 'index',
+          intersect: false
+        }
+      },
+      scales: {
+        x: {
+          type: 'linear',
+          grid: { color: isDark ? '#334155' : '#e2e8f0' },
+          ticks: { color: isDark ? '#cbd5e1' : '#64748b' }
+        },
+        y: {
+          grid: { color: isDark ? '#334155' : '#e2e8f0' },
+          ticks: { color: isDark ? '#cbd5e1' : '#64748b' }
+        }
+      }
+    }
+  });
+}
+
+function evaluateExpression(expr, x) {
+  let evaluated = expr.replace(/x/g, `(${x})`);
+  evaluated = evaluated.replace(/(\d+\.?\d*)\*\*(\d+\.?\d*)/g, 'Math.pow($1,$2)');
+  evaluated = evaluated.replace(/\(([^)]+)\)\*\*(\d+\.?\d*)/g, 'Math.pow($1,$2)');
+  evaluated = evaluated.replace(/sin/g, 'Math.sin');
+  evaluated = evaluated.replace(/cos/g, 'Math.cos');
+  evaluated = evaluated.replace(/tan/g, 'Math.tan');
+  evaluated = evaluated.replace(/exp/g, 'Math.exp');
+  evaluated = evaluated.replace(/log/g, 'Math.log');
+  evaluated = evaluated.replace(/sqrt/g, 'Math.sqrt');
+  
+  try {
+    return eval(evaluated);
+  } catch (e) {
+    return null;
+  }
+}

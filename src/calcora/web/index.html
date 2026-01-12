@@ -8,6 +8,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <link rel="stylesheet" href="/static/style.css?v=3" />
   </head>
   <body>
@@ -238,6 +241,16 @@
         </details>
       </section>
 
+      <!-- Graph Container -->
+      <section class="panel" id="graphPanel" style="display: none;">
+        <div class="result-header">
+          <h2><i class="fas fa-chart-line" style="color: var(--primary);"></i> Interactive Graph</h2>
+        </div>
+        <div style="position: relative; height: 400px; background: var(--bg-secondary); border-radius: 12px; padding: 16px;">
+          <canvas id="graphCanvas"></canvas>
+        </div>
+      </section>
+
       <section class="panel features-panel">
         <h3><i class="fas fa-book"></i> Supported Rules</h3>
         <div class="rules-grid">
@@ -392,7 +405,22 @@
           // Typeset format shows rendered math
           output.className = 'output-value typeset';
           badge.innerHTML = '<i class="fas fa-font"></i> Typeset Format';
-          output.innerHTML = window.currentResultData.formatted;
+          
+          // Check if it's matrix HTML (already formatted)
+          if (window.currentResultData.formatted && window.currentResultData.formatted.includes('<table')) {
+            output.innerHTML = window.currentResultData.formatted;
+          } else {
+            // Render with KaTeX
+            try {
+              const latexCode = preprocessLatex(window.currentResultData.raw);
+              katex.render(latexCode, output, {
+                throwOnError: false,
+                displayMode: true
+              });
+            } catch (e) {
+              output.textContent = window.currentResultData.raw;
+            }
+          }
         } else {
           // Copyable format shows raw LaTeX code
           output.className = 'output-value copyable';
