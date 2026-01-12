@@ -4,6 +4,12 @@ Calcora is an open-source, self-hosted computational mathematics engine designed
 
 **Status**: v0.1 is an architecture-first alpha. The public API is intentionally small while the explainability engine stabilizes.
 
+## 🚀 Try the Live Demo
+
+**[Interactive Demo →](https://calcora-demo.netlify.app/demo.html)**
+
+Test Calcora directly in your browser - no installation required. Try differentiation, matrix operations, and symbolic computation with step-by-step explanations.
+
 ## Why Calcora
 
 - **Offline & private**: computation stays on your machine.
@@ -19,31 +25,89 @@ Calcora is an open-source, self-hosted computational mathematics engine designed
 
 ## Install
 
-### Python package (dev)
+### Quick Start (Clone & Run)
+
+**New to the project? Follow the step-by-step guide: [CLONE_AND_RUN.md](CLONE_AND_RUN.md)**
+
+**Prerequisites**: Python 3.11+ and Git
 
 ```bash
-python -m pip install -e ".[engine-sympy,cli,api,dev]"
-```
+# 1. Clone the repository
+git clone https://github.com/YOUR-USERNAME/calcora.git
+cd calcora
 
-### Run the CLI
+# 2. Create virtual environment
+python -m venv .venv
 
-```bash
-python -m calcora --help
-```
+# 3. Activate virtual environment
+# On Windows:
+.venv\Scripts\activate
+# On macOS/Linux:
+source .venv/bin/activate
 
-On Windows, you can also call the venv script directly:
+# 4. Install Calcora with dependencies
+pip install -e ".[engine-sympy,cli,api]"
 
-```bash
-.venv\Scripts\calcora.exe --help
-```
+# 5. Test installation (optional but recommended)
+python test_installation.py
 
-### Run the API (optional)
+# 6. Run the CLI
+calcora differentiate "sin(x**2)"
 
-```bash
+# 7. Or start the web interface
 uvicorn calcora.api.main:app --reload
+# Then open: http://127.0.0.1:8000/static/index.html
 ```
 
-Then open the local GUI at `http://127.0.0.1:8000/`.
+That's it! You now have a fully functional local instance.
+
+### Building Standalone Executables (Windows)
+
+Want to share Calcora without requiring Python? Build standalone executables:
+
+```powershell
+# Install PyInstaller
+pip install pyinstaller
+
+# Build both CLI and server executables
+.\build.ps1 all
+
+# Executables are in dist/
+.\dist\calcora.exe differentiate "x**2"
+.\dist\calcora-server.exe  # Opens browser automatically
+
+# Create distribution package
+.\package.ps1
+# Creates: dist/calcora-{version}-windows-x64.zip
+```
+
+See [BUILD.md](BUILD.md) for detailed build instructions.
+
+### Self-Hosting the Web UI
+
+Run your own Calcora web server:
+
+```bash
+# Development mode (auto-reload)
+uvicorn calcora.api.main:app --reload --host 0.0.0.0 --port 8000
+
+# Production mode
+uvicorn calcora.api.main:app --host 0.0.0.0 --port 8000 --workers 4
+```
+
+Access from any device on your network at `http://YOUR-IP:8000/static/index.html`
+
+**For complete self-hosting guide** (VPS, systemd, Nginx, SSL, etc.), see **[SELF_HOSTING.md](SELF_HOSTING.md)**.
+
+For deployment to cloud platforms, see [DEPLOYMENT.md](DEPLOYMENT.md).
+
+### Docker (Coming Soon)
+
+```bash
+docker compose up
+```
+
+Docker deployment is on the roadmap for v0.2.
 
 ## Architecture (short)
 
@@ -58,27 +122,29 @@ Calcora represents computation as a directed acyclic graph (DAG) of **StepNodes*
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for the formal model.
 
-### Supported differentiation rules (v0.1)
+### Supported operations (v0.1)
 
-**Basic rules**:
+**Differentiation**:
 - Constants and identity: d/dx(c) = 0, d/dx(x) = 1
 - Sum rule: d/dx(f+g) = f' + g'
 - Constant multiple: d/dx(c·f) = c·f'
 - Product rule: d/dx(f·g) = f·g' + g·f'
 - Power rule: d/dx(x^n) = n·x^(n-1) (with chain rule)
+- Trigonometric: sin, cos, tan, sec, csc, cot (with chain rule)
+- Exponential and logarithmic: exp(u), log(u) (with chain rule)
+- Inverse trigonometric: asin(u), acos(u), atan(u) (with chain rule)
+- SymPy fallback for complex expressions
 
-**Trigonometric functions**:
-- sin, cos, tan, sec, csc, cot (with chain rule)
+**Linear Algebra**:
+- Matrix multiplication
+- Determinants (2×2, 3×3, general)
+- Matrix inverse
+- Row Reduced Echelon Form (RREF)
+- Eigenvalues and eigenvectors
+- LU decomposition
+- **Symbolic matrices**: Variables as entries (e.g., [["a","b"],["c","d"]])
 
-**Exponential and logarithmic**:
-- exp(u), log(u) (natural log, with chain rule)
-
-**Inverse trigonometric**:
-- asin(u), acos(u), atan(u) (with chain rule)
-
-**Fallback**: SymPy integration for any unsupported expressions
-
-All rules include step-by-step explanations with multiple verbosity levels.
+All operations include step-by-step explanations with multiple verbosity levels.
 
 ## Plugins
 

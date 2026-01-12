@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calcora Interactive Demo</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 16px;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        .tab.active {
+            color: #2563eb;
+            border-bottom-color: #2563eb;
+        }
+        .tab:hover {
+            color: #2563eb;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .input-group input,
+        .input-group textarea,
+        .input-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        .input-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        .examples {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        .example-btn {
+            padding: 8px 15px;
+            background: #f3f4f6;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        .example-btn:hover {
+            background: #e5e7eb;
+            border-color: #9ca3af;
+        }
+        .compute-btn {
+            padding: 12px 30px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .compute-btn:hover {
+            background: #1d4ed8;
+        }
+        .compute-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+        .result-container {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            display: none;
+        }
+        .result-container.visible {
+            display: block;
+        }
+        .result-header {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #1f2937;
+        }
+        .result-output {
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            padding: 15px;
+            background: white;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            color: #059669;
+            font-weight: bold;
+        }
+        .steps {
+            background: white;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            padding: 15px;
+        }
+        .step {
+            padding: 10px;
+            margin-bottom: 10px;
+            background: #f3f4f6;
+            border-left: 3px solid #2563eb;
+            border-radius: 4px;
+        }
+        .step-rule {
+            font-weight: bold;
+            color: #2563eb;
+            margin-bottom: 5px;
+        }
+        .step-explanation {
+            color: #4b5563;
+            font-size: 14px;
+        }
+        .error {
+            color: #dc2626;
+            padding: 15px;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 4px;
+            margin-top: 15px;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #6b7280;
+        }
+        .tip {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #1e40af;
+        }
+    </style>
+</head>
+<body>
+    <header class="container">
+        <h1>Calcora Interactive Demo</h1>
+        <p class="tagline">Test Calcora's step-by-step computational engine directly in your browser</p>
+        <nav>
+            <a href="index.html">← Back to Home</a>
+        </nav>
+    </header>
+
+    <main class="demo-container">
+        <div class="tabs">
+            <button class="tab active" data-tab="differentiate">Differentiation</button>
+            <button class="tab" data-tab="matrix">Matrix Operations</button>
+        </div>
+
+        <!-- Differentiation Tab -->
+        <div class="tab-content active" id="differentiate">
+            <div class="tip">
+                💡 Try symbolic differentiation with step-by-step explanations
+            </div>
+            
+            <div class="examples">
+                <button class="example-btn" data-expr="sin(x**2)">sin(x²)</button>
+                <button class="example-btn" data-expr="x**3 * cos(x)">x³·cos(x)</button>
+                <button class="example-btn" data-expr="exp(x**2)">e^(x²)</button>
+                <button class="example-btn" data-expr="log(x**2 + 1)">ln(x² + 1)</button>
+                <button class="example-btn" data-expr="tan(x) + x**2">tan(x) + x²</button>
+            </div>
+
+            <div class="input-group">
+                <label>Expression:</label>
+                <input type="text" id="diff-expr" placeholder="e.g., sin(x**2)" value="sin(x**2)">
+            </div>
+
+            <div class="input-group">
+                <label>Variable:</label>
+                <input type="text" id="diff-var" placeholder="x" value="x">
+            </div>
+
+            <div class="input-group">
+                <label>Verbosity:</label>
+                <select id="diff-verbosity">
+                    <option value="concise">Concise</option>
+                    <option value="detailed" selected>Detailed</option>
+                    <option value="teacher">Teacher Mode</option>
+                </select>
+            </div>
+
+            <button class="compute-btn" onclick="computeDifferentiate()">Differentiate</button>
+        </div>
+
+        <!-- Matrix Tab -->
+        <div class="tab-content" id="matrix">
+            <div class="tip">
+                💡 Supports numeric and symbolic matrices (use strings for symbols: [["a","b"],["c","d"]])
+            </div>
+
+            <div class="examples">
+                <button class="example-btn" data-operation="determinant" data-matrix='[[1,2],[3,4]]'>Det 2×2</button>
+                <button class="example-btn" data-operation="inverse" data-matrix='[[1,2],[3,4]]'>Inverse</button>
+                <button class="example-btn" data-operation="determinant" data-matrix='[["a","b"],["c","d"]]'>Symbolic Det</button>
+                <button class="example-btn" data-operation="multiply" data-matrix='[[1,2],[3,4]]' data-matrix-b='[[5,6],[7,8]]'>Multiply</button>
+                <button class="example-btn" data-operation="eigenvalues" data-matrix='[[3,1],[1,3]]'>Eigenvalues</button>
+            </div>
+
+            <div class="input-group">
+                <label>Operation:</label>
+                <select id="matrix-operation">
+                    <option value="matrix_determinant">Determinant</option>
+                    <option value="matrix_inverse">Inverse</option>
+                    <option value="matrix_multiply">Multiply</option>
+                    <option value="matrix_rref">RREF</option>
+                    <option value="matrix_eigenvalues">Eigenvalues</option>
+                    <option value="matrix_lu">LU Decomposition</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>Matrix A (JSON format):</label>
+                <textarea id="matrix-a" placeholder='[[1,2],[3,4]]'>[[1,2],[3,4]]</textarea>
+            </div>
+
+            <div class="input-group" id="matrix-b-group">
+                <label>Matrix B (for multiplication):</label>
+                <textarea id="matrix-b" placeholder='[[5,6],[7,8]]'>[[5,6],[7,8]]</textarea>
+            </div>
+
+            <div class="input-group">
+                <label>Verbosity:</label>
+                <select id="matrix-verbosity">
+                    <option value="concise">Concise</option>
+                    <option value="detailed" selected>Detailed</option>
+                    <option value="teacher">Teacher Mode</option>
+                </select>
+            </div>
+
+            <button class="compute-btn" onclick="computeMatrix()">Compute</button>
+        </div>
+
+        <div class="result-container" id="result">
+            <div class="result-header">Result:</div>
+            <div class="result-output" id="output"></div>
+            <div class="result-header">Step-by-Step Explanation:</div>
+            <div class="steps" id="steps"></div>
+        </div>
+
+        <div class="result-container" id="error-container">
+            <div class="error" id="error-message"></div>
+        </div>
+
+        <div class="loading" id="loading" style="display: none;">
+            <p>Computing... ⏳</p>
+        </div>
+    </main>
+
+    <script>
+        // API endpoint - will be Netlify function
+        const API_URL = '/.netlify/functions/calcora_engine';
+
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.dataset.tab;
+                
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                tab.classList.add('active');
+                document.getElementById(tabName).classList.add('active');
+            });
+        });
+
+        // Example button handlers for differentiation
+        document.querySelectorAll('#differentiate .example-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const expr = btn.dataset.expr;
+                document.getElementById('diff-expr').value = expr;
+            });
+        });
+
+        // Example button handlers for matrix
+        document.querySelectorAll('#matrix .example-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (btn.dataset.operation) {
+                    const opSelect = document.getElementById('matrix-operation');
+                    opSelect.value = 'matrix_' + btn.dataset.operation;
+                    toggleMatrixB();
+                }
+                if (btn.dataset.matrix) {
+                    document.getElementById('matrix-a').value = btn.dataset.matrix;
+                }
+                if (btn.dataset.matrixB) {
+                    document.getElementById('matrix-b').value = btn.dataset.matrixB;
+                }
+            });
+        });
+
+        // Show/hide Matrix B based on operation
+        function toggleMatrixB() {
+            const operation = document.getElementById('matrix-operation').value;
+            const matrixBGroup = document.getElementById('matrix-b-group');
+            matrixBGroup.style.display = operation === 'matrix_multiply' ? 'block' : 'none';
+        }
+
+        document.getElementById('matrix-operation').addEventListener('change', toggleMatrixB);
+        toggleMatrixB();
+
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('result').classList.remove('visible');
+            document.getElementById('error-container').classList.remove('visible');
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        function showError(message) {
+            hideLoading();
+            document.getElementById('error-message').textContent = message;
+            document.getElementById('error-container').classList.add('visible');
+        }
+
+        function showResult(data) {
+            hideLoading();
+            document.getElementById('output').textContent = data.output;
+            
+            const stepsContainer = document.getElementById('steps');
+            stepsContainer.innerHTML = '';
+            
+            if (data.graph && data.graph.nodes) {
+                data.graph.nodes.forEach(step => {
+                    const stepDiv = document.createElement('div');
+                    stepDiv.className = 'step';
+                    stepDiv.innerHTML = `
+                        <div class="step-rule">[${step.rule}]</div>
+                        <div class="step-explanation">${step.explanation}</div>
+                    `;
+                    stepsContainer.appendChild(stepDiv);
+                });
+            }
+            
+            document.getElementById('result').classList.add('visible');
+        }
+
+        async function computeDifferentiate() {
+            const expression = document.getElementById('diff-expr').value.trim();
+            const variable = document.getElementById('diff-var').value.trim() || 'x';
+            const verbosity = document.getElementById('diff-verbosity').value;
+
+            if (!expression) {
+                showError('Please enter an expression');
+                return;
+            }
+
+            showLoading();
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        operation: 'differentiate',
+                        expression: expression,
+                        variable: variable,
+                        verbosity: verbosity
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showError(data.error || 'Computation failed');
+                    return;
+                }
+
+                showResult(data);
+            } catch (error) {
+                showError('Network error: ' + error.message);
+            }
+        }
+
+        async function computeMatrix() {
+            const operation = document.getElementById('matrix-operation').value;
+            const matrixA = document.getElementById('matrix-a').value.trim();
+            const verbosity = document.getElementById('matrix-verbosity').value;
+
+            if (!matrixA) {
+                showError('Please enter Matrix A');
+                return;
+            }
+
+            showLoading();
+
+            const body = {
+                operation: operation,
+                expression: matrixA,
+                verbosity: verbosity
+            };
+
+            if (operation === 'matrix_multiply') {
+                const matrixB = document.getElementById('matrix-b').value.trim();
+                if (!matrixB) {
+                    showError('Matrix multiplication requires Matrix B');
+                    hideLoading();
+                    return;
+                }
+                body.matrix_b = matrixB;
+            }
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showError(data.error || 'Computation failed');
+                    return;
+                }
+
+                showResult(data);
+            } catch (error) {
+                showError('Network error: ' + error.message);
+            }
+        }
+
+        // Allow Enter key to trigger computation
+        document.getElementById('diff-expr').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') computeDifferentiate();
+        });
+    </script>
+</body>
+</html>

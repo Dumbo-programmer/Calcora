@@ -1,7 +1,12 @@
 [build]
   publish = "site"
   functions = "netlify/functions"
-  command = "pip install '.[engine-sympy]'"
+  command = "pip install --upgrade pip && pip install '.[engine-sympy]'"
 
 [context.production.environment]
   PYTHON_VERSION = "3.11"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200

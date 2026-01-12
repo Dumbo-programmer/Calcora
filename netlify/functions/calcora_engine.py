@@ -14,14 +14,30 @@ def _error(status: int, message: str) -> Dict[str, Any]:
 
 
 def handler(event, context):  # type: ignore[override]
-    """Netlify Function entrypoint exposing a small Calcora API.
+    """Netlify Function entrypoint exposing Calcora API.
 
-    Expected JSON body, for example:
+    Expected JSON body examples:
+    
+    Differentiation:
     {
       "operation": "differentiate",
       "expression": "sin(x**2)",
       "variable": "x",
       "order": 1,
+      "verbosity": "detailed"
+    }
+    
+    Matrix operations:
+    {
+      "operation": "matrix_determinant",
+      "expression": "[[1,2],[3,4]]",
+      "verbosity": "detailed"
+    }
+    
+    {
+      "operation": "matrix_multiply",
+      "expression": "[[1,2],[3,4]]",
+      "matrix_b": "[[5,6],[7,8]]",
       "verbosity": "detailed"
     }
     """
@@ -52,25 +68,40 @@ def handler(event, context):  # type: ignore[override]
     if not expression:
         return _error(400, "Missing required field 'expression'")
 
-    variable = body.get("variable", "x")
-    order = int(body.get("order", 1))
     verbosity = body.get("verbosity", "detailed")
-
     if verbosity not in ("concise", "detailed", "teacher"):
         return _error(400, "Invalid verbosity. Use: concise, detailed, teacher")
 
     engine = default_engine(load_entry_points=True)
 
     try:
+        # Differentiation operation
         if operation == "differentiate":
+            variable = body.get("variable", "x")
+            order = int(body.get("order", 1))
             result = engine.run(
                 operation="differentiate",
                 expression=expression,
                 variable=variable,
                 order=order,
             )
+        
+        # Matrix operations
+        elif operation in ("matrix_multiply", "matrix_determinant", "matrix_inverse", 
+                          "matrix_rref", "matrix_eigenvalues", "matrix_lu"):
+            kwargs = {"operation": operation, "expression": expression}
+            
+            # Matrix multiply needs second matrix
+            if operation == "matrix_multiply":
+                matrix_b = body.get("matrix_b")
+                if not matrix_b:
+                    return _error(400, "matrix_multiply requires 'matrix_b' field")
+                kwargs["matrix_b"] = matrix_b
+            
+            result = engine.run(**kwargs)
+        
         else:
-            return _error(400, f"Unsupported operation '{operation}' in Netlify Function")
+            return _error(400, f"Unsupported operation '{operation}'. Supported: differentiate, matrix_multiply, matrix_determinant, matrix_inverse, matrix_rref, matrix_eigenvalues, matrix_lu")
 
     except ValueError as exc:
         return _error(400, str(exc))
