@@ -5,6 +5,8 @@ Calcora is an open-source, self-hosted computational mathematics engine designed
 
 **Status**: v0.2-alpha - Now with **Integration** support! Academic adoption features in active development.
 
+📚 **[Complete Documentation](CLONE_AND_RUN.md)** | 🎓 **[Academic Strategy](ACADEMIC_STRATEGY.md)** | 🚀 **[Release Notes](RELEASE_NOTES_v0.2.md)**
+
 ## 🎯 Vision: Academic Adoption
 
 Calcora aims to become the preferred computational tool for universities, STEM students, and researchers. We're building a transparent, educational alternative to WolframAlpha that emphasizes:
@@ -136,7 +138,7 @@ pip install pyinstaller
 # Creates: dist/calcora-{version}-windows-x64.zip
 ```
 
-See [BUILD.md](BUILD.md) for detailed build instructions.
+See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for detailed build and distribution instructions.
 
 ### Self-Hosting the Web UI
 
@@ -152,9 +154,7 @@ uvicorn calcora.api.main:app --host 0.0.0.0 --port 8000 --workers 4
 
 Access from any device on your network at `http://YOUR-IP:8000/static/index.html`
 
-**For complete self-hosting guide** (VPS, systemd, Nginx, SSL, etc.), see **[SELF_HOSTING.md](SELF_HOSTING.md)**.
-
-For deployment to cloud platforms, see [DEPLOYMENT.md](DEPLOYMENT.md).
+For complete deployment guide (cloud platforms, Docker, systemd, etc.), see [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md).
 
 ### Docker (Coming Soon)
 
@@ -211,9 +211,27 @@ Calcora supports three plugin types:
 
 See [docs/PLUGINS.md](docs/PLUGINS.md).
 
-## Roadmap
+## Documentation
 
-See [ROADMAP.md](ROADMAP.md) for v0.1 → v0.5.
+### For Users
+- 📚 **[Getting Started](CLONE_AND_RUN.md)** - Complete setup guide from clone to running
+- 🚀 **[Deployment Guide](DEPLOYMENT_GUIDE.md)** - Deploy to Netlify, Render, or self-host
+- 📖 **[SEO Guide](SEO_GUIDE.md)** - Optimize discoverability and marketing
+
+### For Developers
+- 🏗️ **[Architecture](ARCHITECTURE.md)** - Technical design and DAG model
+- 🔌 **[Plugins](docs/PLUGINS.md)** - Creating custom rules and solvers
+- 🤝 **[Contributing](CONTRIBUTING.md)** - Development guidelines
+
+### Project Management
+- 🎯 **[Academic Strategy](ACADEMIC_STRATEGY.md)** - v0.2 roadmap for university adoption
+- 🗺️ **[Roadmap](ROADMAP.md)** - Feature timeline v0.1 → v0.5
+- 📝 **[Release Notes v0.2](RELEASE_NOTES_v0.2.md)** - What's new in integration engine
+- 📋 **[Changelog](CHANGELOG.md)** - Version history
+
+### Policies
+- 🛡️ **[Security Policy](SECURITY.md)** - Reporting vulnerabilities
+- 📜 **[Code of Conduct](CODE_OF_CONDUCT.md)** - Community guidelines
 
 ## Contributing
 
@@ -221,14 +239,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines.
 
 We follow a [Code of Conduct](CODE_OF_CONDUCT.md) to ensure a welcoming community.
 
-## Security
-
-For security concerns, please see our [Security Policy](SECURITY.md).
-
 ## License
 
 Calcora is released under the [MIT License](LICENSE).
-
-## License
-
-MIT
