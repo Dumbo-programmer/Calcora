@@ -4,23 +4,32 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Calcora — Explainable Math Engine</title>
-    <link rel="stylesheet" href="/static/style.css?v=2" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/static/style.css?v=3" />
   </head>
   <body>
-    <header class="container">
-      <div class="header-content">
-        <div>
-          <h1>🧮 Calcora</h1>
-          <p class="tagline">Self-hosted, explainable mathematical computation engine</p>
-        </div>
-        <div class="header-stats">
-          <div class="stat">
-            <div class="stat-value">39+</div>
-            <div class="stat-label">Differentiation Rules</div>
+    <header>
+      <div class="container">
+        <div class="header-content">
+          <div>
+            <h1><i class="fas fa-calculator"></i> Calcora</h1>
+            <p class="tagline">Self-hosted, explainable mathematical computation engine</p>
           </div>
-          <div class="stat">
-            <div class="stat-value">100%</div>
-            <div class="stat-label">Step-by-Step</div>
+          <div class="header-stats">
+            <div class="stat">
+              <div class="stat-value">39+</div>
+              <div class="stat-label">Differentiation Rules</div>
+            </div>
+            <div class="stat">
+              <div class="stat-value">100%</div>
+              <div class="stat-label">Step-by-Step</div>
+            </div>
+            <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+              <i class="fas fa-moon" id="theme-icon"></i>
+            </button>
           </div>
         </div>
       </div>
@@ -67,12 +76,12 @@
             </select>
           </label>
 
-          <button id="run" class="btn-primary">▶ Run</button>
+          <button id="run" class="btn-primary"><i class="fas fa-play-circle"></i> Run</button>
         </div>
 
         <div id="calcInput">
           <label class="block">
-            Expression
+            <i class="fas fa-function"></i> Expression
             <input id="expr" type="text" value="sin(x**2)" spellcheck="false" placeholder="Enter expression..." />
           </label>
 
@@ -90,13 +99,13 @@
 
         <div id="matrixInput" style="display: none;">
           <label class="block">
-            Matrix A
+            <i class="fas fa-table"></i> Matrix A
             <textarea id="matrixA" rows="3" spellcheck="false" placeholder='[[1,2],[3,4]] or [["a","b"],["c","d"]]' style="font-family: monospace;">[[1,2],[3,4]]</textarea>
-            <small style="color: #666; margin-top: 4px; display: block;">Tip: Use strings for symbols: [["a","b"],["c","d"]]</small>
+            <small style="color: var(--text-tertiary); margin-top: 4px; display: block;">Tip: Use strings for symbols: [["a","b"],["c","d"]]</small>
           </label>
 
           <label class="block" id="matrixBLabel">
-            Matrix B
+            <i class="fas fa-table"></i> Matrix B
             <textarea id="matrixB" rows="3" spellcheck="false" placeholder='[[5,6],[7,8]] or [["x"],["y"]]' style="font-family: monospace;">[[5,6],[7,8]]</textarea>
           </label>
 
@@ -126,7 +135,7 @@
 
       <section class="panel result-panel" id="resultPanel" style="display: none;">
         <div class="result-header">
-          <h2>Result</h2>
+          <h2><i class="fas fa-check-circle" style="color: var(--success);"></i> Result</h2>
           <div class="result-meta">
             <span id="stepCount" class="badge"></span>
             <span id="timing" class="timing"></span>
@@ -139,18 +148,18 @@
         </div>
 
         <details open class="steps-section">
-          <summary><h3>Step-by-Step Explanation</h3></summary>
+          <summary><h3><i class="fas fa-list-ol"></i> Step-by-Step Explanation</h3></summary>
           <ol id="steps" class="steps"></ol>
         </details>
 
         <details id="jsonWrap" class="json-section hidden">
-          <summary><h3>Raw JSON</h3></summary>
+          <summary><h3><i class="fas fa-code"></i> Raw JSON</h3></summary>
           <pre class="json-pre" id="json"></pre>
         </details>
       </section>
 
       <section class="panel features-panel">
-        <h3>Supported Rules</h3>
+        <h3><i class="fas fa-book"></i> Supported Rules</h3>
         <div class="rules-grid">
           <div class="rule-category">
             <div class="rule-category-title">📏 Basic Rules</div>
@@ -223,7 +232,7 @@
           </div>
         </div>
 
-        <h3>Linear Algebra Operations</h3>
+        <h3><i class="fas fa-border-all"></i> Linear Algebra Operations</h3>
         <div class="rules-grid">
           <div class="rule-category">
             <div class="rule-category-title">🔢 Matrix Operations</div>
@@ -244,10 +253,32 @@
       </section>
     </main>
 
-    <footer class="container">
-      <p class="footer-text">Calcora v0.1 — Open source, self-hosted, privacy-first mathematical computation</p>
+    <footer>
+      <div class="container">
+        <p class="footer-text">Calcora v0.1 — Open source, self-hosted, privacy-first mathematical computation</p>
+      </div>
     </footer>
 
-    <script src="/static/app.js?v=2"></script>
+    <script>
+      // Theme toggle
+      function toggleTheme() {
+        document.body.classList.toggle('dark-theme');
+        const isDark = document.body.classList.contains('dark-theme');
+        document.getElementById('theme-icon').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+        localStorage.setItem('calcora-engine-theme', isDark ? 'dark' : 'light');
+      }
+
+      // Load saved theme
+      document.addEventListener('DOMContentLoaded', () => {
+        const savedTheme = localStorage.getItem('calcora-engine-theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+          document.body.classList.add('dark-theme');
+          document.getElementById('theme-icon').className = 'fas fa-sun';
+        }
+      });
+    </script>
+    <script src="/static/app.js?v=3"></script>
   </body>
 </html>
