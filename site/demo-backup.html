@@ -1,0 +1,699 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Primary Meta Tags -->
+    <title>Calcora Interactive Demo — Professional Math Computation Engine for Universities</title>
+    <meta name="title" content="Calcora Interactive Demo — Professional Math Computation Engine for Universities" />
+    <meta name="description" content="Professional-grade math computation engine with step-by-step explanations, interactive graphing, and real-time visualization. Perfect for education, research, and learning." />
+    <meta name="keywords" content="calcora demo, university math tool, interactive graphing calculator, derivative calculator with graphs, matrix calculator, symbolic math, educational math software, step by step math solver" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://calcoralive.netlify.app/demo.html" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://calcoralive.netlify.app/demo.html" />
+    <meta property="og:title" content="Calcora Interactive Demo — Professional Math Engine" />
+    <meta property="og:description" content="Professional-grade math computation with step-by-step explanations and interactive graphing." />
+    <meta property="og:image" content="https://calcoralive.netlify.app/og-image.png" />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://calcoralive.netlify.app/demo.html" />
+    <meta property="twitter:title" content="Calcora Interactive Demo" />
+    <meta property="twitter:description" content="Professional-grade math computation with interactive graphing" />
+    <meta property="twitter:image" content="https://calcoralive.netlify.app/og-image.png" />
+    
+    <!-- External Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 16px;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        .tab.active {
+            color: #2563eb;
+            border-bottom-color: #2563eb;
+        }
+        .tab:hover {
+            color: #2563eb;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .input-group input,
+        .input-group textarea,
+        .input-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        .input-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        .examples {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        .example-btn {
+            padding: 8px 15px;
+            background: #f3f4f6;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        .example-btn:hover {
+            background: #e5e7eb;
+            border-color: #9ca3af;
+        }
+        .compute-btn {
+            padding: 12px 30px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .compute-btn:hover {
+            background: #1d4ed8;
+        }
+        .compute-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+        .result-container {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            display: none;
+        }
+        .result-container.visible {
+            display: block;
+        }
+        .result-header {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #1f2937;
+        }
+        .result-output {
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            padding: 15px;
+            background: white;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            color: #059669;
+            font-weight: bold;
+        }
+        .steps {
+            background: white;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            padding: 15px;
+        }
+        .step {
+            padding: 10px;
+            margin-bottom: 10px;
+            background: #f3f4f6;
+            border-left: 3px solid #2563eb;
+            border-radius: 4px;
+        }
+        .step-rule {
+            font-weight: bold;
+            color: #2563eb;
+            margin-bottom: 5px;
+        }
+        .step-explanation {
+            color: #4b5563;
+            font-size: 14px;
+        }
+        .error {
+            color: #dc2626;
+            padding: 15px;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 4px;
+            margin-top: 15px;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #6b7280;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e5e7eb;
+            border-top: 4px solid #2563eb;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .tip {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #1e40af;
+        }
+        .success-animation {
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Dark Theme Styles */
+        body.dark-theme { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); }
+        body.dark-theme .demo-container { background: #1f2937; color: #e5e7eb; }
+        body.dark-theme .tabs { border-bottom-color: #374151; }
+        body.dark-theme .tab { color: #9ca3af; }
+        body.dark-theme .tab.active { color: #60a5fa; border-bottom-color: #60a5fa; }
+        body.dark-theme .tab:hover { color: #60a5fa; }
+        body.dark-theme .input-group label { color: #e5e7eb; }
+        body.dark-theme input, body.dark-theme textarea, body.dark-theme select {
+            background: #111827;
+            border-color: #374151;
+            color: #e5e7eb;
+        }
+        body.dark-theme .compute-btn { background: #2563eb; }
+        body.dark-theme .compute-btn:hover { background: #1d4ed8; }
+        body.dark-theme .example-btn { background: #111827; border-color: #374151; color: #e5e7eb; }
+        body.dark-theme .example-btn:hover { background: #374151; }
+        body.dark-theme .result-container { background: #111827; border-color: #374151; }
+        body.dark-theme .result-header { color: #e5e7eb; }
+        body.dark-theme .result-output { background: #1f2937; border-color: #374151; }
+        body.dark-theme .steps { background: #1f2937; border-color: #374151; }
+        body.dark-theme .step { background: #111827; }
+        body.dark-theme .step-explanation { color: #9ca3af; }
+        body.dark-theme .tip { background: #111827; border-color: #374151; }
+        body.dark-theme .loading { color: #9ca3af; }
+        body.dark-theme .loading-spinner { border-color: #374151; border-top-color: #60a5fa; }
+    </style>
+</head>
+<body>
+    <header class="container">
+        <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark/light theme">
+            <span id="theme-icon">🌙</span>
+        </button>
+        <h1>Calcora Interactive Demo</h1>
+        <p class="tagline">Test Calcora's step-by-step computational engine directly in your browser</p>
+        <nav>
+            <a href="index.html">← Back to Home</a>
+        </nav>
+    </header>
+
+    <main class="demo-container">
+        <div class="tabs">
+            <button class="tab active" data-tab="differentiate">Differentiation</button>
+            <button class="tab" data-tab="matrix">Matrix Operations</button>
+        </div>
+
+        <!-- Differentiation Tab -->
+        <div class="tab-content active" id="differentiate">
+            <div class="tip">
+                💡 Try symbolic differentiation with step-by-step explanations. Click examples below or enter your own expression!
+            </div>
+            
+            <div class="examples">
+                <button class="example-btn" data-expr="sin(x**2)">sin(x²)</button>
+                <button class="example-btn" data-expr="x**3 * cos(x)">x³·cos(x)</button>
+                <button class="example-btn" data-expr="exp(x**2)">e^(x²)</button>
+                <button class="example-btn" data-expr="log(x**2 + 1)">ln(x² + 1)</button>
+                <button class="example-btn" data-expr="tan(x) + x**2">tan(x) + x²</button>
+                <button class="example-btn" data-expr="(x**2 + 1) / (x - 1)">Rational function</button>
+            </div>
+
+            <div class="input-group">
+                <label>Expression:</label>
+                <input type="text" id="diff-expr" placeholder="e.g., sin(x**2), x**3*exp(x), log(x)" value="sin(x**2)">
+                <small style="color: #6b7280; font-size: 12px; display: block; margin-top: 5px;">
+                    Use ** for exponents, * for multiplication. Functions: sin, cos, tan, exp, log, sqrt
+                </small>
+            </div>
+
+            <div class="input-group">
+                <label>Variable:</label>
+                <input type="text" id="diff-var" placeholder="x" value="x">
+            </div>
+
+            <div class="input-group">
+                <label>Verbosity:</label>
+                <select id="diff-verbosity">
+                    <option value="concise">Concise</option>
+                    <option value="detailed" selected>Detailed</option>
+                    <option value="teacher">Teacher Mode</option>
+                </select>
+            </div>
+
+            <button class="compute-btn" onclick="computeDifferentiate()">Differentiate</button>
+        </div>
+
+        <!-- Matrix Tab -->
+        <div class="tab-content" id="matrix">
+            <div class="tip">
+                💡 Supports numeric and symbolic matrices. Use strings for symbols: [["a","b"],["c","d"]]
+            </div>
+
+            <div class="examples">
+                <button class="example-btn" data-operation="determinant" data-matrix='[[1,2],[3,4]]'>Det 2×2</button>
+                <button class="example-btn" data-operation="inverse" data-matrix='[[1,2],[3,4]]'>Inverse</button>
+                <button class="example-btn" data-operation="determinant" data-matrix='[["a","b"],["c","d"]]'>Symbolic Det</button>
+                <button class="example-btn" data-operation="multiply" data-matrix='[[1,2],[3,4]]' data-matrix-b='[[5,6],[7,8]]'>Multiply</button>
+                <button class="example-btn" data-operation="eigenvalues" data-matrix='[[3,1],[1,3]]'>Eigenvalues</button>
+                <button class="example-btn" data-operation="lu" data-matrix='[[2,1,1],[4,-6,0],[-2,7,2]]'>LU Decomposition</button>
+            </div>
+
+            <div class="input-group">
+                <label>Operation:</label>
+                <select id="matrix-operation">
+                    <option value="matrix_determinant">Determinant</option>
+                    <option value="matrix_inverse">Inverse</option>
+                    <option value="matrix_multiply">Multiply</option>
+                    <option value="matrix_rref">RREF</option>
+                    <option value="matrix_eigenvalues">Eigenvalues</option>
+                    <option value="matrix_lu">LU Decomposition</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>Matrix A (JSON format):</label>
+                <textarea id="matrix-a" placeholder='[[1,2],[3,4]] or [["a","b"],["c","d"]] for symbolic'>[[1,2],[3,4]]</textarea>
+                <small style="color: #6b7280; font-size: 12px; display: block; margin-top: 5px;">
+                    Format: [[row1_col1, row1_col2], [row2_col1, row2_col2]]. Use quotes for symbols.
+                </small>
+            </div>
+
+            <div class="input-group" id="matrix-b-group">
+                <label>Matrix B (for multiplication):</label>
+                <textarea id="matrix-b" placeholder='[[5,6],[7,8]]'>[[5,6],[7,8]]</textarea>
+            </div>
+
+            <div class="input-group">
+                <label>Verbosity:</label>
+                <select id="matrix-verbosity">
+                    <option value="concise">Concise</option>
+                    <option value="detailed" selected>Detailed</option>
+                    <option value="teacher">Teacher Mode</option>
+                </select>
+            </div>
+
+            <button class="compute-btn" onclick="computeMatrix()">Compute</button>
+        </div>
+
+        <div class="result-container" id="result">
+            <div class="result-header">Result:</div>
+            <div class="result-output" id="output"></div>
+            <div class="result-header">Step-by-Step Explanation:</div>
+            <div class="steps" id="steps"></div>
+        </div>
+
+        <div class="result-container" id="error-container">
+            <div class="error" id="error-message"></div>
+        </div>
+
+        <div class="loading" id="loading" style="display: none;">
+            <div class="loading-spinner"></div>
+            <p>Computing... ⏳</p>
+        </div>
+    </main>
+
+    <script>
+        // API endpoint - try Netlify function first, fallback to local/external API
+        const API_ENDPOINTS = [
+            '/.netlify/functions/calcora_engine',  // Netlify (if available)
+            'http://localhost:5000/api/compute',    // Local development
+            'https://calcora-api.onrender.com/api/compute'  // External API (when deployed)
+        ];
+        
+        let API_URL = API_ENDPOINTS[0];  // Start with Netlify
+        
+        // Check if API is available on page load
+        let apiAvailable = false;
+        
+        async function checkApiAvailability() {
+            // Try each endpoint until one works
+            for (const endpoint of API_ENDPOINTS) {
+                try {
+                    const response = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            operation: 'differentiate',
+                            expression: 'x',
+                            verbosity: 'concise'
+                        })
+                    });
+                    
+                    if (response.ok || response.status === 400) {
+                        // Found a working endpoint!
+                        API_URL = endpoint;
+                        apiAvailable = true;
+                        console.log('✓ Using API endpoint:', endpoint);
+                        return;
+                    }
+                } catch (error) {
+                    console.log('✗ Endpoint not available:', endpoint);
+                    continue;
+                }
+            }
+            
+            // No working endpoints found
+            apiAvailable = false;
+            showApiUnavailableWarning();
+        }
+        
+        function showApiUnavailableWarning() {
+            const warning = document.createElement('div');
+            warning.style.cssText = `
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: #fef3c7;
+                border: 2px solid #f59e0b;
+                border-radius: 8px;
+                padding: 15px 25px;
+                max-width: 600px;
+                z-index: 1000;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            `;
+            warning.innerHTML = `
+                <strong style="color: #92400e;">⚠️ Demo Not Available</strong><br>
+                <span style="color: #78350f; font-size: 14px;">
+                    This demo requires the Netlify backend to be deployed. 
+                    <a href="https://github.com/Dumbo-programmer/calcora" style="color: #2563eb; text-decoration: underline;">Download Calcora</a> 
+                    to run it locally or wait for the full deployment.
+                </span>
+            `;
+            document.body.appendChild(warning);
+            
+            // Disable compute buttons
+            document.querySelectorAll('.compute-btn').forEach(btn => {
+                btn.disabled = true;
+                btn.textContent = 'API Unavailable';
+            });
+        }
+        
+        // Check API on page load
+        setTimeout(checkApiAvailability, 500);
+
+        // Theme toggle functionality
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            
+            body.classList.toggle('dark-theme');
+            
+            if (body.classList.contains('dark-theme')) {
+                themeIcon.textContent = '☀️';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                themeIcon.textContent = '🌙';
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        // Load saved theme preference
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-theme');
+                themeIcon.textContent = '☀️';
+            }
+        });
+
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.dataset.tab;
+                
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                tab.classList.add('active');
+                document.getElementById(tabName).classList.add('active');
+            });
+        });
+
+        // Example button handlers for differentiation
+        document.querySelectorAll('#differentiate .example-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const expr = btn.dataset.expr;
+                document.getElementById('diff-expr').value = expr;
+            });
+        });
+
+        // Example button handlers for matrix
+        document.querySelectorAll('#matrix .example-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (btn.dataset.operation) {
+                    const opSelect = document.getElementById('matrix-operation');
+                    opSelect.value = 'matrix_' + btn.dataset.operation;
+                    toggleMatrixB();
+                }
+                if (btn.dataset.matrix) {
+                    document.getElementById('matrix-a').value = btn.dataset.matrix;
+                }
+                if (btn.dataset.matrixB) {
+                    document.getElementById('matrix-b').value = btn.dataset.matrixB;
+                }
+            });
+        });
+
+        // Show/hide Matrix B based on operation
+        function toggleMatrixB() {
+            const operation = document.getElementById('matrix-operation').value;
+            const matrixBGroup = document.getElementById('matrix-b-group');
+            matrixBGroup.style.display = operation === 'matrix_multiply' ? 'block' : 'none';
+        }
+
+        document.getElementById('matrix-operation').addEventListener('change', toggleMatrixB);
+        toggleMatrixB();
+
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('result').classList.remove('visible');
+            document.getElementById('error-container').classList.remove('visible');
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        function showError(message) {
+            hideLoading();
+            document.getElementById('error-message').textContent = message;
+            document.getElementById('error-container').classList.add('visible');
+        }
+
+        function showResult(data) {
+            hideLoading();
+            document.getElementById('output').textContent = data.output;
+            
+            const stepsContainer = document.getElementById('steps');
+            stepsContainer.innerHTML = '';
+            
+            // Handle both 'steps' and 'nodes' format
+            const steps = (data.graph && data.graph.steps) || (data.graph && data.graph.nodes) || [];
+            
+            if (steps.length > 0) {
+                steps.forEach((step, index) => {
+                    const stepDiv = document.createElement('div');
+                    stepDiv.className = 'step';
+                    stepDiv.style.animationDelay = `${index * 0.1}s`;
+                    stepDiv.innerHTML = `
+                        <div class="step-rule">[${step.rule}]</div>
+                        <div class="step-explanation">${step.explanation}</div>
+                    `;
+                    stepsContainer.appendChild(stepDiv);
+                });
+            }
+            
+            const resultContainer = document.getElementById('result');
+            resultContainer.classList.add('visible', 'success-animation');
+            
+            // Scroll to result
+            resultContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        async function computeDifferentiate() {
+            const expression = document.getElementById('diff-expr').value.trim();
+            const variable = document.getElementById('diff-var').value.trim() || 'x';
+            const verbosity = document.getElementById('diff-verbosity').value;
+
+            if (!expression) {
+                showError('Please enter an expression');
+                return;
+            }
+
+            showLoading();
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        operation: 'differentiate',
+                        expression: expression,
+                        variable: variable,
+                        verbosity: verbosity
+                    })
+                });
+
+                // Check if response is JSON
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    throw new Error('API endpoint not available. Please ensure the site is deployed to Netlify with functions enabled.');
+                }
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showError(data.error || 'Computation failed');
+                    return;
+                }
+
+                showResult(data);
+            } catch (error) {
+                if (error.message.includes('API endpoint')) {
+                    showError(error.message + ' See installation guide in README for local setup.');
+                } else {
+                    showError('Error: ' + error.message);
+                }
+            }
+        }
+
+        async function computeMatrix() {
+            const operation = document.getElementById('matrix-operation').value;
+            const matrixA = document.getElementById('matrix-a').value.trim();
+            const verbosity = document.getElementById('matrix-verbosity').value;
+
+            if (!matrixA) {
+                showError('Please enter Matrix A');
+                return;
+            }
+
+            showLoading();
+
+            const body = {
+                operation: operation,
+                expression: matrixA,
+                verbosity: verbosity
+            };
+
+            if (operation === 'matrix_multiply') {
+                const matrixB = document.getElementById('matrix-b').value.trim();
+                if (!matrixB) {
+                    showError('Matrix multiplication requires Matrix B');
+                    hideLoading();
+                    return;
+                }
+                body.matrix_b = matrixB;
+            }
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+
+                // Check if response is JSON
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    throw new Error('API endpoint not available. Please ensure the site is deployed to Netlify with functions enabled.');
+                }
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showError(data.error || 'Computation failed');
+                    return;
+                }
+
+                showResult(data);
+            } catch (error) {
+                if (error.message.includes('API endpoint')) {
+                    showError(error.message + ' See installation guide in README for local setup.');
+                } else {
+                    showError('Error: ' + error.message);
+                }
+            }
+        }
+
+        // Allow Enter key to trigger computation
+        document.getElementById('diff-expr').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') computeDifferentiate();
+        });
+    </script>
+</body>
+</html>
