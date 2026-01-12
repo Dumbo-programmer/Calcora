@@ -359,40 +359,40 @@
         }
       });
       
-      // Format toggle state
-      let isTypesetFormat = true;
-      let currentResultData = null;
+      // Format toggle state - use window scope to match app.js
+      window.isTypesetFormat = true;
+      window.currentResultData = null;
       
       function toggleResultFormat() {
-        if (!currentResultData) return;
-        isTypesetFormat = !isTypesetFormat;
+        if (!window.currentResultData) return;
+        window.isTypesetFormat = !window.isTypesetFormat;
         displayCurrentResult();
       }
       
       function displayCurrentResult() {
-        if (!currentResultData) return;
+        if (!window.currentResultData) return;
         
         const output = document.getElementById('output');
         const badge = document.getElementById('formatBadge');
         
-        if (isTypesetFormat) {
+        if (window.isTypesetFormat) {
           output.className = 'output-value typeset';
           badge.innerHTML = '<i class="fas fa-font"></i> Typeset Format';
-          output.innerHTML = currentResultData.formatted;
+          output.innerHTML = window.currentResultData.formatted;
         } else {
           output.className = 'output-value copyable';
           badge.innerHTML = '<i class="fas fa-code"></i> Copyable Format';
-          output.textContent = currentResultData.raw;
+          output.textContent = window.currentResultData.raw;
         }
       }
       
       function copyResultToClipboard(event) {
-        if (!currentResultData || !currentResultData.raw) {
+        if (!window.currentResultData || !window.currentResultData.raw) {
           console.error('No result to copy');
           return;
         }
         
-        navigator.clipboard.writeText(currentResultData.raw).then(() => {
+        navigator.clipboard.writeText(window.currentResultData.raw).then(() => {
           const btn = event ? event.target.closest('button') : null;
           if (btn) {
             const originalHTML = btn.innerHTML;

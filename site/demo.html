@@ -1338,8 +1338,9 @@
             document.getElementById('error-banner').classList.add('visible');
         }
 
-        let currentResultData = null;
-        let isTypesetFormat = true;
+        // Result display state - use window scope for global access
+        window.currentResultData = null;
+        window.isTypesetFormat = true;
 
         function formatMatrixForDisplay(matrixStr) {
             // Try to parse and format matrix nicely
@@ -1380,8 +1381,8 @@
 
         function showResult(data) {
             hideLoading();
-            currentResultData = data;
-            isTypesetFormat = true;
+            window.currentResultData = data;
+            window.isTypesetFormat = true;
             
             displayResult();
             
@@ -1420,63 +1421,63 @@
         }
 
         function displayResult() {
-            if (!currentResultData) return;
+            if (!window.currentResultData) return;
             
             const output = document.getElementById('result-output');
             const badge = document.getElementById('format-badge');
             
             if (!output || !badge) return;
             
-            if (isTypesetFormat) {
+            if (window.isTypesetFormat) {
                 // Typeset format (rendered)
                 output.className = 'result-output typeset';
                 badge.innerHTML = '<i class="fas fa-font"></i> Typeset Format';
                 
                 // Check if it's a matrix
-                const isMatrix = currentResultData.output && 
-                                currentResultData.output.includes('[') && 
-                                currentResultData.output.includes(']');
+                const isMatrix = window.currentResultData.output && 
+                                window.currentResultData.output.includes('[') && 
+                                window.currentResultData.output.includes(']');
                 
                 if (isMatrix) {
                     // Format as matrix
-                    const formatted = formatMatrixForDisplay(currentResultData.output);
+                    const formatted = formatMatrixForDisplay(window.currentResultData.output);
                     output.innerHTML = formatted;
                 } else {
                     // Try to render as LaTeX
                     try {
-                        katex.render(currentResultData.output, output, {
+                        katex.render(window.currentResultData.output, output, {
                             throwOnError: false,
                             displayMode: true
                         });
                     } catch (e) {
-                        output.textContent = currentResultData.output;
+                        output.textContent = window.currentResultData.output;
                     }
                 }
             } else {
                 // Copyable format (plain text)
                 output.className = 'result-output copyable';
                 badge.innerHTML = '<i class="fas fa-code"></i> Copyable Format';
-                output.textContent = currentResultData.output;
+                output.textContent = window.currentResultData.output;
             }
         }
 
         function toggleResultFormat() {
-            if (!currentResultData) {
+            if (!window.currentResultData) {
                 console.log('No result data to toggle');
                 return;
             }
-            isTypesetFormat = !isTypesetFormat;
-            console.log('Toggling format to:', isTypesetFormat ? 'Typeset' : 'Copyable');
+            window.isTypesetFormat = !window.isTypesetFormat;
+            console.log('Toggling format to:', window.isTypesetFormat ? 'Typeset' : 'Copyable');
             displayResult();
         }
 
         function copyResultToClipboard(event) {
-            if (!currentResultData || !currentResultData.output) {
+            if (!window.currentResultData || !window.currentResultData.output) {
                 console.error('No result to copy');
                 return;
             }
             
-            const textToCopy = currentResultData.output;
+            const textToCopy = window.currentResultData.output;
             
             navigator.clipboard.writeText(textToCopy).then(() => {
                 // Show feedback
