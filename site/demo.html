@@ -890,6 +890,10 @@
                             <i class="fas fa-function"></i>
                             Differentiation
                         </button>
+                        <button class="tab" data-tab="integrate" onclick="switchTab('integrate')">
+                            <i class="fas fa-integral"></i>
+                            Integration
+                        </button>
                         <button class="tab" data-tab="matrix" onclick="switchTab('matrix')">
                             <i class="fas fa-table"></i>
                             Matrices
@@ -954,6 +958,90 @@
                             <button class="action-btn" onclick="computeDifferentiate()">
                                 <i class="fas fa-play-circle"></i>
                                 Differentiate
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Integration Tab -->
+                    <div class="tab-content" id="integrate-content" style="display: none;">
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-lightbulb"></i> Quick Examples
+                            </label>
+                            <div class="examples">
+                                <span class="example-chip" onclick="setIntegrationExample('x**2', 'x')">x²</span>
+                                <span class="example-chip" onclick="setIntegrationExample('sin(x)', 'x')">sin(x)</span>
+                                <span class="example-chip" onclick="setIntegrationExample('cos(x)**2', 'x')">cos²(x)</span>
+                                <span class="example-chip" onclick="setIntegrationExample('exp(x)', 'x')">e^x</span>
+                                <span class="example-chip" onclick="setIntegrationExample('1/x', 'x')">1/x</span>
+                                <span class="example-chip" onclick="setIntegrationExample('x * exp(x)', 'x')">x·e^x</span>
+                                <span class="example-chip" onclick="setIntegrationExample('sqrt(x)', 'x')">√x</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-function"></i> Expression to integrate
+                                <span style="color: var(--error); margin-left: 4px;" id="int-expr-required">*</span>
+                            </label>
+                            <input type="text" id="int-expr" class="form-input" placeholder="Try: x**2 or sin(x)" value="x**2">
+                            <small style="color: var(--text-tertiary); font-size: 0.8125rem; margin-top: 0.5rem; display: block;">
+                                💡 <strong>Syntax:</strong> Use <code>**</code> for powers (x**2), <code>*</code> for multiply. Available: sin, cos, tan, exp, log, sqrt, sinh, asin, etc.
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-x"></i> Variable to integrate with respect to
+                                <span style="color: var(--error); margin-left: 4px;">*</span>
+                            </label>
+                            <input type="text" id="int-var" class="form-input" placeholder="Usually 'x' or 't'" value="x">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                <input type="checkbox" id="definite-integral" onchange="toggleDefiniteIntegral()" style="margin-right: 0.5rem;">
+                                <i class="fas fa-ruler-combined"></i> Definite Integral (with bounds)
+                            </label>
+                        </div>
+
+                        <div id="integral-bounds" style="display: none;">
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-arrow-down"></i> Lower Limit
+                                </label>
+                                <input type="text" id="lower-limit" class="form-input" placeholder="e.g., 0 or -1">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-arrow-up"></i> Upper Limit
+                                </label>
+                                <input type="text" id="upper-limit" class="form-input" placeholder="e.g., 1 or π">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-layer-group"></i> Verbosity
+                            </label>
+                            <select id="int-verbosity" class="form-select">
+                                <option value="concise">Concise</option>
+                                <option value="detailed" selected>Detailed</option>
+                                <option value="teacher">Teacher Mode</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                <input type="checkbox" id="show-int-graph" checked style="margin-right: 0.5rem;">
+                                <i class="fas fa-chart-area"></i> Show Integral Graph (Area under curve)
+                            </label>
+                        </div>
+
+                        <div class="action-bar">
+                            <button class="action-btn" onclick="computeIntegration()">
+                                <i class="fas fa-play-circle"></i>
+                                Integrate
                             </button>
                         </div>
                     </div>
@@ -1221,6 +1309,17 @@
             toggleMatrixB();
         }
 
+        function setIntegrationExample(expr, variable) {
+            document.getElementById('int-expr').value = expr;
+            document.getElementById('int-var').value = variable;
+        }
+
+        function toggleDefiniteIntegral() {
+            const isChecked = document.getElementById('definite-integral').checked;
+            const boundsDiv = document.getElementById('integral-bounds');
+            boundsDiv.style.display = isChecked ? 'block' : 'none';
+        }
+
         function toggleMatrixB() {
             const operation = document.getElementById('matrix-operation').value;
             const matrixBGroup = document.getElementById('matrix-b-group');
@@ -1413,6 +1512,11 @@
             // Show graph for differentiation
             if (data.operation === 'differentiate' && document.getElementById('show-graph').checked) {
                 showGraph(data);
+            }
+            
+            // Show graph for integration
+            if (data.operation === 'integrate' && document.getElementById('show-int-graph').checked) {
+                showIntegrationGraph(data);
             }
             
             // Add to history
@@ -1626,6 +1730,86 @@
             }
         }
 
+        async function computeIntegration() {
+            const expression = document.getElementById('int-expr').value.trim();
+            const variable = document.getElementById('int-var').value.trim() || 'x';
+            const verbosity = document.getElementById('int-verbosity').value;
+            const isDefinite = document.getElementById('definite-integral').checked;
+            const lowerLimit = document.getElementById('lower-limit').value.trim();
+            const upperLimit = document.getElementById('upper-limit').value.trim();
+
+            // Input validation
+            if (!expression) {
+                showError('⚠ Please enter a mathematical expression to integrate');
+                document.getElementById('int-expr').focus();
+                return;
+            }
+            
+            if (!variable) {
+                showError('⚠ Please specify the variable to integrate with respect to');
+                document.getElementById('int-var').focus();
+                return;
+            }
+
+            if (isDefinite) {
+                if (!lowerLimit) {
+                    showError('⚠ Please enter a lower limit for definite integral');
+                    document.getElementById('lower-limit').focus();
+                    return;
+                }
+                if (!upperLimit) {
+                    showError('⚠ Please enter an upper limit for definite integral');
+                    document.getElementById('upper-limit').focus();
+                    return;
+                }
+            }
+            
+            // Check for common syntax errors
+            if (expression.includes('^')) {
+                showError('⚠ Use ** for exponents, not ^. Example: x**2 instead of x^2');
+                return;
+            }
+
+            showLoading();
+
+            const body = {
+                operation: 'integrate',
+                expression: expression,
+                variable: variable,
+                verbosity: verbosity
+            };
+
+            if (isDefinite) {
+                // Replace π with pi for the backend
+                body.lower_limit = lowerLimit.replace(/π/g, 'pi').replace(/pi/g, '3.14159265359');
+                body.upper_limit = upperLimit.replace(/π/g, 'pi').replace(/pi/g, '3.14159265359');
+            }
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    throw new Error('API endpoint not available');
+                }
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showError(data.error || 'Computation failed');
+                    return;
+                }
+
+                showResult(data);
+            } catch (error) {
+                showError('Error: ' + error.message);
+            }
+        }
+
         // Graph rendering
         function showGraph(data) {
             const container = document.getElementById('graph-container');
@@ -1812,6 +1996,130 @@
             currentChart.options.scales.y.grid.color = isDark ? '#334155' : '#e2e8f0';
             currentChart.options.scales.y.ticks.color = isDark ? '#cbd5e1' : '#64748b';
             currentChart.update();
+        }
+
+        // Integration graph showing area under curve
+        function showIntegrationGraph(data) {
+            const container = document.getElementById('graph-container');
+            const canvas = document.getElementById('graph-canvas');
+            container.classList.add('visible');
+
+            // Generate x values
+            const xMin = -5;
+            const xMax = 5;
+            const points = 200;
+            const xValues = [];
+            const yFunction = [];
+
+            for (let i = 0; i <= points; i++) {
+                const x = xMin + (i / points) * (xMax - xMin);
+                xValues.push(x);
+                
+                // Evaluate function
+                try {
+                    const functionValue = evaluateExpression(data.input, x);
+                    yFunction.push(functionValue);
+                } catch (e) {
+                    yFunction.push(null);
+                }
+            }
+
+            // Destroy old chart if exists
+            if (currentChart) {
+                currentChart.destroy();
+            }
+
+            // Create new chart
+            const isDark = document.body.classList.contains('dark-theme');
+            const ctx = canvas.getContext('2d');
+            
+            currentChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: xValues,
+                    datasets: [
+                        {
+                            label: `f(x) = ${data.input}`,
+                            data: yFunction,
+                            borderColor: '#6366f1',
+                            backgroundColor: 'rgba(99, 102, 241, 0.3)',
+                            borderWidth: 3,
+                            tension: 0.4,
+                            pointRadius: 0,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            labels: {
+                                color: isDark ? '#e5e7eb' : '#0f172a',
+                                font: {
+                                    size: 14,
+                                    family: 'JetBrains Mono'
+                                }
+                            }
+                        },
+                        tooltip: {
+                            enabled: true,
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return `f(${context.parsed.x.toFixed(2)}) = ${context.parsed.y.toFixed(4)}`;
+                                }
+                            }
+                        },
+                        subtitle: {
+                            display: data.lower_limit && data.upper_limit,
+                            text: data.lower_limit && data.upper_limit ? 
+                                `Area from ${data.lower_limit} to ${data.upper_limit} = ${data.output}` : 
+                                `∫ ${data.input} dx = ${data.output} + C`,
+                            color: isDark ? '#cbd5e1' : '#64748b',
+                            font: {
+                                size: 13,
+                                family: 'JetBrains Mono',
+                                weight: 'normal'
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            grid: {
+                                color: isDark ? '#334155' : '#e2e8f0',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: isDark ? '#cbd5e1' : '#64748b',
+                                font: {
+                                    family: 'JetBrains Mono'
+                                }
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: isDark ? '#334155' : '#e2e8f0',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: isDark ? '#cbd5e1' : '#64748b',
+                                font: {
+                                    family: 'JetBrains Mono'
+                                }
+                            }
+                        }
+                    },
+                    interaction: {
+                        mode: 'nearest',
+                        intersect: false
+                    }
+                }
+            });
         }
 
         // History functions

@@ -1,8 +1,20 @@
 # Calcora
 
-Calcora is an open-source, self-hosted computational mathematics engine designed to provide symbolic and numerical solutions with transparent, step-by-step reasoning. Unlike cloud-based tools, Calcora runs entirely on your own machine, making it ideal for classrooms, low-connectivity environments, and privacy-conscious users.
+Calcora is an open-source, self-hosted computational mathematics engine designed to provide symbolic and numerical solutions with transparent, step-by-step reasoning. Unlike cloud-based tools, Calcora runs entirely on your own machine, making it ideal for classrooms, research, and privacy-conscious users.
 
-**Status**: v0.1 is an architecture-first alpha. The public API is intentionally small while the explainability engine stabilizes.
+**Status**: v0.2-alpha - Now with **Integration** support! Academic adoption features in active development.
+
+## 🎯 Vision: Academic Adoption
+
+Calcora aims to become the preferred computational tool for universities, STEM students, and researchers. We're building a transparent, educational alternative to WolframAlpha that emphasizes:
+- **Step-by-step explanations** that help students learn
+- **Open-source transparency** for research reproducibility
+- **Zero cost** for educational institutions
+- **Offline-first** for privacy and accessibility
+
+**Phase 1 Features** (v0.2): Integration, Series Expansion, Limits, LaTeX Export, Equation Solving
+
+See our [Academic Strategy Document](ACADEMIC_STRATEGY.md) for the complete roadmap.
 
 ## 🎥 Demo Video
 
@@ -15,19 +27,54 @@ https://github.com/user-attachments/assets/bdb41766-a890-436f-9cc3-a4ffd5e603d4
 
 **[Interactive Demo →](https://calcoralive.netlify.app/demo.html)**
 
-Test Calcora directly in your browser - no installation required. Try differentiation, matrix operations, and symbolic computation with step-by-step explanations.
+Test Calcora directly in your browser - no installation required. Try:
+- **Differentiation** with step-by-step explanations
+- **Integration** (NEW!) with multiple techniques
+- **Matrix operations** (determinant, inverse, RREF, eigenvalues, LU decomposition)
+- **Interactive graphs** for visualizing functions
 
 ## Why Calcora
 
 - **Offline & private**: computation stays on your machine.
 - **Explainable**: every result is backed by a deterministic, auditable reasoning DAG.
+- **Educational**: detailed step-by-step explanations help students understand the process.
 - **Extensible**: rule plugins, solver plugins, and renderer plugins.
+- **Modern UI**: Glassmorphism design with dark mode support.
+
+## What's New in v0.2
+
+### 🆕 Integration Engine
+- **Indefinite integrals**: Automatic technique detection (power rule, substitution, by parts, trigonometric)
+- **Definite integrals**: Fundamental theorem of calculus with bounds
+- **Step-by-step**: Detailed explanations showing which technique is used and why
+- **Interactive graphs**: Visualize area under curve for definite integrals
+- **Verbosity levels**: Choose between concise, detailed, or teacher mode explanations
+
+Example:
+```python
+from calcora.integration_engine import IntegrationEngine
+
+engine = IntegrationEngine()
+result = engine.integrate("x**2", variable="x")
+# Returns: x**3/3 + C with step-by-step explanation
+
+result = engine.integrate("x**2", variable="x", lower_limit=0, upper_limit=1)
+# Returns: 1/3 (definite integral)
+```
+
+### Coming Soon
+- **Series Expansion**: Taylor and Maclaurin series
+- **Limits**: Symbolic limit computation
+- **LaTeX Export**: Export results as publication-ready LaTeX
+- **Equation Solving**: Solve algebraic and transcendental equations
 
 ## What Calcora is
 
 - A **core engine** (deterministic rule application + step DAG)
+- An **integration engine** (multiple integration techniques with explanations)
 - A **CLI** (`calcora ...`)
-- A **developer API** (Python) and optional **HTTP API** (FastAPI)
+- A **developer API** (Python) and **HTTP API** (FastAPI)
+- A **modern web interface** with interactive graphs and step-by-step explanations
 - A **static website** (GitHub Pages) for docs and demos
 
 ## Install

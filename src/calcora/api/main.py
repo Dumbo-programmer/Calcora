@@ -93,10 +93,11 @@ def compute(request: dict):
     """Unified compute endpoint that handles all operations.
     
     Accepts JSON body with:
-    - operation: 'differentiate', 'matrix_multiply', 'matrix_determinant', etc.
+    - operation: 'differentiate', 'integrate', 'matrix_multiply', etc.
     - expression: the expression or matrix
-    - variable: (for differentiate) variable to differentiate
+    - variable: (for differentiate/integrate) variable to differentiate/integrate
     - verbosity: 'concise', 'detailed', or 'teacher'
+    - lower_limit, upper_limit: (for integrate) definite integral bounds
     - matrix_b: (for multiply) second matrix
     """
     operation = request.get("operation")
@@ -104,16 +105,29 @@ def compute(request: dict):
     variable = request.get("variable", "x")
     verbosity = request.get("verbosity", "detailed")
     matrix_b = request.get("matrix_b")
+    lower_limit = request.get("lower_limit")
+    upper_limit = request.get("upper_limit")
     
     if not operation:
         return {"error": "Missing 'operation' parameter"}
     
-    engine = default_engine(load_entry_points=True)
-    
     try:
         if operation == "differentiate":
+            engine = default_engine(load_entry_points=True)
             result = engine.run(operation="differentiate", expression=expression, variable=variable)
+        elif operation == "integrate":
+            from ..integration_engine import IntegrationEngine
+            int_engine = IntegrationEngine()
+            result_dict = int_engine.integrate(
+                expression=expression,
+                variable=variable,
+                lower_limit=float(lower_limit) if lower_limit else None,
+                upper_limit=float(upper_limit) if upper_limit else None,
+                verbosity=verbosity
+            )
+            return result_dict
         elif operation.startswith("matrix_"):
+            engine = default_engine(load_entry_points=True)
             if operation == "matrix_multiply" and matrix_b:
                 result = engine.run(operation=operation, expression=expression, matrix_b=matrix_b)
             else:
