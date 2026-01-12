@@ -58,6 +58,7 @@ pyrightconfig.json
 # Docs
 *.pdf
 *.docx
+VERIFICATION_REPORT.md
 
 # Exclude all except site for Netlify
 !/site/
