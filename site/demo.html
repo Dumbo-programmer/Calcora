@@ -483,7 +483,8 @@
             const stepsContainer = document.getElementById('steps');
             stepsContainer.innerHTML = '';
             
-            if (data.graph && data.graph.(step, index) => {
+            if (data.graph && data.graph.steps) {
+                data.graph.steps.forEach((step, index) => {
                     const stepDiv = document.createElement('div');
                     stepDiv.className = 'step';
                     stepDiv.style.animationDelay = `${index * 0.1}s`;
@@ -499,8 +500,7 @@
             resultContainer.classList.add('visible', 'success-animation');
             
             // Scroll to result
-            resultContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' }
-            document.getElementById('result').classList.add('visible');
+            resultContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
 
         async function computeDifferentiate() {
