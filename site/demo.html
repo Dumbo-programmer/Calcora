@@ -500,8 +500,11 @@
             const stepsContainer = document.getElementById('steps');
             stepsContainer.innerHTML = '';
             
-            if (data.graph && data.graph.steps) {
-                data.graph.steps.forEach((step, index) => {
+            // Handle both 'steps' and 'nodes' format
+            const steps = (data.graph && data.graph.steps) || (data.graph && data.graph.nodes) || [];
+            
+            if (steps.length > 0) {
+                steps.forEach((step, index) => {
                     const stepDiv = document.createElement('div');
                     stepDiv.className = 'step';
                     stepDiv.style.animationDelay = `${index * 0.1}s`;

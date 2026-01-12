@@ -1,14 +1,23 @@
 """
 Simple Flask API server for Calcora - can be deployed to Render/Railway/PythonAnywhere
 """
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from calcora.bootstrap import default_engine
 from calcora.renderers.json_renderer import JsonRenderer
 import json
+import os
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='site', static_url_path='')
 CORS(app)
+
+@app.route('/')
+def index():
+    return send_from_directory('site', 'index.html')
+
+@app.route('/<path:path>')
+def serve_static(path):
+    return send_from_directory('site', path)
 
 @app.route('/.netlify/functions/calcora_engine', methods=['POST', 'OPTIONS'])
 @app.route('/api/compute', methods=['POST', 'OPTIONS'])
@@ -51,7 +60,10 @@ def compute():
         renderer = engine.registry.get_renderer(format='json') or JsonRenderer()
         rendered = renderer.render(result=result, format='json', verbosity=verbosity)
         
-        return rendered, 200, {'Content-Type': 'application/json'}
+        # Parse the JSON string to ensure proper format
+        response_data = json.loads(rendered) if isinstance(rendered, str) else rendered
+        
+        return jsonify(response_data), 200
     
     except Exception as e:
         return jsonify({'error': str(e)}), 500
