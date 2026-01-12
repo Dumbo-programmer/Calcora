@@ -1,8 +1,23 @@
 import json
+import sys
+import os
 from typing import Any, Dict
 
-from calcora.bootstrap import default_engine
-from calcora.renderers.json_renderer import JsonRenderer
+# Add parent directory to path to import calcora
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
+
+try:
+    from calcora.bootstrap import default_engine
+    from calcora.renderers.json_renderer import JsonRenderer
+except ImportError as e:
+    # Fallback for debugging
+    def handler(event, context):
+        return {
+            "statusCode": 500,
+            "headers": {"Content-Type": "application/json"},
+            "body": json.dumps({"error": f"Import error: {str(e)}. Python path: {sys.path}"}),
+        }
+    sys.exit(0)
 
 
 def _error(status: int, message: str) -> Dict[str, Any]:
