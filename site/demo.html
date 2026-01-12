@@ -227,6 +227,9 @@
 </head>
 <body>
     <header class="container">
+        <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark/light theme">
+            <span id="theme-icon">🌙</span>
+        </button>
         <h1>Calcora Interactive Demo</h1>
         <p class="tagline">Test Calcora's step-by-step computational engine directly in your browser</p>
         <nav>
@@ -428,6 +431,33 @@
         
         // Check API on page load
         setTimeout(checkApiAvailability, 500);
+
+        // Theme toggle functionality
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            
+            body.classList.toggle('dark-theme');
+            
+            if (body.classList.contains('dark-theme')) {
+                themeIcon.textContent = '☀️';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                themeIcon.textContent = '🌙';
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        // Load saved theme preference
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-theme');
+                themeIcon.textContent = '☀️';
+            }
+        });
 
         // Tab switching
         document.querySelectorAll('.tab').forEach(tab => {
