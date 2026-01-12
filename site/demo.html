@@ -1367,6 +1367,19 @@
 
         function showResult(data) {
             hideLoading();
+            console.log('Received data:', data);
+            
+            // Normalize data structure - backend might return different format
+            if (!data.output && data.result) {
+                data.output = data.result;
+            }
+            if (!data.graph && data.steps) {
+                data.graph = { nodes: data.steps };
+            }
+            if (!data.graph && !data.steps) {
+                data.graph = { nodes: [] };
+            }
+            
             window.currentResultData = data;
             window.isTypesetFormat = true;
             
