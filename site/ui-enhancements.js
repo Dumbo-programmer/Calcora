@@ -145,6 +145,8 @@ function showToast(message, type = 'success') {
 
 // Validate expression syntax
 function validateExpression(expr) {
+    if (!expr || typeof expr !== 'string') return [];
+    
     const errors = [];
     
     if (expr.includes('^')) {
@@ -195,6 +197,11 @@ function smoothScrollTo(elementId) {
 
 // Enhanced copy with feedback
 function copyToClipboardWithFeedback(text, buttonElement) {
+    if (!text) {
+        showToast('Nothing to copy', 'error');
+        return;
+    }
+    
     navigator.clipboard.writeText(text).then(() => {
         if (buttonElement) {
             const originalHTML = buttonElement.innerHTML;
@@ -238,7 +245,7 @@ function initializeUIEnhancements() {
     const exprInput = document.getElementById('diff-expr') || document.getElementById('expr');
     if (exprInput) {
         exprInput.addEventListener('blur', () => {
-            const expr = exprInput.value.trim();
+            const expr = exprInput.value ? exprInput.value.trim() : '';
             if (expr) {
                 const errors = validateExpression(expr);
                 if (errors.length > 0) {
