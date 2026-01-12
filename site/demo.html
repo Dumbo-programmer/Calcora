@@ -655,6 +655,25 @@
             from { opacity: 0; }
             to { opacity: 1; }
         }
+        
+        /* Success pulse animation */
+        @keyframes successPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .result-section.visible {
+            animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1), successPulse 0.6s ease-in-out 0.5s;
+        }
+        
+        /* Input focus highlight */
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1), 0 0 20px rgba(99, 102, 241, 0.2);
+            background: var(--bg-primary);
+            transform: translateY(-1px);
+        }
 
         /* Responsive */
         @media (max-width: 768px) {
@@ -923,18 +942,20 @@
                         <div class="form-group">
                             <label class="form-label">
                                 <i class="fas fa-function"></i> Expression
+                                <span style="color: var(--error); margin-left: 4px;" id="expr-required">*</span>
                             </label>
-                            <input type="text" id="diff-expr" class="form-input" placeholder="e.g., sin(x**2), x**3*exp(x)" value="sin(x**2)">
+                            <input type="text" id="diff-expr" class="form-input" placeholder="Try: sin(x**2) or x**3*cos(x)" value="sin(x**2)">
                             <small style="color: var(--text-tertiary); font-size: 0.8125rem; margin-top: 0.5rem; display: block;">
-                                Use ** for exponents, * for multiplication. Functions: sin, cos, tan, exp, log, sqrt
+                                💡 <strong>Syntax:</strong> Use <code>**</code> for powers (x**2), <code>*</code> for multiply. Available: sin, cos, tan, exp, log, sqrt, sinh, asin, etc.
                             </small>
                         </div>
 
                         <div class="form-group">
                             <label class="form-label">
-                                <i class="fas fa-x"></i> Variable
+                                <i class="fas fa-x"></i> Variable to differentiate
+                                <span style="color: var(--error); margin-left: 4px;">*</span>
                             </label>
-                            <input type="text" id="diff-var" class="form-input" placeholder="x" value="x">
+                            <input type="text" id="diff-var" class="form-input" placeholder="Usually 'x' or 'y'" value="x">
                         </div>
 
                         <div class="form-group">
@@ -996,18 +1017,29 @@
                         <div class="form-group">
                             <label class="form-label">
                                 <i class="fas fa-table"></i> Matrix A
+                                <span style="color: var(--error); margin-left: 4px;">*</span>
                             </label>
                             <textarea id="matrix-a" class="form-textarea" placeholder='[[1,2],[3,4]] or [["a","b"],["c","d"]] for symbolic'>[[1,2],[3,4]]</textarea>
                             <small style="color: var(--text-tertiary); font-size: 0.8125rem; margin-top: 0.5rem; display: block;">
-                                Format: [[row1_col1, row1_col2], [row2_col1, row2_col2]]. Use quotes for symbols.
+                                💡 <strong>Format:</strong> [[row1_col1, row1_col2], [row2_col1, row2_col2]]. Use quotes for symbols: [["a","b"],["c","d"]]
                             </small>
+                            <div id="matrix-a-preview" style="margin-top: 8px; padding: 8px; background: var(--bg-secondary); border-radius: 8px; display: none; font-size: 0.875rem;">
+                                <strong>Preview:</strong> <span id="matrix-a-dimensions"></span>
+                            </div>
                         </div>
 
                         <div class="form-group" id="matrix-b-group" style="display: none;">
                             <label class="form-label">
                                 <i class="fas fa-table"></i> Matrix B (for multiplication)
+                                <span style="color: var(--error); margin-left: 4px;">*</span>
                             </label>
                             <textarea id="matrix-b" class="form-textarea" placeholder='[[5,6],[7,8]]'>[[5,6],[7,8]]</textarea>
+                            <small style="color: var(--text-tertiary); font-size: 0.8125rem; margin-top: 0.5rem; display: block;">
+                                💡 Must be compatible dimensions for multiplication
+                            </small>
+                            <div id="matrix-b-preview" style="margin-top: 8px; padding: 8px; background: var(--bg-secondary); border-radius: 8px; display: none; font-size: 0.875rem;">
+                                <strong>Preview:</strong> <span id="matrix-b-dimensions"></span>
+                            </div>
                         </div>
 
                         <div class="form-group">
@@ -1222,16 +1254,82 @@
             matrixBGroup.style.display = operation === 'matrix_multiply' ? 'block' : 'none';
         }
 
+        // Matrix preview and validation
+        function validateAndPreviewMatrix(textareaId, previewId, dimensionsId) {
+            const textarea = document.getElementById(textareaId);
+            const preview = document.getElementById(previewId);
+            const dimensions = document.getElementById(dimensionsId);
+            
+            try {
+                const value = textarea.value.trim();
+                if (!value) {
+                    preview.style.display = 'none';
+                    return;
+                }
+                
+                const matrix = JSON.parse(value);
+                if (Array.isArray(matrix) && matrix.length > 0 && Array.isArray(matrix[0])) {
+                    const rows = matrix.length;
+                    const cols = matrix[0].length;
+                    dimensions.textContent = `${rows}×${cols} matrix`;
+                    dimensions.style.color = 'var(--success)';
+                    preview.style.display = 'block';
+                    preview.style.borderLeft = '3px solid var(--success)';
+                } else {
+                    throw new Error('Invalid matrix format');
+                }
+            } catch (e) {
+                dimensions.textContent = '⚠ Invalid format - check your brackets and commas';
+                dimensions.style.color = 'var(--error)';
+                preview.style.display = 'block';
+                preview.style.borderLeft = '3px solid var(--error)';
+            }
+        }
+
+        // Add live validation listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('matrix-a')?.addEventListener('input', () => {
+                validateAndPreviewMatrix('matrix-a', 'matrix-a-preview', 'matrix-a-dimensions');
+            });
+            document.getElementById('matrix-b')?.addEventListener('input', () => {
+                validateAndPreviewMatrix('matrix-b', 'matrix-b-preview', 'matrix-b-dimensions');
+            });
+            // Trigger initial validation
+            validateAndPreviewMatrix('matrix-a', 'matrix-a-preview', 'matrix-a-dimensions');
+        });
+
         // Show/hide functions
+        let loadingMessages = [
+            'Parsing expression...',
+            'Applying differentiation rules...',
+            'Simplifying result...',
+            'Generating step-by-step explanation...'
+        ];
+        let loadingInterval = null;
+        
         function showLoading() {
             document.getElementById('loading').classList.add('visible');
             document.getElementById('result-section').classList.remove('visible');
             document.getElementById('error-banner').classList.remove('visible');
             document.getElementById('graph-container').classList.remove('visible');
+            
+            // Rotate loading messages
+            let messageIndex = 0;
+            const loadingText = document.querySelector('.loading-text');
+            loadingText.textContent = loadingMessages[0];
+            
+            loadingInterval = setInterval(() => {
+                messageIndex = (messageIndex + 1) % loadingMessages.length;
+                loadingText.textContent = loadingMessages[messageIndex];
+            }, 800);
         }
 
         function hideLoading() {
             document.getElementById('loading').classList.remove('visible');
+            if (loadingInterval) {
+                clearInterval(loadingInterval);
+                loadingInterval = null;
+            }
         }
 
         function showError(message) {
@@ -1285,6 +1383,14 @@
             });
             
             document.getElementById('result-section').classList.add('visible');
+            
+            // Scroll to results smoothly
+            setTimeout(() => {
+                document.getElementById('result-section').scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'nearest' 
+                });
+            }, 100);
             
             // Show graph for differentiation
             if (data.operation === 'differentiate' && document.getElementById('show-graph').checked) {
@@ -1365,8 +1471,22 @@
             const variable = document.getElementById('diff-var').value.trim() || 'x';
             const verbosity = document.getElementById('diff-verbosity').value;
 
+            // Input validation
             if (!expression) {
-                showError('Please enter an expression');
+                showError('⚠ Please enter a mathematical expression to differentiate');
+                document.getElementById('diff-expr').focus();
+                return;
+            }
+            
+            if (!variable) {
+                showError('⚠ Please specify the variable to differentiate with respect to');
+                document.getElementById('diff-var').focus();
+                return;
+            }
+            
+            // Check for common syntax errors
+            if (expression.includes('^')) {
+                showError('⚠ Use ** for exponents, not ^. Example: x**2 instead of x^2');
                 return;
             }
 
@@ -1407,8 +1527,18 @@
             const matrixA = document.getElementById('matrix-a').value.trim();
             const verbosity = document.getElementById('matrix-verbosity').value;
 
+            // Validate Matrix A
             if (!matrixA) {
-                showError('Please enter Matrix A');
+                showError('⚠ Please enter Matrix A');
+                document.getElementById('matrix-a').focus();
+                return;
+            }
+            
+            try {
+                JSON.parse(matrixA);
+            } catch (e) {
+                showError('⚠ Matrix A has invalid JSON format. Check your brackets and commas.');
+                document.getElementById('matrix-a').focus();
                 return;
             }
 
