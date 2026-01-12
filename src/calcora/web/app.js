@@ -627,11 +627,17 @@ function showGraph(payload) {
 }
 
 function evaluateExpression(expr, x) {
-  let evaluated = expr.replace(/x/g, `(${x})`);
+  // First, convert all ** to a temporary placeholder to avoid issues with parentheses
+  let evaluated = expr.replace(/\*\*/g, '^POWER^');
   
-  // Replace ** with Math.pow - handle all cases
-  // Match: number**number, (expr)**number, variable**number
-  evaluated = evaluated.replace(/(\([^)]+\)|[\w.]+)\*\*([\d.]+|\([^)]+\))/g, 'Math.pow($1,$2)');
+  // Replace x with the actual value
+  evaluated = evaluated.replace(/x/g, `(${x})`);
+  
+  // Now convert ^POWER^ to Math.pow with proper syntax
+  // This handles cases like sin((value)^POWER^2)
+  while (evaluated.includes('^POWER^')) {
+    evaluated = evaluated.replace(/(\([^()]*\)|[\d.]+)\^POWER\^(\([^()]*\)|[\d.]+)/g, 'Math.pow($1,$2)');
+  }
   
   // Replace trigonometric functions
   evaluated = evaluated.replace(/\bsin\b/g, 'Math.sin');
