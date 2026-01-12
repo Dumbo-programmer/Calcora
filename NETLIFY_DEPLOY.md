@@ -2,7 +2,7 @@
 
 ## One-Click Deploy
 
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/YOUR-USERNAME/calcora)
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/Dumbo-programmer/calcora)
 
 ## Manual Deploy (5 minutes)
 
@@ -55,7 +55,7 @@ Test examples:
 - Matrix determinant: [[1,2],[3,4]]
 - Symbolic: [["a","b"],["c","d"]]
 
-Source: github.com/YOUR-USERNAME/calcora
+Source: github.com/Dumbo-programmer/calcora
 ```
 
 ## Updating Your Demo

@@ -109,7 +109,7 @@ Try these examples:
 
 The demo runs entirely in your browser with no installation required.
 
-Source code: https://github.com/YOUR-USERNAME/calcora
+Source code: https://github.com/Dumbo-programmer/calcora
 Documentation: https://YOUR-SITE-NAME.netlify.app/
 
 Key features:
@@ -240,6 +240,6 @@ Netlify automatically rate-limits abusive requests. For additional protection:
 ## Support
 
 If universities have questions:
-- Point to GitHub Issues: `https://github.com/YOUR-USERNAME/calcora/issues`
+- Point to GitHub Issues: `https://github.com/Dumbo-programmer/calcora/issues`
 - Provide this deployment guide
 - Share source code architecture: `ARCHITECTURE.md`

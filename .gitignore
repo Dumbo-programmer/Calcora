@@ -65,3 +65,5 @@ pyrightconfig.json
 !/site/style.css
 
 # NOTE: planning docs are intentionally tracked.
+# Local Netlify folder
+.netlify

@@ -1,7 +1,7 @@
 [build]
   publish = "site"
   functions = "netlify/functions"
-  command = "pip install --upgrade pip && pip install '.[engine-sympy]'"
+  command = "pip install --upgrade pip && pip install .[engine-sympy]"
 
 [context.production.environment]
   PYTHON_VERSION = "3.11"

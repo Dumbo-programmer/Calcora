@@ -24,7 +24,7 @@ This guide covers all methods to run Calcora on your own infrastructure.
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/YOUR-USERNAME/calcora.git
+git clone https://github.com/Dumbo-programmer/calcora.git
 cd calcora
 
 # 2. Create virtual environment
@@ -261,7 +261,7 @@ sudo su - calcora
 
 ```bash
 # Clone repository
-git clone https://github.com/YOUR-USERNAME/calcora.git
+git clone https://github.com/Dumbo-programmer/calcora.git
 cd calcora
 
 # Setup virtual environment

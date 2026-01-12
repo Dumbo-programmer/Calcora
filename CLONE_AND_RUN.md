@@ -14,7 +14,7 @@ Before starting, verify you have:
 ### Step 1: Clone Repository
 
 ```bash
-git clone https://github.com/YOUR-USERNAME/calcora.git
+git clone https://github.com/Dumbo-programmer/calcora.git
 cd calcora
 ```
 

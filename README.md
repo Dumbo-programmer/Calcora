@@ -9,7 +9,7 @@ Calcora is an open-source, self-hosted computational mathematics engine designed
 https://github.com/user-attachments/assets/bdb41766-a890-436f-9cc3-a4ffd5e603d4
 
 ## 🚀 Try the Live Demo
-
+[![Netlify Status](https://api.netlify.com/api/v1/badges/e9aad821-2663-4238-80af-00966848f29e/deploy-status)](https://app.netlify.com/projects/calcoralive/deploys)
 
 
 
@@ -40,7 +40,7 @@ Test Calcora directly in your browser - no installation required. Try differenti
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/YOUR-USERNAME/calcora.git
+git clone https://github.com/Dumbo-programmer/calcora.git
 cd calcora
 
 # 2. Create virtual environment
