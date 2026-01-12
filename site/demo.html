@@ -350,31 +350,48 @@
     </main>
 
     <script>
-        // API endpoint - Netlify function
-        const API_URL = '/.netlify/functions/calcora_engine';
+        // API endpoint - try Netlify function first, fallback to local/external API
+        const API_ENDPOINTS = [
+            '/.netlify/functions/calcora_engine',  // Netlify (if available)
+            'http://localhost:5000/api/compute',    // Local development
+            'https://calcora-api.onrender.com/api/compute'  // External API (when deployed)
+        ];
+        
+        let API_URL = API_ENDPOINTS[0];  // Start with Netlify
         
         // Check if API is available on page load
         let apiAvailable = false;
         
         async function checkApiAvailability() {
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        operation: 'differentiate',
-                        expression: 'x',
-                        verbosity: 'concise'
-                    })
-                });
-                apiAvailable = response.ok || response.status === 400; // 400 means API is there but bad input
-            } catch (error) {
-                apiAvailable = false;
+            // Try each endpoint until one works
+            for (const endpoint of API_ENDPOINTS) {
+                try {
+                    const response = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            operation: 'differentiate',
+                            expression: 'x',
+                            verbosity: 'concise'
+                        })
+                    });
+                    
+                    if (response.ok || response.status === 400) {
+                        // Found a working endpoint!
+                        API_URL = endpoint;
+                        apiAvailable = true;
+                        console.log('✓ Using API endpoint:', endpoint);
+                        return;
+                    }
+                } catch (error) {
+                    console.log('✗ Endpoint not available:', endpoint);
+                    continue;
+                }
             }
             
-            if (!apiAvailable) {
-                showApiUnavailableWarning();
-            }
+            // No working endpoints found
+            apiAvailable = false;
+            showApiUnavailableWarning();
         }
         
         function showApiUnavailableWarning() {

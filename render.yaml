@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: calcora-api
+    env: python
+    buildCommand: "pip install -r requirements-api.txt && pip install -e .[engine-sympy]"
+    startCommand: "python api_server.py"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11
