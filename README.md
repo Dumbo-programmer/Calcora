@@ -1,5 +1,6 @@
 # Calcora
 
+(A fun personal tool which I decided to commit to and turn into something good and useable for everyone because why not.)
 Calcora is an open-source, self-hosted computational mathematics engine designed to provide symbolic and numerical solutions with transparent, step-by-step reasoning. Unlike cloud-based tools, Calcora runs entirely on your own machine, making it ideal for classrooms, research, and privacy-conscious users.
 
 **Status**: v0.2-alpha - Now with **Integration** support! Academic adoption features in active development.
