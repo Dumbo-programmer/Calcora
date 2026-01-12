@@ -34,6 +34,74 @@
         </div>
       </div>
     </header>
+    <style>
+      .btn-icon {
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        background: var(--bg-tertiary);
+        color: var(--text-primary);
+        border: 1px solid var(--border);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 16px;
+      }
+      
+      .btn-icon:hover {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+      }
+      
+      .format-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        background: var(--primary);
+        color: white;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      
+      .btn-secondary {
+        background: var(--bg-tertiary);
+        color: var(--text-primary);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 600;
+      }
+      
+      .btn-secondary:hover {
+        background: var(--border);
+      }
+      
+      .output-value.copyable {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 16px;
+        text-align: left;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        user-select: all;
+        cursor: text;
+      }
+      
+      .output-value.typeset {
+        text-align: center;
+      }
+    </style>
 
     <main class="container">
       <section class="panel">
@@ -137,9 +205,21 @@
         <div class="result-header">
           <h2><i class="fas fa-check-circle" style="color: var(--success);"></i> Result</h2>
           <div class="result-meta">
+            <button class="btn-icon" onclick="toggleResultFormat()" title="Toggle format (F)" style="margin-right: 12px;">
+              <i class="fas fa-exchange-alt"></i>
+            </button>
             <span id="stepCount" class="badge"></span>
             <span id="timing" class="timing"></span>
           </div>
+        </div>
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <span class="format-badge" id="formatBadge">
+            <i class="fas fa-font"></i> Typeset Format
+          </span>
+          <button class="btn-secondary" style="padding: 8px 16px; font-size: 14px;" onclick="copyResultToClipboard()">
+            <i class="fas fa-copy"></i> Copy Result
+          </button>
         </div>
         
         <div class="result-output">
@@ -278,7 +358,63 @@
           document.getElementById('theme-icon').className = 'fas fa-sun';
         }
       });
+      
+      // Format toggle state
+      let isTypesetFormat = true;
+      let currentResultData = null;
+      
+      function toggleResultFormat() {
+        if (!currentResultData) return;
+        isTypesetFormat = !isTypesetFormat;
+        displayCurrentResult();
+      }
+      
+      function displayCurrentResult() {
+        if (!currentResultData) return;
+        
+        const output = document.getElementById('output');
+        const badge = document.getElementById('formatBadge');
+        
+        if (isTypesetFormat) {
+          output.className = 'output-value typeset';
+          badge.innerHTML = '<i class="fas fa-font"></i> Typeset Format';
+          output.innerHTML = currentResultData.formatted;
+        } else {
+          output.className = 'output-value copyable';
+          badge.innerHTML = '<i class="fas fa-code"></i> Copyable Format';
+          output.textContent = currentResultData.raw;
+        }
+      }
+      
+      function copyResultToClipboard() {
+        if (!currentResultData) return;
+        
+        navigator.clipboard.writeText(currentResultData.raw).then(() => {
+          const btn = event.target.closest('button');
+          const originalHTML = btn.innerHTML;
+          btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+          btn.style.background = 'var(--success)';
+          btn.style.color = 'white';
+          setTimeout(() => {
+            btn.innerHTML = originalHTML;
+            btn.style.background = '';
+            btn.style.color = '';
+          }, 1500);
+        }).catch(err => {
+          console.error('Failed to copy:', err);
+        });
+      }
+      
+      // Keyboard shortcut for format toggle
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'f' && !e.ctrlKey && !e.altKey && !e.metaKey) {
+          if (!['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
+            e.preventDefault();
+            toggleResultFormat();
+          }
+        }
+      });
     </script>
-    <script src="/static/app.js?v=3"></script>
+    <script src="/static/app.js?v=4"></script>
   </body>
 </html>

@@ -776,6 +776,51 @@
         .export-item:hover {
             background: var(--bg-secondary);
         }
+
+        /* Format badge */
+        .format-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--primary);
+            color: white;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Matrix display improvements */
+        .result-output.copyable {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            text-align: left;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            user-select: all;
+            cursor: text;
+        }
+
+        .result-output.typeset {
+            text-align: center;
+        }
+
+        .matrix-display {
+            display: inline-block;
+            text-align: left;
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--bg-secondary);
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem;
+            border: 1px solid var(--border);
+        }
+
+        .matrix-row {
+            display: block;
+            white-space: nowrap;
+        }
     </style>
 </head>
 <body>
@@ -1007,11 +1052,16 @@
                             <i class="fas fa-check-circle" style="color: var(--success);"></i>
                             Result
                         </h3>
-                        <div style="position: relative;">
-                            <button class="btn-icon" onclick="toggleExportMenu()">
-                                <i class="fas fa-download"></i>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button class="btn-icon tooltip" onclick="toggleResultFormat()" title="Toggle Format">
+                                <i class="fas fa-exchange-alt" id="format-toggle-icon"></i>
+                                <span class="tooltiptext">Toggle Format (F)</span>
                             </button>
-                            <div class="export-menu" id="export-menu">
+                            <div style="position: relative;">
+                                <button class="btn-icon" onclick="toggleExportMenu()">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                                <div class="export-menu" id="export-menu">
                                 <div class="export-item" onclick="exportAs('json')">
                                     <i class="fas fa-file-code"></i> Export as JSON
                                 </div>
@@ -1028,6 +1078,14 @@
                         </div>
                     </div>
 
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <span class="format-badge" id="format-badge">
+                            <i class="fas fa-font"></i> Typeset Format
+                        </span>
+                        <button class="btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.875rem;" onclick="copyResultToClipboard()">
+                            <i class="fas fa-copy"></i> Copy Result
+                        </button>
+                    </div>
                     <div class="result-output" id="result-output"></div>
 
                     <div class="result-header">
@@ -1070,6 +1128,7 @@
         Ctrl+Enter: Compute<br>
         Ctrl+H: History<br>
         Ctrl+/: This menu<br>
+        F: Toggle Format<br>
         Esc: Close panels
     </div>
 
@@ -1181,22 +1240,34 @@
             document.getElementById('error-banner').classList.add('visible');
         }
 
+        let currentResultData = null;
+        let isTypesetFormat = true;
+
+        function formatMatrixForDisplay(matrixStr) {
+            // Try to parse and format matrix nicely
+            try {
+                // Check if it's a matrix-like output
+                if (matrixStr.includes('[') && matrixStr.includes(']')) {
+                    // Format for better readability
+                    const formatted = matrixStr
+                        .replace(/\[\[/g, '⎡ ')
+                        .replace(/\]\]/g, ' ⎤')
+                        .replace(/\], \[/g, ' ⎥\n⎢ ')
+                        .replace(/,/g, '  ');
+                    return formatted;
+                }
+            } catch (e) {
+                console.log('Matrix formatting failed:', e);
+            }
+            return matrixStr;
+        }
+
         function showResult(data) {
             hideLoading();
+            currentResultData = data;
+            isTypesetFormat = true;
             
-            // Display result
-            const output = document.getElementById('result-output');
-            output.textContent = data.output;
-            
-            // Try to render as LaTeX if possible
-            try {
-                katex.render(data.output, output, {
-                    throwOnError: false,
-                    displayMode: true
-                });
-            } catch (e) {
-                output.textContent = data.output;
-            }
+            displayResult();
             
             // Display steps
             const stepsContainer = document.getElementById('steps');
@@ -1222,6 +1293,70 @@
             
             // Add to history
             addToHistory(data);
+        }
+
+        function displayResult() {
+            if (!currentResultData) return;
+            
+            const output = document.getElementById('result-output');
+            const badge = document.getElementById('format-badge');
+            
+            if (isTypesetFormat) {
+                // Typeset format (rendered)
+                output.className = 'result-output typeset';
+                badge.innerHTML = '<i class="fas fa-font"></i> Typeset Format';
+                
+                // Try to render as LaTeX if possible
+                try {
+                    katex.render(currentResultData.output, output, {
+                        throwOnError: false,
+                        displayMode: true
+                    });
+                } catch (e) {
+                    // If LaTeX fails, try to format as matrix
+                    const formatted = formatMatrixForDisplay(currentResultData.output);
+                    if (formatted !== currentResultData.output) {
+                        output.innerHTML = `<div class="matrix-display">${formatted}</div>`;
+                    } else {
+                        output.textContent = currentResultData.output;
+                    }
+                }
+            } else {
+                // Copyable format (plain text)
+                output.className = 'result-output copyable';
+                badge.innerHTML = '<i class="fas fa-code"></i> Copyable Format';
+                output.textContent = currentResultData.output;
+            }
+        }
+
+        function toggleResultFormat() {
+            isTypesetFormat = !isTypesetFormat;
+            displayResult();
+        }
+
+        function copyResultToClipboard() {
+            if (!currentResultData) return;
+            
+            navigator.clipboard.writeText(currentResultData.output).then(() => {
+                // Show feedback
+                const btn = event.target.closest('button');
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                btn.style.background = 'var(--success)';
+                btn.style.color = 'white';
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.style.background = '';
+                    btn.style.color = '';
+                }, 1500);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+            });
+        }
+
+        // Old function content continues here...
+        function showResultOldPart(data) {
+            // This part is now in displayResult above
         }
 
         // Compute functions
@@ -1590,6 +1725,12 @@
             } else if (e.key === 'Escape') {
                 document.getElementById('history-panel').classList.remove('visible');
                 document.getElementById('export-menu').classList.remove('visible');
+            } else if (e.key === 'f' && !e.ctrlKey && !e.altKey && !e.metaKey) {
+                // F key toggles format (only if not in an input)
+                if (!['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
+                    e.preventDefault();
+                    toggleResultFormat();
+                }
             }
         });
 

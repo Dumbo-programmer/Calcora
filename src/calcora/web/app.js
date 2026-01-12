@@ -204,13 +204,37 @@ function renderResult(payload, verbosity, timing) {
   // Show result panel
   resultPanel.style.display = 'block';
   
-  // Set output with matrix/eigenvalue formatting
+  // Store both raw and formatted output
+  let formattedOutput;
+  const rawOutput = payload.output ?? '(no output)';
+  
   if (isEigenvalueOutput(payload.output)) {
-    output.innerHTML = formatEigenvalues(payload.output);
+    formattedOutput = formatEigenvalues(payload.output);
   } else if (isMatrixString(payload.output)) {
-    output.innerHTML = formatMatrix(payload.output);
+    formattedOutput = formatMatrix(payload.output);
   } else {
-    output.textContent = payload.output ?? '(no output)';
+    formattedOutput = rawOutput;
+  }
+  
+  // Store for format toggle
+  window.currentResultData = {
+    raw: rawOutput,
+    formatted: formattedOutput
+  };
+  
+  // Reset to typeset format
+  window.isTypesetFormat = true;
+  const badge = document.getElementById('formatBadge');
+  if (badge) {
+    badge.innerHTML = '<i class="fas fa-font"></i> Typeset Format';
+  }
+  
+  // Display formatted output
+  output.className = 'output-value typeset';
+  if (typeof formattedOutput === 'string' && formattedOutput === rawOutput) {
+    output.textContent = formattedOutput;
+  } else {
+    output.innerHTML = formattedOutput;
   }
   
   // Set timing
