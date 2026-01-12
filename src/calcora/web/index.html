@@ -217,7 +217,7 @@
           <span class="format-badge" id="formatBadge">
             <i class="fas fa-font"></i> Typeset Format
           </span>
-          <button class="btn-secondary" style="padding: 8px 16px; font-size: 14px;" onclick="copyResultToClipboard()">
+          <button class="btn-secondary" style="padding: 8px 16px; font-size: 14px;" onclick="copyResultToClipboard(event)">
             <i class="fas fa-copy"></i> Copy Result
           </button>
         </div>
@@ -386,22 +386,29 @@
         }
       }
       
-      function copyResultToClipboard() {
-        if (!currentResultData) return;
+      function copyResultToClipboard(event) {
+        if (!currentResultData || !currentResultData.raw) {
+          console.error('No result to copy');
+          return;
+        }
         
         navigator.clipboard.writeText(currentResultData.raw).then(() => {
-          const btn = event.target.closest('button');
-          const originalHTML = btn.innerHTML;
-          btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
-          btn.style.background = 'var(--success)';
-          btn.style.color = 'white';
-          setTimeout(() => {
-            btn.innerHTML = originalHTML;
-            btn.style.background = '';
-            btn.style.color = '';
-          }, 1500);
+          const btn = event ? event.target.closest('button') : null;
+          if (btn) {
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            btn.style.background = 'var(--success)';
+            btn.style.color = 'white';
+            setTimeout(() => {
+              btn.innerHTML = originalHTML;
+              btn.style.background = '';
+              btn.style.color = '';
+            }, 1500);
+          }
+          console.log('Copied to clipboard');
         }).catch(err => {
           console.error('Failed to copy:', err);
+          alert('Failed to copy to clipboard');
         });
       }
       

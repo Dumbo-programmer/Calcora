@@ -1114,7 +1114,7 @@
                         <span class="format-badge" id="format-badge">
                             <i class="fas fa-font"></i> Typeset Format
                         </span>
-                        <button class="btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.875rem;" onclick="copyResultToClipboard()">
+                        <button class="btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.875rem;" onclick="copyResultToClipboard(event)">
                             <i class="fas fa-copy"></i> Copy Result
                         </button>
                     </div>
@@ -1346,13 +1346,31 @@
             try {
                 // Check if it's a matrix-like output
                 if (matrixStr.includes('[') && matrixStr.includes(']')) {
-                    // Format for better readability
-                    const formatted = matrixStr
-                        .replace(/\[\[/g, '⎡ ')
-                        .replace(/\]\]/g, ' ⎤')
-                        .replace(/\], \[/g, ' ⎥\n⎢ ')
-                        .replace(/,/g, '  ');
-                    return formatted;
+                    // Try to parse as JSON first
+                    const matrix = JSON.parse(matrixStr);
+                    if (Array.isArray(matrix) && Array.isArray(matrix[0])) {
+                        // Create HTML table
+                        let html = '<table style="margin: 0 auto; border-collapse: collapse; font-family: \'JetBrains Mono\', monospace;">';
+                        html += '<tbody>';
+                        matrix.forEach((row, i) => {
+                            html += '<tr>';
+                            // Left bracket
+                            if (i === 0) {
+                                html += `<td rowspan="${matrix.length}" style="font-size: 3em; padding: 0 0.25rem; vertical-align: middle; line-height: 0.7;">⎡</td>`;
+                            }
+                            // Matrix values
+                            row.forEach((cell, j) => {
+                                html += `<td style="padding: 0.5rem 1rem; text-align: center; min-width: 60px; font-size: 1.2em;">${cell}</td>`;
+                            });
+                            // Right bracket
+                            if (i === 0) {
+                                html += `<td rowspan="${matrix.length}" style="font-size: 3em; padding: 0 0.25rem; vertical-align: middle; line-height: 0.7;">⎤</td>`;
+                            }
+                            html += '</tr>';
+                        });
+                        html += '</tbody></table>';
+                        return html;
+                    }
                 }
             } catch (e) {
                 console.log('Matrix formatting failed:', e);
@@ -1407,23 +1425,30 @@
             const output = document.getElementById('result-output');
             const badge = document.getElementById('format-badge');
             
+            if (!output || !badge) return;
+            
             if (isTypesetFormat) {
                 // Typeset format (rendered)
                 output.className = 'result-output typeset';
                 badge.innerHTML = '<i class="fas fa-font"></i> Typeset Format';
                 
-                // Try to render as LaTeX if possible
-                try {
-                    katex.render(currentResultData.output, output, {
-                        throwOnError: false,
-                        displayMode: true
-                    });
-                } catch (e) {
-                    // If LaTeX fails, try to format as matrix
+                // Check if it's a matrix
+                const isMatrix = currentResultData.output && 
+                                currentResultData.output.includes('[') && 
+                                currentResultData.output.includes(']');
+                
+                if (isMatrix) {
+                    // Format as matrix
                     const formatted = formatMatrixForDisplay(currentResultData.output);
-                    if (formatted !== currentResultData.output) {
-                        output.innerHTML = `<div class="matrix-display">${formatted}</div>`;
-                    } else {
+                    output.innerHTML = formatted;
+                } else {
+                    // Try to render as LaTeX
+                    try {
+                        katex.render(currentResultData.output, output, {
+                            throwOnError: false,
+                            displayMode: true
+                        });
+                    } catch (e) {
                         output.textContent = currentResultData.output;
                     }
                 }
@@ -1436,18 +1461,43 @@
         }
 
         function toggleResultFormat() {
+            if (!currentResultData) {
+                console.log('No result data to toggle');
+                return;
+            }
             isTypesetFormat = !isTypesetFormat;
+            console.log('Toggling format to:', isTypesetFormat ? 'Typeset' : 'Copyable');
             displayResult();
         }
 
-        function copyResultToClipboard() {
-            if (!currentResultData) return;
+        function copyResultToClipboard(event) {
+            if (!currentResultData || !currentResultData.output) {
+                console.error('No result to copy');
+                return;
+            }
             
-            navigator.clipboard.writeText(currentResultData.output).then(() => {
+            const textToCopy = currentResultData.output;
+            
+            navigator.clipboard.writeText(textToCopy).then(() => {
                 // Show feedback
-                const btn = event.target.closest('button');
-                const originalHTML = btn.innerHTML;
-                btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                const btn = event ? event.target.closest('button') : null;
+                if (btn) {
+                    const originalHTML = btn.innerHTML;
+                    btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                    btn.style.background = 'var(--success)';
+                    btn.style.color = 'white';
+                    setTimeout(() => {
+                        btn.innerHTML = originalHTML;
+                        btn.style.background = '';
+                        btn.style.color = '';
+                    }, 1500);
+                }
+                console.log('Copied to clipboard:', textToCopy);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                alert('Failed to copy to clipboard');
+            });
+        }
                 btn.style.background = 'var(--success)';
                 btn.style.color = 'white';
                 setTimeout(() => {

@@ -83,15 +83,25 @@ function formatMatrix(matrixStr) {
       return matrixStr;
     }
     
-    let html = '<span class="matrix-display"><table class="matrix-table"><tbody>';
-    for (const row of matrix) {
+    let html = '<table style="margin: 0 auto; border-collapse: collapse; font-family: \'JetBrains Mono\', monospace;">';
+    html += '<tbody>';
+    matrix.forEach((row, i) => {
       html += '<tr>';
-      for (const cell of row) {
-        html += `<td>${cell}</td>`;
+      // Left bracket
+      if (i === 0) {
+        html += `<td rowspan="${matrix.length}" style="font-size: 3em; padding: 0 0.25rem; vertical-align: middle; line-height: 0.7;">⎡</td>`;
+      }
+      // Matrix values
+      row.forEach((cell) => {
+        html += `<td style="padding: 0.5rem 1rem; text-align: center; min-width: 60px; font-size: 1.2em;">${cell}</td>`;
+      });
+      // Right bracket
+      if (i === 0) {
+        html += `<td rowspan="${matrix.length}" style="font-size: 3em; padding: 0 0.25rem; vertical-align: middle; line-height: 0.7;">⎤</td>`;
       }
       html += '</tr>';
-    }
-    html += '</tbody></table></span>';
+    });
+    html += '</tbody></table>';
     return html;
   } catch {
     return matrixStr;
@@ -208,9 +218,14 @@ function renderResult(payload, verbosity, timing) {
   let formattedOutput;
   const rawOutput = payload.output ?? '(no output)';
   
+  // Check if it's a matrix
+  const isMatrix = rawOutput && rawOutput.includes('[') && rawOutput.includes(']');
+  
   if (isEigenvalueOutput(payload.output)) {
     formattedOutput = formatEigenvalues(payload.output);
-  } else if (isMatrixString(payload.output)) {
+  } else if (isLUOutput(payload.output)) {
+    formattedOutput = formatLU(payload.output);
+  } else if (isMatrix) {
     formattedOutput = formatMatrix(payload.output);
   } else {
     formattedOutput = rawOutput;
