@@ -1,3 +1,16 @@
+// Preprocess LaTeX for proper typesetting
+function preprocessLatex(text) {
+  if (!text) return text;
+  
+  // Replace ** with ^ for powers (must come before * replacement)
+  let result = text.replace(/\*\*/g, '^');
+  
+  // Replace * with \cdot for multiplication
+  result = result.replace(/\*/g, '\\cdot ');
+  
+  return result;
+}
+
 async function callAPI(expr, variable = 'x', order = 1) {
   const url = new URL(`/differentiate`, window.location.origin);
   url.searchParams.set('expr', expr);
@@ -216,7 +229,10 @@ function renderResult(payload, verbosity, timing) {
   
   // Store both raw and formatted output
   let formattedOutput;
-  const rawOutput = payload.output ?? '(no output)';
+  let rawOutput = payload.output ?? '(no output)';
+  
+  // Preprocess LaTeX for proper typesetting
+  rawOutput = preprocessLatex(rawOutput);
   
   // Check if it's a matrix
   const isMatrix = rawOutput && rawOutput.includes('[') && rawOutput.includes(']');

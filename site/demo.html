@@ -1342,6 +1342,19 @@
         window.currentResultData = null;
         window.isTypesetFormat = true;
 
+        function preprocessLatex(text) {
+            // Convert raw math notation to proper LaTeX
+            if (!text) return text;
+            
+            // Replace ** with ^ for powers (must come before * replacement)
+            let result = text.replace(/\*\*/g, '^');
+            
+            // Replace * with \cdot for multiplication
+            result = result.replace(/\*/g, '\\cdot ');
+            
+            return result;
+        }
+
         function formatMatrixForDisplay(matrixStr) {
             // Try to parse and format matrix nicely
             try {
@@ -1445,7 +1458,8 @@
                 } else {
                     // Render as LaTeX
                     try {
-                        katex.render(window.currentResultData.output, output, {
+                        const latexCode = preprocessLatex(window.currentResultData.output);
+                        katex.render(latexCode, output, {
                             throwOnError: false,
                             displayMode: true
                         });

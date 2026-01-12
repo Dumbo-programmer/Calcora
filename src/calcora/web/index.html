@@ -363,6 +363,19 @@
       window.isTypesetFormat = true;
       window.currentResultData = null;
       
+      function preprocessLatex(text) {
+        // Convert raw math notation to proper LaTeX
+        if (!text) return text;
+        
+        // Replace ** with ^ for powers (must come before * replacement)
+        let result = text.replace(/\*\*/g, '^');
+        
+        // Replace * with \cdot for multiplication
+        result = result.replace(/\*/g, '\\cdot ');
+        
+        return result;
+      }
+      
       function toggleResultFormat() {
         if (!window.currentResultData) return;
         window.isTypesetFormat = !window.isTypesetFormat;
