@@ -10,3 +10,33 @@
   from = "/api/*"
   to = "/.netlify/functions/:splat"
   status = 200
+
+# SEO-friendly redirects
+[[redirects]]
+  from = "/calculator"
+  to = "/demo.html"
+  status = 301
+
+[[redirects]]
+  from = "/math-solver"
+  to = "/demo.html"
+  status = 301
+
+[[redirects]]
+  from = "/differentiation"
+  to = "/demo.html"
+  status = 301
+
+[[redirects]]
+  from = "/matrix-calculator"
+  to = "/demo.html"
+  status = 301
+
+# Headers for SEO and security
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"

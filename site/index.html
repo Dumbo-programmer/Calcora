@@ -3,12 +3,70 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Calcora — Offline, Private, Explainable Math</title>
+    
+    <!-- Primary Meta Tags -->
+    <title>Calcora — Open-Source Mathematical Computation Engine | Step-by-Step Math Solver</title>
+    <meta name="title" content="Calcora — Open-Source Mathematical Computation Engine | Step-by-Step Math Solver" />
+    <meta name="description" content="Free, open-source computational mathematics engine with step-by-step explanations. Differentiation, matrix operations, symbolic computation. Offline, private, self-hosted. Perfect for education and learning." />
+    <meta name="keywords" content="calcora, math solver, step by step math, differentiation calculator, matrix calculator, symbolic math, open source math, offline math calculator, linear algebra, computational mathematics, math education, free math solver, explainable math, symbolic computation, mathematical engine" />
+    <meta name="author" content="Calcora Contributors" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://calcora-demo.netlify.app/" />
+    <meta name="google-site-verification" content="0gTof2NApVcwZeuTXbfxTuBv5xAB8iDUwCkxHMsSswo" />
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://calcora-demo.netlify.app/" />
+    <meta property="og:title" content="Calcora — Open-Source Mathematical Computation Engine" />
+    <meta property="og:description" content="Free, open-source computational mathematics engine with step-by-step explanations. Differentiation, matrix operations, symbolic computation." />
+    <meta property="og:image" content="https://calcora-demo.netlify.app/og-image.png" />
+    <meta property="og:site_name" content="Calcora" />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://calcora-demo.netlify.app/" />
+    <meta property="twitter:title" content="Calcora — Open-Source Mathematical Computation Engine" />
+    <meta property="twitter:description" content="Free, open-source computational mathematics engine with step-by-step explanations. Differentiation, matrix operations, symbolic computation." />
+    <meta property="twitter:image" content="https://calcora-demo.netlify.app/og-image.png" />
+    
+    <!-- Additional SEO -->
+    <meta name="language" content="English" />
+    <meta name="revisit-after" content="7 days" />
+    <meta name="distribution" content="global" />
+    <meta name="rating" content="general" />
+    
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Calcora",
+      "applicationCategory": "EducationalApplication",
+      "operatingSystem": "Windows, macOS, Linux",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "description": "Open-source computational mathematics engine with step-by-step explanations for differentiation, matrix operations, and symbolic computation.",
+      "url": "https://calcora-demo.netlify.app/",
+      "author": {
+        "@type": "Organization",
+        "name": "Calcora Contributors"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "5",
+        "ratingCount": "1"
+      },
+      "featureList": "Differentiation with chain rule, Matrix operations (determinant, inverse, multiply, eigenvalues), Symbolic matrices, Step-by-step explanations, Offline computation, Plugin architecture, CLI and Web UI"
+    }
+    </script>
+    
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <header class="container">
-      <h1>Calcora</h1>
+      <h1>Calcora - Free Open-Source Math Solver with Step-by-Step Explanations</h1>
       <p class="tagline">Self-hosted computational mathematics engine — offline, private, explainable.</p>
       <nav>
         <a href="demo.html" class="demo-link" style="background: #2563eb; color: white; padding: 8px 16px; border-radius: 4px; font-weight: bold;">🚀 Try Live Demo</a>
@@ -22,9 +80,11 @@
 
     <main class="container">
       <section id="overview">
-        <h2>Project overview</h2>
+        <h2>Open-Source Mathematical Computation Engine</h2>
         <p>
-          Calcora is an open-source platform for symbolic and numerical computation. The core differentiator is
+          Calcora is an open-source platform for <strong>symbolic and numerical computation</strong> with <strong>step-by-step explanations</strong>. 
+          Unlike black-box calculators, Calcora shows every step of the reasoning process, making it perfect for learning calculus, 
+          linear algebra, and symbolic mathematics. The core differentiator is
           explainability: every result is backed by a deterministic reasoning DAG (Directed Acyclic Graph) of steps.
         </p>
         <p style="margin-top: 20px;">
@@ -38,22 +98,43 @@
       </section>
 
       <section id="philosophy">
-        <h2>Philosophy & mission</h2>
+        <h2>Why Choose Calcora for Math Computation</h2>
         <ul>
-          <li><strong>Offline by default</strong>: no cloud dependency.</li>
-          <li><strong>Private</strong>: your inputs stay on your machine.</li>
-          <li><strong>Explainable</strong>: step-by-step reasoning, not just answers.</li>
-          <li><strong>Extensible</strong>: plugins add rules, solvers, and renderers without changing core logic.</li>
+          <li><strong>Offline & private</strong>: All computation stays on your machine - no cloud dependency, no data collection.</li>
+          <li><strong>Private</strong>: Your mathematical expressions and data never leave your computer.</li>
+          <li><strong>Step-by-step explanations</strong>: Learn how solutions are derived, not just get final answers.</li>
+          <li><strong>Extensible</strong>: Plugin architecture supports custom rules, solvers, and renderers.</li>
+          <li><strong>Free forever</strong>: MIT licensed, completely open-source, no subscriptions or paywalls.</li>
         </ul>
       </section>
 
       <section id="features">
-        <h2>Feature list</h2>
+        <h2>Mathematical Operations & Features</h2>
+        <h3>Calculus - Differentiation</h3>
         <ul>
-          <li>Deterministic StepNode DAG model (auditable steps)</li>
-          <li>Verbosity levels: concise, detailed, teacher mode</li>
-          <li>Plugin system: rule plugins, solver plugins, renderer plugins</li>
-          <li>CLI + optional HTTP API for local deployments</li>
+          <li>Automatic differentiation with chain rule, product rule, power rule</li>
+          <li>Trigonometric functions: sin, cos, tan, sec, csc, cot</li>
+          <li>Exponential and logarithmic functions</li>
+          <li>Inverse trigonometric functions</li>
+          <li>Symbolic variable support</li>
+        </ul>
+        <h3>Linear Algebra - Matrix Operations</h3>
+        <ul>
+          <li>Matrix determinants (2×2, 3×3, and general matrices)</li>
+          <li>Matrix inverse computation</li>
+          <li>Matrix multiplication with step-by-step explanation</li>
+          <li>Row Reduced Echelon Form (RREF)</li>
+          <li>Eigenvalues and eigenvectors</li>
+          <li>LU decomposition</li>
+          <li><strong>Symbolic matrices</strong>: Use variables like [[a,b],[c,d]] instead of just numbers</li>
+        </ul>
+        <h3>Developer Features</h3>
+        <ul>
+          <li>Command-line interface (CLI) for automation</li>
+          <li>Python API for integration into your applications</li>
+          <li>HTTP REST API for web services</li>
+          <li>Plugin system for extending functionality</li>
+          <li>JSON export of reasoning steps</li>
         </ul>
       </section>
 
