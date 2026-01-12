@@ -215,7 +215,7 @@
         
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
           <span class="format-badge" id="formatBadge">
-            <i class="fas fa-font"></i> Typeset Format
+            <i class="fas fa-subscript"></i> LaTeX Format
           </span>
           <button class="btn-secondary" style="padding: 8px 16px; font-size: 14px;" onclick="copyResultToClipboard(event)">
             <i class="fas fa-copy"></i> Copy Result
@@ -376,13 +376,15 @@
         const badge = document.getElementById('formatBadge');
         
         if (window.isTypesetFormat) {
+          // Typeset format shows LaTeX code
           output.className = 'output-value typeset';
-          badge.innerHTML = '<i class="fas fa-font"></i> Typeset Format';
-          output.innerHTML = window.currentResultData.formatted;
-        } else {
-          output.className = 'output-value copyable';
-          badge.innerHTML = '<i class="fas fa-code"></i> Copyable Format';
+          badge.innerHTML = '<i class="fas fa-subscript"></i> LaTeX Format';
           output.textContent = window.currentResultData.raw;
+        } else {
+          // Copyable format shows rendered/formatted output
+          output.className = 'output-value copyable';
+          badge.innerHTML = '<i class="fas fa-font"></i> Rendered Format';
+          output.innerHTML = window.currentResultData.formatted;
         }
       }
       

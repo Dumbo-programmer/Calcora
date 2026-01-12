@@ -1429,9 +1429,20 @@
             if (!output || !badge) return;
             
             if (window.isTypesetFormat) {
-                // Typeset format (rendered)
+                // Typeset format (LaTeX code)
                 output.className = 'result-output typeset';
-                badge.innerHTML = '<i class="fas fa-font"></i> Typeset Format';
+                badge.innerHTML = '<i class="fas fa-subscript"></i> LaTeX Format';
+                
+                // Show LaTeX code
+                if (window.currentResultData.latex) {
+                    output.textContent = window.currentResultData.latex;
+                } else {
+                    output.textContent = window.currentResultData.output;
+                }
+            } else {
+                // Copyable format (rendered/formatted)
+                output.className = 'result-output copyable';
+                badge.innerHTML = '<i class="fas fa-font"></i> Rendered Format';
                 
                 // Check if it's a matrix
                 const isMatrix = window.currentResultData.output && 
@@ -1453,11 +1464,6 @@
                         output.textContent = window.currentResultData.output;
                     }
                 }
-            } else {
-                // Copyable format (plain text)
-                output.className = 'result-output copyable';
-                badge.innerHTML = '<i class="fas fa-code"></i> Copyable Format';
-                output.textContent = window.currentResultData.output;
             }
         }
 
