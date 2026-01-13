@@ -113,6 +113,7 @@
             Operation
             <select id="operationType">
               <option value="differentiate" selected>Differentiate</option>
+              <option value="integrate">Integrate</option>
               <option value="matrix_multiply">Matrix Multiply</option>
               <option value="matrix_determinant">Matrix Determinant</option>
               <option value="matrix_inverse">Matrix Inverse</option>
@@ -138,6 +139,15 @@
             </select>
           </label>
 
+          <label id="limitsLabel" style="display: none;">
+            Limits
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <input id="lowerLimit" type="text" placeholder="a" style="width: 60px; text-align: center;" />
+              <span style="color: var(--text-secondary);">to</span>
+              <input id="upperLimit" type="text" placeholder="b" style="width: 60px; text-align: center;" />
+            </div>
+          </label>
+
           <label>
             Verbosity
             <select id="verbosity">
@@ -156,15 +166,24 @@
             <input id="expr" type="text" value="sin(x**2)" spellcheck="false" placeholder="Enter expression..." />
           </label>
 
-          <div class="examples">
+          <div class="examples" id="diffExamples">
             <span class="examples-label">Examples:</span>
-            <button class="example-btn" data-expr="x**2 * sin(x)">Product Rule</button>
-            <button class="example-btn" data-expr="x**x">Logarithmic</button>
-            <button class="example-btn" data-expr="sinh(x**2)">Hyperbolic</button>
-            <button class="example-btn" data-expr="asin(x**2)">Inverse Trig</button>
-            <button class="example-btn" data-expr="erf(x**2)">Error Function</button>
-            <button class="example-btn" data-expr="Abs(x**3)">Absolute Value</button>
-            <button class="example-btn" data-expr="x*y + y**2" data-var="y">Multi-variable</button>
+            <button class="example-btn" data-expr="x**3">Polynomial</button>
+            <button class="example-btn" data-expr="sin(x)">Trig</button>
+            <button class="example-btn" data-expr="exp(x)">Exponential</button>
+            <button class="example-btn" data-expr="ln(x)">ln(x)</button>
+            <button class="example-btn" data-expr="x*sin(x)">Product</button>
+            <button class="example-btn" data-expr="sin(x**2)">Chain</button>
+          </div>
+          
+          <div class="examples" id="intExamples" style="display: none;">
+            <span class="examples-label">Examples:</span>
+            <button class="example-btn" data-expr="x**2">Polynomial</button>
+            <button class="example-btn" data-expr="sin(x)">Trig</button>
+            <button class="example-btn" data-expr="exp(x)">Exponential</button>
+            <button class="example-btn" data-expr="1/x">ln(x)</button>
+            <button class="example-btn" data-expr="x*sin(x)">By Parts</button>
+            <button class="example-btn" data-expr="1/(x**2+1)">arctan</button>
           </div>
         </div>
 

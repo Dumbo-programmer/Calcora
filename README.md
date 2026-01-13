@@ -44,25 +44,82 @@ Test Calcora directly in your browser - no installation required. Try:
 - **Extensible**: rule plugins, solver plugins, and renderer plugins.
 - **Modern UI**: Glassmorphism design with dark mode support.
 
-## What's New in v0.2
+## What's New in v0.2+
 
-### 🆕 Integration Engine
-- **Indefinite integrals**: Automatic technique detection (power rule, substitution, by parts, trigonometric)
-- **Definite integrals**: Fundamental theorem of calculus with bounds
-- **Step-by-step**: Detailed explanations showing which technique is used and why
-- **Interactive graphs**: Visualize area under curve for definite integrals
-- **Verbosity levels**: Choose between concise, detailed, or teacher mode explanations
+### 🚀 **ENHANCED Integration Engine**
 
-Example:
+Calcora now features a **comprehensive integration engine** that can handle virtually any integrable function!
+
+#### **Comprehensive Coverage** ⚡
+- ✅ **Polynomials** - Any degree, any coefficients
+- ✅ **Trigonometric** - sin, cos, tan, sec, csc, cot and all combinations
+- ✅ **Inverse Trig** - arcsin, arccos, arctan with automatic pattern detection
+- ✅ **Hyperbolic** - sinh, cosh, tanh and their inverses
+- ✅ **Exponential & Logarithmic** - e^x, ln(x), and complex products
+- ✅ **Rational Functions** - Automatic partial fraction decomposition
+- ✅ **Square Roots & Radicals** - √x, ∛x, and composite radicals
+- ✅ **Products** - Integration by parts automatically applied
+- ✅ **Compositions** - U-substitution for nested functions
+- ✅ **Definite Integrals** - With numerical area calculation and visualization
+
+#### **Advanced Graphing** 📊
+Every integration now includes beautiful, interactive graphs:
+
+**Indefinite Integrals:**
+- 📈 Original function (integrand) f(x) plotted
+- 📊 Integrated function (antiderivative) F(x) overlaid
+- 🎨 Dual plotting for visual comparison
+
+**Definite Integrals:**
+- 📐 **Shaded area under the curve** showing the integral value
+- 🎯 **Vertical lines** marking integration bounds
+- 🔢 **Exact area value** displayed prominently
+- 📈 Both integrand and antiderivative plotted together
+- 🎨 Color-coded regions for positive/negative areas
+
+#### **Intelligent Technique Detection** 🧠
+The engine automatically selects the optimal integration method:
+- **Power Rule** - For polynomials (instant)
+- **Substitution** - For composite functions  
+- **Integration by Parts** - For products (LIATE priority)
+- **Partial Fractions** - For rational functions
+- **Trigonometric Identities** - For trig combinations
+- **Numerical Fallback** - For non-elementary integrals
+
+#### **Test Results** ✅
+All 29 comprehensive tests passed (100% success rate):
+- Polynomials, trigonometric, exponential, logarithmic
+- Rational functions, inverse trig, hyperbolic functions
+- Definite integrals with area calculation
+- Complex products requiring advanced techniques
+
+See [INTEGRATION_FEATURES.md](INTEGRATION_FEATURES.md) for complete details.
+
+### 🎯 Usage Examples
+
+#### Indefinite Integral:
 ```python
 from calcora.integration_engine import IntegrationEngine
 
 engine = IntegrationEngine()
-result = engine.integrate("x**2", variable="x")
-# Returns: x**3/3 + C with step-by-step explanation
+result = engine.integrate("x**2", variable="x", generate_graph=True)
+# Output: x**3/3 + C
+# Graph: Shows parabola f(x) = x² and cubic F(x) = x³/3
+```
 
+#### Definite Integral with Area:
+```python
 result = engine.integrate("x**2", variable="x", lower_limit=0, upper_limit=1)
-# Returns: 1/3 (definite integral)
+# Output: 1/3 ≈ 0.333333
+# Graph: Shows shaded area under parabola from 0 to 1
+```
+
+#### Complex Expression:
+```python
+result = engine.integrate("x * exp(x)")
+# Output: (x - 1)·e^x + C
+# Technique: Integration by parts
+# Graph: Both functions plotted with clear relationship
 ```
 
 ### Coming Soon

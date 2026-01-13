@@ -144,6 +144,52 @@ def compute(request: dict):
     return Response(content=rendered, media_type="application/json")
 
 
+@app.get("/integrate")
+def integrate(expr: str, variable: str = "x", lower_limit: float | None = None, upper_limit: float | None = None, format: str = "json", verbosity: str = "detailed"):
+    """Integrate an expression with respect to a variable.
+    
+    Args:
+        expr: Mathematical expression (e.g., 'x**2')
+        variable: Variable to integrate with respect to (default: 'x')
+        lower_limit: Lower bound for definite integral (optional)
+        upper_limit: Upper bound for definite integral (optional)
+        format: Output format ('json' or 'text')
+        verbosity: Detail level ('concise', 'detailed', or 'teacher')
+    
+    Returns:
+        Integration result with step-by-step explanation and optional graph data
+    """
+    if not expr or not expr.strip():
+        return {"error": "Missing required parameter 'expr'. Example: ?expr=x**2"}
+    
+    if not variable or not variable.strip():
+        return {"error": "Variable parameter cannot be empty"}
+    
+    if verbosity not in ("concise", "detailed", "teacher"):
+        return {"error": f"Invalid verbosity '{verbosity}'. Valid options: concise, detailed, teacher"}
+    
+    from ..integration_engine import IntegrationEngine
+    
+    try:
+        int_engine = IntegrationEngine()
+        result_dict = int_engine.integrate(
+            expression=expr,
+            variable=variable,
+            lower_limit=lower_limit,
+            upper_limit=upper_limit,
+            verbosity=verbosity,
+            generate_graph=True
+        )
+        
+        # Return JSON response
+        import json
+        return Response(content=json.dumps(result_dict), media_type="application/json")
+    except ValueError as e:
+        return {"error": str(e)}
+    except Exception as e:
+        return {"error": f"Unexpected error: {str(e)}"}
+
+
 @app.get("/differentiate")
 def differentiate(expr: str, variable: str = "x", order: int = 1, format: str = "json", verbosity: str = "detailed"):
     """Differentiate an expression with respect to a variable.

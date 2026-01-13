@@ -81,6 +81,45 @@ async function callMatrixAPI(operation, matrixA, matrixB = null) {
   return { data, timing: (endTime - startTime).toFixed(1) };
 }
 
+async function callIntegrationAPI(expr, variable = 'x', lowerLimit = null, upperLimit = null) {
+  const url = new URL(`/integrate`, window.location.origin);
+  
+  const params = {
+    expr,
+    variable,
+    format: 'json',
+    verbosity: 'detailed'
+  };
+  
+  if (lowerLimit !== null && lowerLimit !== '') {
+    params.lower_limit = lowerLimit;
+  }
+  if (upperLimit !== null && upperLimit !== '') {
+    params.upper_limit = upperLimit;
+  }
+  
+  Object.keys(params).forEach(key => url.searchParams.set(key, params[key]));
+
+  const startTime = performance.now();
+  const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+  const endTime = performance.now();
+  
+  if (!res.ok) {
+    const text = await res.text();
+    let error;
+    try {
+      const json = JSON.parse(text);
+      error = json.error || text;
+    } catch {
+      error = text || `HTTP ${res.status}`;
+    }
+    throw new Error(error);
+  }
+  
+  const data = await res.json();
+  return { data, timing: (endTime - startTime).toFixed(1) };
+}
+
 function pickExplanation(node, verbosity) {
   if (verbosity === 'concise') return '';
   const ex = (node.metadata && node.metadata.explanations) || null;
@@ -273,14 +312,18 @@ function renderResult(payload, verbosity, timing) {
     timingEl.textContent = `${timing}ms`;
   }
 
-  // Show graph for differentiation
+  // Show graph for differentiation or integration
   if (payload.operation === 'differentiate') {
     showGraph(payload);
+  } else if (payload.operation === 'integrate' && payload.graph) {
+    showIntegrationGraph(payload);
   }
 
   // Clear and render steps
   stepsEl.innerHTML = '';
-  const nodes = (payload.graph && payload.graph.nodes) || [];
+  
+  // Handle both graph.nodes (for differentiate) and steps array (for integrate)
+  const nodes = payload.steps || (payload.graph && payload.graph.nodes) || [];
   
   if (!nodes.length) {
     stepCount.textContent = 'No steps';
@@ -303,9 +346,13 @@ function renderResult(payload, verbosity, timing) {
     const io = document.createElement('div');
     io.className = 'io';
     
+    // Handle both graph nodes (differentiate) and steps (integrate)
+    const inputValue = node.input || node.before;
+    const outputValue = node.output || node.after;
+    
     // Format input and output with matrix support
-    const inputFormatted = formatValue(node.input);
-    const outputFormatted = formatValue(node.output);
+    const inputFormatted = formatValue(inputValue);
+    const outputFormatted = formatValue(outputValue);
     io.innerHTML = `${inputFormatted}  →  ${outputFormatted}`;
 
     const explainText = pickExplanation(node, verbosity);
@@ -374,6 +421,23 @@ async function run() {
           setStatus(`⚠ Expression doesn't contain variable '${variable}' - derivative is 0`, 'error');
         }
       }
+    } else if (operationType === 'integrate') {
+      const expr = document.getElementById('expr').value.trim();
+      const variable = document.getElementById('variable').value.trim() || 'x';
+      const lowerLimitEl = document.getElementById('lowerLimit');
+      const upperLimitEl = document.getElementById('upperLimit');
+      const lowerLimit = lowerLimitEl && lowerLimitEl.value.trim() ? lowerLimitEl.value.trim() : null;
+      const upperLimit = upperLimitEl && upperLimitEl.value.trim() ? upperLimitEl.value.trim() : null;
+
+      if (!expr) {
+        setStatus('Please enter an expression', 'error');
+        runBtn.disabled = false;
+        return;
+      }
+
+      const result = await callIntegrationAPI(expr, variable, lowerLimit, upperLimit);
+      payload = result.data;
+      timing = result.timing;
     } else {
       // Matrix operations
       const matrixA = document.getElementById('matrixA').value.trim();
@@ -427,18 +491,35 @@ document.getElementById('operationType').addEventListener('change', () => {
   const matrixInput = document.getElementById('matrixInput');
   const variableLabel = document.getElementById('variableLabel');
   const orderLabel = document.getElementById('orderLabel');
+  const limitsLabel = document.getElementById('limitsLabel');
   const matrixBLabel = document.getElementById('matrixBLabel');
+  const diffExamples = document.getElementById('diffExamples');
+  const intExamples = document.getElementById('intExamples');
 
   if (operationType === 'differentiate') {
     calcInput.style.display = 'block';
     matrixInput.style.display = 'none';
     variableLabel.style.display = 'block';
     orderLabel.style.display = 'block';
+    if (limitsLabel) limitsLabel.style.display = 'none';
+    if (diffExamples) diffExamples.style.display = 'flex';
+    if (intExamples) intExamples.style.display = 'none';
+  } else if (operationType === 'integrate') {
+    calcInput.style.display = 'block';
+    matrixInput.style.display = 'none';
+    variableLabel.style.display = 'block';
+    orderLabel.style.display = 'none';
+    if (limitsLabel) limitsLabel.style.display = 'block';
+    if (diffExamples) diffExamples.style.display = 'none';
+    if (intExamples) intExamples.style.display = 'flex';
   } else {
     calcInput.style.display = 'none';
     matrixInput.style.display = 'block';
     variableLabel.style.display = 'none';
     orderLabel.style.display = 'none';
+    if (limitsLabel) limitsLabel.style.display = 'none';
+    if (diffExamples) diffExamples.style.display = 'none';
+    if (intExamples) intExamples.style.display = 'none';
 
     // Show/hide Matrix B based on operation
     if (operationType === 'matrix_multiply') {
@@ -472,9 +553,10 @@ document.querySelectorAll('.example-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const expr = btn.getAttribute('data-expr');
     const variable = btn.getAttribute('data-var') || 'x';
+    const currentOp = document.getElementById('operationType').value;
     document.getElementById('expr').value = expr;
     document.getElementById('variable').value = variable;
-    document.getElementById('operationType').value = 'differentiate';
+    // Keep current operation (integrate or differentiate) - don't force differentiate
     // Trigger change event to show correct inputs
     document.getElementById('operationType').dispatchEvent(new Event('change'));
     run();
@@ -594,6 +676,130 @@ function showGraph(payload) {
         }
       ]
     },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: true,
+          labels: {
+            color: isDark ? '#e5e7eb' : '#0f172a',
+            font: { size: 14, family: 'JetBrains Mono' }
+          }
+        },
+        tooltip: {
+          enabled: true,
+          mode: 'index',
+          intersect: false
+        }
+      },
+      scales: {
+        x: {
+          type: 'linear',
+          grid: { color: isDark ? '#334155' : '#e2e8f0' },
+          ticks: { color: isDark ? '#cbd5e1' : '#64748b' }
+        },
+        y: {
+          grid: { color: isDark ? '#334155' : '#e2e8f0' },
+          ticks: { color: isDark ? '#cbd5e1' : '#64748b' }
+        }
+      }
+    }
+  });
+}
+
+function showIntegrationGraph(payload) {
+  const graphPanel = document.getElementById('graphPanel');
+  const canvas = document.getElementById('graphCanvas');
+  
+  if (!graphPanel || !canvas || !payload.graph || !payload.graph.data) {
+    console.log('Graph not shown:', { graphPanel: !!graphPanel, canvas: !!canvas, graph: !!payload.graph });
+    return;
+  }
+  
+  graphPanel.style.display = 'block';
+
+  if (currentChart) {
+    currentChart.destroy();
+  }
+
+  const graphData = payload.graph.data;
+  const limits = payload.graph.limits;
+  const isDark = document.body.classList.contains('dark-theme');
+  const ctx = canvas.getContext('2d');
+  
+  console.log('Integration graph data:', { graphData, limits });
+  
+  const datasets = [];
+  
+  // Check if this is a definite integral
+  const isDefinite = limits && limits.lower !== null && limits.upper !== null;
+  
+  // Add area under curve for definite integrals
+  if (isDefinite && graphData.area && graphData.area.x && graphData.area.y && graphData.area.x.length > 0) {
+    console.log('Adding area dataset:', graphData.area);
+    // Add shaded area dataset
+    datasets.push({
+      label: `Area = ${graphData.area.value?.toFixed(4) || '?'}`,
+      data: graphData.area.x.map((x, i) => ({
+        x: x,
+        y: graphData.area.y[i]
+      })),
+      borderColor: 'rgba(16, 185, 129, 0.6)',
+      backgroundColor: 'rgba(16, 185, 129, 0.2)',
+      borderWidth: 0,
+      tension: 0.4,
+      pointRadius: 0,
+      fill: 'origin',  // Fill to y=0
+      spanGaps: false,
+      order: 2  // Draw behind other lines
+    });
+  } else {
+    console.log('No area data:', { isDefinite, hasArea: !!graphData.area, areaX: graphData.area?.x?.length });
+  }
+  
+  // Add integrand curve
+  if (graphData.integrand_curve && graphData.x_values) {
+    datasets.push({
+      label: payload.graph.labels?.integrand || `f(x) = ${payload.input}`,
+      data: graphData.x_values.map((x, i) => ({
+        x: x,
+        y: graphData.integrand_curve[i]
+      })),
+      borderColor: '#6366f1',
+      backgroundColor: 'rgba(99, 102, 241, 0.1)',
+      borderWidth: 3,
+      tension: 0.4,
+      pointRadius: 0,
+      fill: false,
+      spanGaps: true,
+      order: 1
+    });
+  }
+  
+  // Add antiderivative curve (only for indefinite integrals or if requested)
+  if (!isDefinite && graphData.antiderivative_curve && graphData.x_values) {
+    datasets.push({
+      label: payload.graph.labels?.antiderivative || `F(x) = ∫f(x)dx`,
+      data: graphData.x_values.map((x, i) => ({
+        x: x,
+        y: graphData.antiderivative_curve[i]
+      })),
+      borderColor: '#8b5cf6',
+      backgroundColor: 'rgba(139, 92, 246, 0.1)',
+      borderWidth: 3,
+      borderDash: [5, 5],
+      tension: 0.4,
+      pointRadius: 0,
+      fill: false,
+      spanGaps: true,
+      order: 1
+    });
+  }
+  
+  currentChart = new Chart(ctx, {
+    type: 'line',
+    data: { datasets },
     options: {
       responsive: true,
       maintainAspectRatio: false,

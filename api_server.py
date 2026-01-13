@@ -45,6 +45,39 @@ def compute():
                 variable=variable,
                 order=order
             )
+        elif operation == 'integrate':
+            # New integration endpoint
+            from calcora.integration_engine import IntegrationEngine
+            
+            variable = data.get('variable', 'x')
+            lower_limit = data.get('lower_limit')
+            upper_limit = data.get('upper_limit')
+            
+            # Convert string limits to float if provided
+            if lower_limit is not None:
+                try:
+                    lower_limit = float(lower_limit)
+                except ValueError:
+                    return jsonify({'error': f'Invalid lower limit: {lower_limit}'}), 400
+            
+            if upper_limit is not None:
+                try:
+                    upper_limit = float(upper_limit)
+                except ValueError:
+                    return jsonify({'error': f'Invalid upper limit: {upper_limit}'}), 400
+            
+            int_engine = IntegrationEngine()
+            result = int_engine.integrate(
+                expression=expression,
+                variable=variable,
+                lower_limit=lower_limit,
+                upper_limit=upper_limit,
+                verbosity=verbosity,
+                generate_graph=True
+            )
+            
+            return jsonify(result), 200
+            
         elif operation in ('matrix_multiply', 'matrix_determinant', 'matrix_inverse',
                           'matrix_rref', 'matrix_eigenvalues', 'matrix_lu'):
             kwargs = {'operation': operation, 'expression': expression}
