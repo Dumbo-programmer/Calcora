@@ -423,6 +423,34 @@
             line-height: 1.7;
         }
         
+        /* Video in Hero Section */
+        .hero .video-container {
+            position: relative;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(99, 102, 241, 0.3);
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 2px solid rgba(99, 102, 241, 0.2);
+            transition: all 0.4s ease;
+            animation: fadeInUp 0.8s ease 0.6s both;
+        }
+        
+        .hero .video-container:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 30px 80px rgba(99, 102, 241, 0.4);
+        }
+        
+        body.dark-theme .hero .video-container {
+            background: rgba(30, 41, 59, 0.8);
+            border: 2px solid rgba(99, 102, 241, 0.3);
+        }
+        
+        .hero .video-container video {
+            width: 100%;
+            display: block;
+        }
+        
         /* Video Section */
         .video-section {
             max-width: 1000px;
@@ -682,13 +710,28 @@
         </div>
     </header>
 
-    <!-- Hero Section -->
+    <!-- Hero Section with Video -->
     <section class="hero">
         <h1>Open-Source Mathematical<br>Computation Engine</h1>
         <p class="subtitle">
             Free, open-source computational mathematics with step-by-step explanations. 
-            Differentiation, matrix operations, symbolic computation — offline, private, explainable.
+            Differentiation, integration, matrix operations — offline, private, explainable.
         </p>
+        
+        <!-- Video Demo -->
+        <div class="video-container" style="margin: 3rem auto 2.5rem; max-width: 900px;">
+            <video 
+                controls 
+                autoplay
+                muted
+                loop
+                poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect fill='%231e293b' width='800' height='450'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' fill='%2394a3b8' font-size='24' font-family='Inter'%3ESee Calcora in Action%3C/text%3E%3C/svg%3E">
+                <source src="../media/demo.mp4" type="video/mp4">
+                <source src="media/demo.mp4" type="video/mp4">
+                Your browser does not support the video tag. <a href="../media/demo.mp4" style="color: var(--primary);">Download the demo video</a>.
+            </video>
+        </div>
+        
         <div class="hero-buttons">
             <a href="demo.html" class="btn btn-primary">
                 <i class="fas fa-play-circle"></i> Try Interactive Demo
@@ -750,23 +793,6 @@
                 <h3>Free Forever</h3>
                 <p>MIT licensed, completely open-source. No subscriptions, no paywalls, no hidden costs. Community-driven development.</p>
             </div>
-        </div>
-    </section>
-
-    <!-- Video Demo -->
-    <section class="video-section">
-        <h2 class="section-title">See Calcora in Action</h2>
-        <p style="color: var(--text-muted); font-size: 1.125rem; margin-bottom: 2rem;">
-            Watch step-by-step differentiation and matrix operations with detailed explanations
-        </p>
-        <div class="video-container">
-            <video 
-                controls 
-                poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450'%3E%3Crect fill='%231e293b' width='800' height='450'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' fill='%2394a3b8' font-size='24' font-family='Inter'%3EClick to play demo%3C/text%3E%3C/svg%3E">
-                <source src="../media/demo.mp4" type="video/mp4">
-                <source src="media/demo.mp4" type="video/mp4">
-                Your browser does not support the video tag. <a href="../media/demo.mp4" style="color: var(--primary);">Download the demo video</a>.
-            </video>
         </div>
     </section>
 

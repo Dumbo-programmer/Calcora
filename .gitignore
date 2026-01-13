@@ -12,7 +12,8 @@ venv/
 ENV/
 .env
 .env.*
-
+professor_outreach(1).xlsx
+professor_outreach.xlsx
 # Build outputs
 build/
 dist/
