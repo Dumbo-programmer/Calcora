@@ -380,6 +380,8 @@ function setStatus(text, type = 'normal') {
     statusEl.classList.add('error');
   } else if (type === 'success') {
     statusEl.classList.add('success');
+  } else if (type === 'loading') {
+    statusEl.classList.add('loading');
   }
 }
 
@@ -391,9 +393,10 @@ async function run() {
   const jsonWrap = document.getElementById('jsonWrap');
   const jsonEl = document.getElementById('json');
 
-  setStatus('Computing...', 'normal');
+  setStatus('Computing...', 'loading');
   const runBtn = document.getElementById('run');
   runBtn.disabled = true;
+  runBtn.classList.add('loading');
 
   try {
     let payload, timing;
@@ -406,6 +409,7 @@ async function run() {
       if (!expr) {
         setStatus('Please enter an expression', 'error');
         runBtn.disabled = false;
+        runBtn.classList.remove('loading');
         return;
       }
 
@@ -432,6 +436,7 @@ async function run() {
       if (!expr) {
         setStatus('Please enter an expression', 'error');
         runBtn.disabled = false;
+        runBtn.classList.remove('loading');
         return;
       }
 
@@ -445,6 +450,7 @@ async function run() {
       if (!matrixA) {
         setStatus('Please enter Matrix A', 'error');
         runBtn.disabled = false;
+        runBtn.classList.remove('loading');
         return;
       }
 
@@ -454,6 +460,7 @@ async function run() {
         if (!matrixB) {
           setStatus('Please enter Matrix B', 'error');
           runBtn.disabled = false;
+          runBtn.classList.remove('loading');
           return;
         }
       }
@@ -479,6 +486,7 @@ async function run() {
     document.getElementById('resultPanel').style.display = 'none';
   } finally {
     runBtn.disabled = false;
+    runBtn.classList.remove('loading');
   }
 }
 
