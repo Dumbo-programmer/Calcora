@@ -11,7 +11,7 @@
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-    <link rel="stylesheet" href="/static/style.css?v=6" />
+    <link rel="stylesheet" href="/static/style.css?v=7" />
   </head>
   <body>
     <header>
@@ -30,8 +30,8 @@
               <div class="stat-value">100%</div>
               <div class="stat-label">Step-by-Step</div>
             </div>
-            <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
-              <i class="fas fa-moon" id="theme-icon"></i>
+            <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme" aria-label="Toggle dark mode">
+              <i class="fas fa-moon" id="theme-icon" aria-hidden="true"></i>
             </button>
           </div>
         </div>
@@ -109,9 +109,9 @@
     <main class="container">
       <section class="panel">
         <div class="row">
-          <label>
+          <label for="operationType">
             Operation
-            <select id="operationType">
+            <select id="operationType" aria-label="Select mathematical operation">
               <option value="differentiate" selected>Differentiate</option>
               <option value="integrate">Integrate</option>
               <option value="matrix_multiply">Matrix Multiply</option>
@@ -123,14 +123,14 @@
             </select>
           </label>
 
-          <label id="variableLabel">
+          <label id="variableLabel" for="variable">
             Variable
-            <input id="variable" type="text" value="x" style="width: 60px; text-align: center;" placeholder="x" />
+            <input id="variable" type="text" value="x" style="width: 60px; text-align: center;" placeholder="x" aria-label="Variable for differentiation or integration" />
           </label>
 
-          <label id="orderLabel">
+          <label id="orderLabel" for="order">
             Order
-            <select id="order">
+            <select id="order" aria-label="Derivative order">
               <option value="1" selected>1st (d/dx)</option>
               <option value="2">2nd (d²/dx²)</option>
               <option value="3">3rd (d³/dx³)</option>
@@ -142,72 +142,72 @@
           <label id="limitsLabel" style="display: none;">
             Limits
             <div style="display: flex; gap: 8px; align-items: center;">
-              <input id="lowerLimit" type="text" placeholder="a" style="width: 60px; text-align: center;" />
-              <span style="color: var(--text-secondary);">to</span>
-              <input id="upperLimit" type="text" placeholder="b" style="width: 60px; text-align: center;" />
+              <input id="lowerLimit" type="text" placeholder="a" style="width: 60px; text-align: center;" aria-label="Lower limit for definite integral" />
+              <span style="color: var(--text-secondary);" aria-hidden="true">to</span>
+              <input id="upperLimit" type="text" placeholder="b" style="width: 60px; text-align: center;" aria-label="Upper limit for definite integral" />
             </div>
           </label>
 
-          <label>
+          <label for="verbosity">
             Verbosity
-            <select id="verbosity">
+            <select id="verbosity" aria-label="Level of detail in explanations">
               <option value="concise">Concise</option>
               <option value="detailed" selected>Detailed</option>
               <option value="teacher">Teacher</option>
             </select>
           </label>
 
-          <button id="run" class="btn-primary"><i class="fas fa-play-circle"></i> Run</button>
+          <button id="run" class="btn-primary" aria-label="Run computation"><i class="fas fa-play-circle" aria-hidden="true"></i> Run</button>
         </div>
 
         <div id="calcInput">
-          <label class="block">
-            <i class="fas fa-function"></i> Expression
-            <input id="expr" type="text" value="sin(x**2)" spellcheck="false" placeholder="Enter expression..." />
+          <label class="block" for="expr">
+            <i class="fas fa-function" aria-hidden="true"></i> Expression
+            <input id="expr" type="text" value="sin(x**2)" spellcheck="false" placeholder="Enter expression..." aria-label="Mathematical expression to compute" />
           </label>
 
           <div class="examples" id="diffExamples">
             <span class="examples-label">Examples:</span>
-            <button class="example-btn" data-expr="x**3">Polynomial</button>
-            <button class="example-btn" data-expr="sin(x)">Trig</button>
-            <button class="example-btn" data-expr="exp(x)">Exponential</button>
-            <button class="example-btn" data-expr="ln(x)">ln(x)</button>
-            <button class="example-btn" data-expr="x*sin(x)">Product</button>
-            <button class="example-btn" data-expr="sin(x**2)">Chain</button>
+            <button class="example-btn" data-expr="x**3" aria-label="Example: polynomial x cubed">Polynomial</button>
+            <button class="example-btn" data-expr="sin(x)" aria-label="Example: sine of x">Trig</button>
+            <button class="example-btn" data-expr="exp(x)" aria-label="Example: exponential e to the x">Exponential</button>
+            <button class="example-btn" data-expr="ln(x)" aria-label="Example: natural logarithm">ln(x)</button>
+            <button class="example-btn" data-expr="x*sin(x)" aria-label="Example: product rule">Product</button>
+            <button class="example-btn" data-expr="sin(x**2)" aria-label="Example: chain rule">Chain</button>
           </div>
           
           <div class="examples" id="intExamples" style="display: none;">
             <span class="examples-label">Examples:</span>
-            <button class="example-btn" data-expr="x**2">Polynomial</button>
-            <button class="example-btn" data-expr="sin(x)">Trig</button>
-            <button class="example-btn" data-expr="exp(x)">Exponential</button>
-            <button class="example-btn" data-expr="1/x">ln(x)</button>
-            <button class="example-btn" data-expr="x*sin(x)">By Parts</button>
-            <button class="example-btn" data-expr="1/(x**2+1)">arctan</button>
+            <button class="example-btn" data-expr="x**2" aria-label="Example: polynomial integral">Polynomial</button>
+            <button class="example-btn" data-expr="sin(x)" aria-label="Example: sine integral">Trig</button>
+            <button class="example-btn" data-expr="exp(x)" aria-label="Example: exponential integral">Exponential</button>
+            <button class="example-btn" data-expr="1/x" aria-label="Example: logarithm">ln(x)</button>
+            <button class="example-btn" data-expr="x*sin(x)" aria-label="Example: integration by parts">By Parts</button>
+            <button class="example-btn" data-expr="1/(x**2+1)" aria-label="Example: arctangent">arctan</button>
           </div>
         </div>
 
         <div id="matrixInput" style="display: none;">
-          <label class="block">
-            <i class="fas fa-table"></i> Matrix A
-            <textarea id="matrixA" rows="3" spellcheck="false" placeholder='[[1,2],[3,4]] or [["a","b"],["c","d"]]' style="font-family: monospace;">[[1,2],[3,4]]</textarea>
+          <label class="block" for="matrixA">
+            <i class="fas fa-table" aria-hidden="true"></i> Matrix A
+            <textarea id="matrixA" rows="3" spellcheck="false" placeholder='[[1,2],[3,4]] or [["a","b"],["c","d"]]' style="font-family: monospace;" aria-label="Enter matrix A in JSON format">[[1,2],[3,4]]</textarea>
             <small style="color: var(--text-tertiary); margin-top: 4px; display: block;">Tip: Use strings for symbols: [["a","b"],["c","d"]]</small>
           </label>
 
-          <label class="block" id="matrixBLabel">
-            <i class="fas fa-table"></i> Matrix B
+          <label class="block" id="matrixBLabel" for="matrixB">
+            <i class="fas fa-table" aria-hidden="true"></i> Matrix B
             <br>
-            <textarea id="matrixB" rows="3" spellcheck="false" placeholder='[[5,6],[7,8]] or [["x"],["y"]]' style="font-family: monospace;">[[5,6],[7,8]]</textarea>
+            <textarea id="matrixB" rows="3" spellcheck="false" placeholder='[[5,6],[7,8]] or [["x"],["y"]]' style="font-family: monospace;" aria-label="Enter matrix B in JSON format">[[5,6],[7,8]]</textarea>
           </label>
 
           <div class="examples">
             <span class="examples-label">Examples:</span>
-            <button class="matrix-example-btn" data-op="matrix_multiply" data-a="[[1,2],[3,4]]" data-b="[[5,6],[7,8]]">2×2 Multiply</button>
-            <button class="matrix-example-btn" data-op="matrix_determinant" data-a="[[2,1,3],[1,0,1],[1,2,1]]">3×3 Determinant</button>
-            <button class="matrix-example-btn" data-op="matrix_inverse" data-a="[[1,2],[3,4]]">2×2 Inverse</button>
-            <button class="matrix-example-btn" data-op="matrix_rref" data-a="[[1,2,3],[4,5,6]]">2×3 RREF</button>
-            <button class="matrix-example-btn" data-op="matrix_eigenvalues" data-a="[[1,2],[2,1]]">2×2 Eigenvalues</button>
-            <button class="matrix-example-btn" data-op="matrix_lu" data-a="[[2,1,1],[4,-6,0],[-2,7,2]]">3×3 LU</button>
+            <button class="matrix-example-btn" data-op="matrix_multiply" data-a="[[1,2],[3,4]]" data-b="[[5,6],[7,8]]" aria-label="Example: 2 by 2 matrix multiplication">2×2 Multiply</button>
+            <button class="matrix-example-btn" data-op="matrix_determinant" data-a="[[2,1,3],[1,0,1],[1,2,1]]" aria-label="Example: 3 by 3 determinant">3×3 Determinant</button>
+            <button class="matrix-example-btn" data-op="matrix_inverse" data-a="[[1,2],[3,4]]" aria-label="Example: 2 by 2 matrix inverse">2×2 Inverse</button>
+            <button class="matrix-example-btn" data-op="matrix_rref" data-a="[[1,2,3],[4,5,6]]" aria-label="Example: 2 by 3 row reduced echelon form">2×3 RREF</button>
+            <button class="matrix-example-btn" data-op="matrix_eigenvalues" data-a="[[1,2],[2,1]]" aria-label="Example: 2 by 2 eigenvalues">2×2 Eigenvalues</button>
+            <button class="matrix-example-btn" data-op="matrix_lu" data-a="[[2,1,1],[4,-6,0],[-2,7,2]]" aria-label="Example: 3 by 3 LU decomposition">3×3 LU</button>
             <button class="matrix-example-btn" data-op="matrix_determinant" data-a='[["a","b"],["c","d"]]'>Symbolic Det</button>
             <button class="matrix-example-btn" data-op="matrix_inverse" data-a='[["a","b"],["c","d"]]'>Symbolic Inverse</button>
             <button class="matrix-example-btn" data-op="matrix_multiply" data-a='[["a","b"]]' data-b='[["x"],["y"]]'>Symbolic Multiply</button>
@@ -220,16 +220,16 @@
             Show JSON
           </label>
 
-          <span id="status" class="status"></span>
+          <span id="status" class="status" role="status" aria-live="polite"></span>
         </div>
       </section>
 
-      <section class="panel result-panel" id="resultPanel" style="display: none;">
+      <section class="panel result-panel" id="resultPanel" style="display: none;" role="region" aria-label="Computation results">
         <div class="result-header">
           <h2><i class="fas fa-check-circle" style="color: var(--success);"></i> Result</h2>
           <div class="result-meta">
-            <button class="btn-icon" onclick="toggleResultFormat()" title="Toggle format (F)" style="margin-right: 12px;">
-              <i class="fas fa-exchange-alt"></i>
+            <button class="btn-icon" onclick="toggleResultFormat()" title="Toggle format (F)" style="margin-right: 12px;" aria-label="Toggle between typeset and LaTeX format">
+              <i class="fas fa-exchange-alt" aria-hidden="true"></i>
             </button>
             <span id="stepCount" class="badge"></span>
             <span id="timing" class="timing"></span>
@@ -240,8 +240,8 @@
           <span class="format-badge" id="formatBadge">
             <i class="fas fa-font"></i> Typeset Format
           </span>
-          <button class="btn-secondary" style="padding: 8px 16px; font-size: 14px;" onclick="copyResultToClipboard(event)">
-            <i class="fas fa-copy"></i> Copy Result
+          <button class="btn-secondary" style="padding: 8px 16px; font-size: 14px;" onclick="copyResultToClipboard(event)" aria-label="Copy result to clipboard">
+            <i class="fas fa-copy" aria-hidden="true"></i> Copy Result
           </button>
         </div>
         
@@ -485,6 +485,6 @@
         }
       });
     </script>
-    <script src="/static/app.js?v=5"></script>
+    <script src="/static/app.js?v=6"></script>
   </body>
 </html>

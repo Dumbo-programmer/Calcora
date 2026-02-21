@@ -189,6 +189,11 @@ h1 {
     transform: scale(1.1);
 }
 
+.theme-toggle:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
 /* Container */
 .container {
     max-width: 1200px;
@@ -319,6 +324,11 @@ button:active:not(:disabled) {
     transform: translateY(0);
 }
 
+button:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
 button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
@@ -364,6 +374,11 @@ button.loading {
 .btn-primary:active:not(:disabled) {
     transform: translateY(0);
     box-shadow: 0 3px 10px 0 color-mix(in srgb, var(--primary) 40%, transparent);
+}
+
+.btn-primary:focus-visible {
+    outline: 3px solid var(--primary-light);
+    outline-offset: 3px;
 }
 
 .checkbox {
@@ -441,6 +456,12 @@ button.loading {
 .example-btn:active,
 .matrix-example-btn:active {
     transform: translateY(0);
+}
+
+.example-btn:focus-visible,
+.matrix-example-btn:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
 }
 
 /* Status */
@@ -553,6 +574,12 @@ details summary {
     user-select: none;
     list-style: none;
     padding: 0.75rem 0;
+}
+
+details summary:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+    border-radius: 0.5rem;
 }
 
 details summary::-webkit-details-marker {

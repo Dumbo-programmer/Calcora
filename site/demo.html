@@ -238,6 +238,11 @@
             color: white;
         }
 
+        .btn-icon:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
         /* Main container */
         .container {
             max-width: 1400px;
@@ -329,6 +334,11 @@
             background: rgba(99, 102, 241, 0.1);
         }
 
+        .tab:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
         .tab.active {
             background: var(--bg-primary);
             color: var(--primary);
@@ -400,6 +410,11 @@
             color: white;
             transform: translateY(-2px);
             box-shadow: var(--shadow-md);
+        }
+
+        .example-chip:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
         }
 
         /* Results area */
@@ -802,6 +817,11 @@
             box-shadow: var(--shadow-lg);
         }
 
+        .action-btn:focus-visible {
+            outline: 3px solid var(--primary-light);
+            outline-offset: 3px;
+        }
+
         .action-btn:active {
             transform: translateY(0);
         }
@@ -898,16 +918,16 @@
                 <span>Calcora</span>
             </div>
             <div class="header-actions">
-                <button class="btn-icon tooltip" onclick="toggleHistory()" title="Computation History">
-                    <i class="fas fa-history"></i>
+                <button class="btn-icon tooltip" onclick="toggleHistory()" title="Computation History" aria-label="Show computation history">
+                    <i class="fas fa-history" aria-hidden="true"></i>
                     <span class="tooltiptext">History (Ctrl+H)</span>
                 </button>
-                <button class="btn-icon tooltip" onclick="toggleTheme()" title="Toggle Theme">
-                    <i class="fas fa-moon" id="theme-icon"></i>
+                <button class="btn-icon tooltip" onclick="toggleTheme()" title="Toggle Theme" aria-label="Toggle dark mode">
+                    <i class="fas fa-moon" id="theme-icon" aria-hidden="true"></i>
                     <span class="tooltiptext">Toggle Theme</span>
                 </button>
-                <button class="btn-icon tooltip" onclick="showShortcuts()" title="Keyboard Shortcuts">
-                    <i class="fas fa-keyboard"></i>
+                <button class="btn-icon tooltip" onclick="showShortcuts()" title="Keyboard Shortcuts" aria-label="Show keyboard shortcuts">
+                    <i class="fas fa-keyboard" aria-hidden="true"></i>
                     <span class="tooltiptext">Shortcuts (Ctrl+/)</span>
                 </button>
                 <a href="index.html" class="btn btn-secondary">
@@ -932,35 +952,35 @@
                     </div>
 
                     <!-- Tabs -->
-                    <div class="tabs">
-                        <button class="tab active" data-tab="differentiate" onclick="switchTab('differentiate')">
-                            <i class="fas fa-function"></i>
+                    <div class="tabs" role="tablist">
+                        <button class="tab active" data-tab="differentiate" onclick="switchTab('differentiate')" role="tab" aria-selected="true" aria-controls="differentiate-content" aria-label="Differentiation operations">
+                            <i class="fas fa-function" aria-hidden="true"></i>
                             Differentiation
                         </button>
-                        <button class="tab" data-tab="integrate" onclick="switchTab('integrate')">
-                            <i class="fas fa-integral"></i>
+                        <button class="tab" data-tab="integrate" onclick="switchTab('integrate')" role="tab" aria-selected="false" aria-controls="integrate-content" aria-label="Integration operations">
+                            <i class="fas fa-integral" aria-hidden="true"></i>
                             Integration
                         </button>
-                        <button class="tab" data-tab="matrix" onclick="switchTab('matrix')">
-                            <i class="fas fa-table"></i>
+                        <button class="tab" data-tab="matrix" onclick="switchTab('matrix')" role="tab" aria-selected="false" aria-controls="matrix-content" aria-label="Matrix operations">
+                            <i class="fas fa-table" aria-hidden="true"></i>
                             Matrices
                         </button>
                     </div>
 
                     <!-- Differentiation Tab -->
-                    <div class="tab-content active" id="differentiate-content">
+                    <div class="tab-content active" id="differentiate-content" role="tabpanel" aria-labelledby="differentiate">
                         <div class="form-group">
                             <label class="form-label">
-                                <i class="fas fa-lightbulb"></i> Quick Examples
+                                <i class="fas fa-lightbulb" aria-hidden="true"></i> Quick Examples
                             </label>
                             <div class="examples">
-                                <span class="example-chip" onclick="setExample('sin(x**2)', 'x')">sin(x²)</span>
-                                <span class="example-chip" onclick="setExample('x**3 * cos(x)', 'x')">x³·cos(x)</span>
-                                <span class="example-chip" onclick="setExample('exp(x**2)', 'x')">e^(x²)</span>
-                                <span class="example-chip" onclick="setExample('log(x**2 + 1)', 'x')">ln(x² + 1)</span>
-                                <span class="example-chip" onclick="setExample('tan(x) + x**2', 'x')">tan(x) + x²</span>
-                                <span class="example-chip" onclick="setExample('(x**2 + 1) / (x - 1)', 'x')">Rational</span>
-                                <span class="example-chip" onclick="setExample('sqrt(x**2 + 4)', 'x')">√(x² + 4)</span>
+                                <span class="example-chip" onclick="setExample('sin(x**2)', 'x')" role="button" tabindex="0" aria-label="Example: sine of x squared">sin(x²)</span>
+                                <span class="example-chip" onclick="setExample('x**3 * cos(x)', 'x')" role="button" tabindex="0" aria-label="Example: x cubed times cosine of x">x³·cos(x)</span>
+                                <span class="example-chip" onclick="setExample('exp(x**2)', 'x')" role="button" tabindex="0" aria-label="Example: exponential of x squared">e^(x²)</span>
+                                <span class="example-chip" onclick="setExample('log(x**2 + 1)', 'x')" role="button" tabindex="0" aria-label="Example: natural log of x squared plus 1">ln(x² + 1)</span>
+                                <span class="example-chip" onclick="setExample('tan(x) + x**2', 'x')" role="button" tabindex="0" aria-label="Example: tangent of x plus x squared">tan(x) + x²</span>
+                                <span class="example-chip" onclick="setExample('(x**2 + 1) / (x - 1)', 'x')" role="button" tabindex="0" aria-label="Example: rational function">Rational</span>
+                                <span class="example-chip" onclick="setExample('sqrt(x**2 + 4)', 'x')" role="button" tabindex="0" aria-label="Example: square root of x squared plus 4">√(x² + 4)</span>
                             </div>
                         </div>
 
@@ -969,7 +989,7 @@
                                 <i class="fas fa-function"></i> Expression
                                 <span style="color: var(--error); margin-left: 4px;" id="expr-required">*</span>
                             </label>
-                            <input type="text" id="diff-expr" class="form-input" placeholder="Try: sin(x**2) or x**3*cos(x)" value="sin(x**2)">
+                            <input type="text" id="diff-expr" class="form-input" placeholder="Try: sin(x**2) or x**3*cos(x)" value="sin(x**2)" aria-label="Mathematical expression to differentiate" required>
                             <small style="color: var(--text-tertiary); font-size: 0.8125rem; margin-top: 0.5rem; display: block;">
                                 💡 <strong>Syntax:</strong> Use <code>**</code> for powers (x**2), <code>*</code> for multiply. Available: sin, cos, tan, exp, log, sqrt, sinh, asin, etc.
                             </small>
@@ -980,14 +1000,14 @@
                                 <i class="fas fa-x"></i> Variable to differentiate
                                 <span style="color: var(--error); margin-left: 4px;">*</span>
                             </label>
-                            <input type="text" id="diff-var" class="form-input" placeholder="Usually 'x' or 'y'" value="x">
+                            <input type="text" id="diff-var" class="form-input" placeholder="Usually 'x' or 'y'" value="x" aria-label="Variable to differentiate with respect to" required>
                         </div>
 
                         <div class="form-group">
                             <label class="form-label">
                                 <i class="fas fa-layer-group"></i> Verbosity
                             </label>
-                            <select id="diff-verbosity" class="form-select">
+                            <select id="diff-verbosity" class="form-select" aria-label="Select verbosity level for explanation">
                                 <option value="concise">Concise</option>
                                 <option value="detailed" selected>Detailed</option>
                                 <option value="teacher">Teacher Mode</option>
@@ -996,13 +1016,13 @@
 
                         <div class="form-group">
                             <label class="form-label">
-                                <input type="checkbox" id="show-graph" checked style="margin-right: 0.5rem;">
+                                <input type="checkbox" id="show-graph" checked style="margin-right: 0.5rem;" aria-label="Toggle interactive graph display">
                                 <i class="fas fa-chart-line"></i> Show Interactive Graph
                             </label>
                         </div>
 
                         <div class="action-bar">
-                            <button class="action-btn" onclick="computeDifferentiate()">
+                            <button class="action-btn" onclick="computeDifferentiate()" aria-label="Compute differentiation">
                                 <i class="fas fa-play-circle"></i>
                                 Differentiate
                             </button>
@@ -1010,24 +1030,24 @@
                     </div>
 
                     <!-- Integration Tab -->
-                    <div class="tab-content" id="integrate-content" style="display: none;">
+                    <div class="tab-content" id="integrate-content" style="display: none;" role="tabpanel" aria-labelledby="integrate">
                         <div class="form-group">
                             <label class="form-label">
                                 <i class="fas fa-lightbulb"></i> Quick Examples
                             </label>
                             <div class="examples">
-                                <span class="example-chip" onclick="setIntegrationExample('x**2', 'x')">x²</span>
-                                <span class="example-chip" onclick="setIntegrationExample('sin(x)', 'x')">sin(x)</span>
-                                <span class="example-chip" onclick="setIntegrationExample('cos(x)**2', 'x')">cos²(x)</span>
-                                <span class="example-chip" onclick="setIntegrationExample('exp(x)', 'x')">e^x</span>
-                                <span class="example-chip" onclick="setIntegrationExample('1/x', 'x')">1/x</span>
-                                <span class="example-chip" onclick="setIntegrationExample('x * exp(x)', 'x')">x·e^x</span>
-                                <span class="example-chip" onclick="setIntegrationExample('sqrt(x)', 'x')">√x</span>
-                                <span class="example-chip" onclick="setIntegrationExample('1/(x**2 + 1)', 'x')">1/(x²+1)</span>
-                                <span class="example-chip" onclick="setIntegrationExample('sinh(x)', 'x')">sinh(x)</span>
-                                <span class="example-chip" onclick="setIntegrationExample('x * sin(x)', 'x')">x·sin(x)</span>
-                                <span class="example-chip" onclick="setIntegrationExample('log(x)', 'x')">ln(x)</span>
-                                <span class="example-chip" onclick="setIntegrationExample('1/sqrt(1 - x**2)', 'x')">1/√(1-x²)</span>
+                                <span class="example-chip" onclick="setIntegrationExample('x**2', 'x')" role="button" tabindex="0" aria-label="Example: integral of x squared">x²</span>
+                                <span class="example-chip" onclick="setIntegrationExample('sin(x)', 'x')" role="button" tabindex="0" aria-label="Example: integral of sine of x">sin(x)</span>
+                                <span class="example-chip" onclick="setIntegrationExample('cos(x)**2', 'x')" role="button" tabindex="0" aria-label="Example: integral of cosine squared">cos²(x)</span>
+                                <span class="example-chip" onclick="setIntegrationExample('exp(x)', 'x')" role="button" tabindex="0" aria-label="Example: integral of exponential">e^x</span>
+                                <span class="example-chip" onclick="setIntegrationExample('1/x', 'x')" role="button" tabindex="0" aria-label="Example: integral of one over x">1/x</span>
+                                <span class="example-chip" onclick="setIntegrationExample('x * exp(x)', 'x')" role="button" tabindex="0" aria-label="Example: integration by parts - x times e to the x">x·e^x</span>
+                                <span class="example-chip" onclick="setIntegrationExample('sqrt(x)', 'x')" role="button" tabindex="0" aria-label="Example: integral of square root of x">√x</span>
+                                <span class="example-chip" onclick="setIntegrationExample('1/(x**2 + 1)', 'x')" role="button" tabindex="0" aria-label="Example: integral of one over x squared plus 1">1/(x²+1)</span>
+                                <span class="example-chip" onclick="setIntegrationExample('sinh(x)', 'x')" role="button" tabindex="0" aria-label="Example: integral of hyperbolic sine">sinh(x)</span>
+                                <span class="example-chip" onclick="setIntegrationExample('x * sin(x)', 'x')" role="button" tabindex="0" aria-label="Example: integration by parts - x times sine of x">x·sin(x)</span>
+                                <span class="example-chip" onclick="setIntegrationExample('log(x)', 'x')" role="button" tabindex="0" aria-label="Example: integral of natural log of x">ln(x)</span>
+                                <span class="example-chip" onclick="setIntegrationExample('1/sqrt(1 - x**2)', 'x')" role="button" tabindex="0" aria-label="Example: integral of one over square root of 1 minus x squared">1/√(1-x²)</span>
                             </div>
                         </div>
 
@@ -1036,7 +1056,7 @@
                                 <i class="fas fa-function"></i> Expression to integrate
                                 <span style="color: var(--error); margin-left: 4px;" id="int-expr-required">*</span>
                             </label>
-                            <input type="text" id="int-expr" class="form-input" placeholder="Try: x**2 or sin(x)" value="x**2">
+                            <input type="text" id="int-expr" class="form-input" placeholder="Try: x**2 or sin(x)" value="x**2" aria-label="Mathematical expression to integrate" required>
                             <small style="color: var(--text-tertiary); font-size: 0.8125rem; margin-top: 0.5rem; display: block;">
                                 💡 <strong>Syntax:</strong> Use <code>**</code> for powers (x**2), <code>*</code> for multiply. Available: sin, cos, tan, exp, log, sqrt, sinh, asin, etc.
                             </small>
@@ -1047,12 +1067,12 @@
                                 <i class="fas fa-x"></i> Variable to integrate with respect to
                                 <span style="color: var(--error); margin-left: 4px;">*</span>
                             </label>
-                            <input type="text" id="int-var" class="form-input" placeholder="Usually 'x' or 't'" value="x">
+                            <input type="text" id="int-var" class="form-input" placeholder="Usually 'x' or 't'" value="x" aria-label="Variable to integrate with respect to" required>
                         </div>
 
                         <div class="form-group">
                             <label class="form-label">
-                                <input type="checkbox" id="definite-integral" onchange="toggleDefiniteIntegral()" style="margin-right: 0.5rem;">
+                                <input type="checkbox" id="definite-integral" onchange="toggleDefiniteIntegral()" style="margin-right: 0.5rem;" aria-label="Enable definite integral with bounds">
                                 <i class="fas fa-ruler-combined"></i> Definite Integral (with bounds)
                             </label>
                         </div>
@@ -1062,13 +1082,13 @@
                                 <label class="form-label">
                                     <i class="fas fa-arrow-down"></i> Lower Limit
                                 </label>
-                                <input type="text" id="lower-limit" class="form-input" placeholder="e.g., 0 or -1">
+                                <input type="text" id="lower-limit" class="form-input" placeholder="e.g., 0 or -1" aria-label="Lower limit for definite integral">
                             </div>
                             <div class="form-group">
                                 <label class="form-label">
                                     <i class="fas fa-arrow-up"></i> Upper Limit
                                 </label>
-                                <input type="text" id="upper-limit" class="form-input" placeholder="e.g., 1 or π">
+                                <input type="text" id="upper-limit" class="form-input" placeholder="e.g., 1 or π" aria-label="Upper limit for definite integral">
                             </div>
                         </div>
 
@@ -1076,7 +1096,7 @@
                             <label class="form-label">
                                 <i class="fas fa-layer-group"></i> Verbosity
                             </label>
-                            <select id="int-verbosity" class="form-select">
+                            <select id="int-verbosity" class="form-select" aria-label="Select verbosity level for explanation">
                                 <option value="concise">Concise</option>
                                 <option value="detailed" selected>Detailed</option>
                                 <option value="teacher">Teacher Mode</option>
@@ -1085,13 +1105,13 @@
 
                         <div class="form-group">
                             <label class="form-label">
-                                <input type="checkbox" id="show-int-graph" checked style="margin-right: 0.5rem;">
+                                <input type="checkbox" id="show-int-graph" checked style="margin-right: 0.5rem;" aria-label="Toggle integral area graph display">
                                 <i class="fas fa-chart-area"></i> Show Integral Graph (Area under curve)
                             </label>
                         </div>
 
                         <div class="action-bar">
-                            <button class="action-btn" onclick="computeIntegration()">
+                            <button class="action-btn" onclick="computeIntegration()" aria-label="Compute integration">
                                 <i class="fas fa-play-circle"></i>
                                 Integrate
                             </button>
@@ -1099,18 +1119,18 @@
                     </div>
 
                     <!-- Matrix Tab -->
-                    <div class="tab-content" id="matrix-content" style="display: none;">
+                    <div class="tab-content" id="matrix-content" style="display: none;" role="tabpanel" aria-labelledby="matrix">
                         <div class="form-group">
                             <label class="form-label">
                                 <i class="fas fa-lightbulb"></i> Quick Examples
                             </label>
                             <div class="examples">
-                                <span class="example-chip" onclick="setMatrixExample('determinant', '[[1,2],[3,4]]')">Det 2×2</span>
-                                <span class="example-chip" onclick="setMatrixExample('inverse', '[[1,2],[3,4]]')">Inverse</span>
-                                <span class="example-chip" onclick="setMatrixExample('determinant', '[[&quot;a&quot;,&quot;b&quot;],[&quot;c&quot;,&quot;d&quot;]]')">Symbolic Det</span>
-                                <span class="example-chip" onclick="setMatrixExample('multiply', '[[1,2],[3,4]]', '[[5,6],[7,8]]')">Multiply</span>
-                                <span class="example-chip" onclick="setMatrixExample('eigenvalues', '[[3,1],[1,3]]')">Eigenvalues</span>
-                                <span class="example-chip" onclick="setMatrixExample('lu', '[[2,1,1],[4,-6,0],[-2,7,2]]')">LU Decomp</span>
+                                <span class="example-chip" onclick="setMatrixExample('determinant', '[[1,2],[3,4]]')" role="button" tabindex="0" aria-label="Example: determinant of 2 by 2 matrix">Det 2×2</span>
+                                <span class="example-chip" onclick="setMatrixExample('inverse', '[[1,2],[3,4]]')" role="button" tabindex="0" aria-label="Example: matrix inverse">Inverse</span>
+                                <span class="example-chip" onclick="setMatrixExample('determinant', '[[&quot;a&quot;,&quot;b&quot;],[&quot;c&quot;,&quot;d&quot;]]')" role="button" tabindex="0" aria-label="Example: symbolic determinant">Symbolic Det</span>
+                                <span class="example-chip" onclick="setMatrixExample('multiply', '[[1,2],[3,4]]', '[[5,6],[7,8]]')" role="button" tabindex="0" aria-label="Example: matrix multiplication">Multiply</span>
+                                <span class="example-chip" onclick="setMatrixExample('eigenvalues', '[[3,1],[1,3]]')" role="button" tabindex="0" aria-label="Example: eigenvalues computation">Eigenvalues</span>
+                                <span class="example-chip" onclick="setMatrixExample('lu', '[[2,1,1],[4,-6,0],[-2,7,2]]')" role="button" tabindex="0" aria-label="Example: LU decomposition">LU Decomp</span>
                             </div>
                         </div>
 
@@ -1118,7 +1138,7 @@
                             <label class="form-label">
                                 <i class="fas fa-cogs"></i> Operation
                             </label>
-                            <select id="matrix-operation" class="form-select" onchange="toggleMatrixB()">
+                            <select id="matrix-operation" class="form-select" onchange="toggleMatrixB()" aria-label="Select matrix operation">
                                 <option value="matrix_determinant">Determinant</option>
                                 <option value="matrix_inverse">Inverse</option>
                                 <option value="matrix_multiply">Multiply</option>
@@ -1133,7 +1153,7 @@
                                 <i class="fas fa-table"></i> Matrix A
                                 <span style="color: var(--error); margin-left: 4px;">*</span>
                             </label>
-                            <textarea id="matrix-a" class="form-textarea" placeholder='[[1,2],[3,4]] or [["a","b"],["c","d"]] for symbolic'>[[1,2],[3,4]]</textarea>
+                            <textarea id="matrix-a" class="form-textarea" placeholder='[[1,2],[3,4]] or [["a","b"],["c","d"]] for symbolic' aria-label="Enter matrix A in JSON format" required>[[1,2],[3,4]]</textarea>
                             <small style="color: var(--text-tertiary); font-size: 0.8125rem; margin-top: 0.5rem; display: block;">
                                 💡 <strong>Format:</strong> [[row1_col1, row1_col2], [row2_col1, row2_col2]]. Use quotes for symbols: [["a","b"],["c","d"]]
                             </small>
@@ -1147,7 +1167,7 @@
                                 <i class="fas fa-table"></i> Matrix B (for multiplication)
                                 <span style="color: var(--error); margin-left: 4px;">*</span>
                             </label>
-                            <textarea id="matrix-b" class="form-textarea" placeholder='[[5,6],[7,8]]'>[[5,6],[7,8]]</textarea>
+                            <textarea id="matrix-b" class="form-textarea" placeholder='[[5,6],[7,8]]' aria-label="Enter matrix B in JSON format" required>[[5,6],[7,8]]</textarea>
                             <small style="color: var(--text-tertiary); font-size: 0.8125rem; margin-top: 0.5rem; display: block;">
                                 💡 Must be compatible dimensions for multiplication
                             </small>
@@ -1160,7 +1180,7 @@
                             <label class="form-label">
                                 <i class="fas fa-layer-group"></i> Verbosity
                             </label>
-                            <select id="matrix-verbosity" class="form-select">
+                            <select id="matrix-verbosity" class="form-select" aria-label="Select verbosity level for explanation">
                                 <option value="concise">Concise</option>
                                 <option value="detailed" selected>Detailed</option>
                                 <option value="teacher">Teacher Mode</option>
@@ -1168,7 +1188,7 @@
                         </div>
 
                         <div class="action-bar">
-                            <button class="action-btn" onclick="computeMatrix()">
+                            <button class="action-btn" onclick="computeMatrix()" aria-label="Compute matrix operation">
                                 <i class="fas fa-play-circle"></i>
                                 Compute
                             </button>
@@ -1180,34 +1200,34 @@
             <!-- Right: Output Panel -->
             <div>
                 <!-- Loading State -->
-                <div class="loading" id="loading">
+                <div class="loading" id="loading" role="status" aria-live="polite" aria-label="Computing">
                     <div class="spinner"></div>
                     <div class="loading-text">Computing...</div>
                 </div>
 
                 <!-- Error Banner -->
-                <div class="error-banner" id="error-banner">
-                    <i class="fas fa-exclamation-circle"></i>
+                <div class="error-banner" id="error-banner" role="alert" aria-live="assertive">
+                    <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
                     <div id="error-message"></div>
                 </div>
 
                 <!-- Results -->
-                <div class="card result-section" id="result-section">
+                <div class="card result-section" id="result-section" role="region" aria-label="Computation results">
                     <div class="card-header">
                         <h3 class="card-title">
-                            <i class="fas fa-check-circle" style="color: var(--success);"></i>
+                            <i class="fas fa-check-circle" style="color: var(--success);" aria-hidden="true"></i>
                             Result
                         </h3>
                         <div style="display: flex; gap: 0.5rem;">
-                            <button class="btn-icon tooltip" onclick="toggleResultFormat()" title="Toggle Format">
-                                <i class="fas fa-exchange-alt" id="format-toggle-icon"></i>
+                            <button class="btn-icon tooltip" onclick="toggleResultFormat()" title="Toggle Format" aria-label="Toggle between typeset and LaTeX format">
+                                <i class="fas fa-exchange-alt" id="format-toggle-icon" aria-hidden="true"></i>
                                 <span class="tooltiptext">Toggle Format (F)</span>
                             </button>
                             <div style="position: relative;">
-                                <button class="btn-icon" onclick="toggleExportMenu()">
+                                <button class="btn-icon" onclick="toggleExportMenu()" aria-label="Open export menu" aria-haspopup="menu" aria-expanded="false" id="export-menu-button">
                                     <i class="fas fa-download"></i>
                                 </button>
-                                <div class="export-menu" id="export-menu">
+                                <div class="export-menu" id="export-menu" role="menu" aria-label="Export options">
                                 <div class="export-item" onclick="exportAs('json')">
                                     <i class="fas fa-file-code"></i> Export as JSON
                                 </div>
@@ -1228,7 +1248,7 @@
                         <span class="format-badge" id="format-badge">
                             <i class="fas fa-font"></i> Typeset Format
                         </span>
-                        <button class="btn-secondary" style="padding: 0.625rem 1.25rem; font-size: 0.875rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;" onclick="copyResultToClipboard(event)">
+                        <button class="btn-secondary" style="padding: 0.625rem 1.25rem; font-size: 0.875rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;" onclick="copyResultToClipboard(event)" aria-label="Copy result to clipboard">
                             <i class="fas fa-copy"></i> Copy Result
                         </button>
                     </div>
