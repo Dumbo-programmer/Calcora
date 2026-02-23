@@ -17,6 +17,17 @@ from typing import Optional, List, Dict, Any, Tuple
 from dataclasses import dataclass
 import re
 import numpy as np
+import sympy as sp
+
+# Import security layer - validates all user input
+try:
+    from .input_validator import safe_sympify, validate_variable, validate_expression, InputValidationError
+except ImportError:
+    # Fallback for development/testing
+    import sys
+    import os
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
+    from input_validator import safe_sympify, validate_variable, validate_expression, InputValidationError
 
 
 @dataclass
@@ -134,16 +145,36 @@ class IntegrationEngine:
         
         # Handle log_3(x) or log_{3}(x) -> log(x, 3)
         expression = re.sub(r'log_\{?(\w+)\}?\(', r'log(\1,', expression)
+        
+        # Validate variable name
+        var_validation = validate_variable(variable)
+        if not var_validation['valid']:
+            return {
+                'operation': 'integrate',
+                'input': expression,
+                'error': var_validation['error'],
+                'code': var_validation.get('code', 'INVALID_INPUT'),
+                'success': False
+            }
             
-        # Parse expression
+        # Parse expression with safe sympify (prevents code execution)
         x = sp.Symbol(variable)
         try:
-            expr = sp.sympify(expression)
+            expr = safe_sympify(expression, local_dict={variable: x})
+        except InputValidationError as e:
+            return {
+                'operation': 'integrate',
+                'input': expression,
+                'error': str(e),
+                'code': 'VALIDATION_ERROR',
+                'success': False
+            }
         except Exception as e:
             return {
                 'operation': 'integrate',
                 'input': expression,
                 'error': f'Failed to parse expression: {str(e)}',
+                'code': 'PARSE_ERROR',
                 'success': False
             }
         
