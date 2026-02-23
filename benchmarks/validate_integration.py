@@ -32,9 +32,9 @@ class BenchmarkValidator:
     
     def validate(self, expression, variable='x', test_name="", category=""):
         """Validate a single integration"""
-        print(f"\n{'─'*80}")
+        print(f"\n{'-'*80}")
         print(f"Test: {test_name} [{category}]")
-        print(f"Expression: ∫ {expression} d{variable}")
+        print(f"Expression: integral( {expression} ) d{variable}")
         
         # Calcora result
         start = time.time()
@@ -53,15 +53,19 @@ class BenchmarkValidator:
         match = False
         if calcora_result['success']:
             calcora_str = str(calcora_result['output'])
+            
+            # Strip the constant of integration "+ C" for comparison
+            calcora_clean = calcora_str.replace(' + C', '').replace(' +C', '').replace('+C', '')
+            
             try:
-                # Parse both results and check if difference is constant
-                calcora_sympy = sp.sympify(calcora_str)
+                # Parse both results and check if they're symbolically equal
+                calcora_sympy = sp.sympify(calcora_clean)
                 diff = sp.simplify(calcora_sympy - sympy_result)
-                # If difference is a number (constant of integration), it's correct
-                match = diff.is_number or diff == 0
-            except:
+                # If difference is 0 or a constant, they match
+                match = diff == 0 or (diff.is_number and abs(float(diff)) < 1e-10)
+            except Exception as e:
                 # Fallback: string comparison (less reliable)
-                match = sympy_str in calcora_str or calcora_str in sympy_str
+                match = sympy_str in calcora_clean or calcora_clean in sympy_str
         
         result_dict = {
             'test_name': test_name,
@@ -78,7 +82,7 @@ class BenchmarkValidator:
         self.results.append(result_dict)
         
         # Print result
-        status = "✅ MATCH" if match else "❌ MISMATCH"
+        status = "[PASS]" if match else "[FAIL]"
         print(f"Calcora: {calcora_result.get('output', 'FAILED')}")
         print(f"SymPy:   {sympy_str}")
         print(f"Status:  {status} | Time: {calcora_time:.2f}ms | Technique: {result_dict['technique']}")
@@ -140,48 +144,48 @@ def main():
     print("="*80)
     
     # Polynomials
-    validator.validate("x**2", x, "Power rule (x²)", "Polynomials")
-    validator.validate("x**5", x, "High degree power (x⁵)", "Polynomials")
-    validator.validate("3*x**4 - 2*x**2 + 5", x, "Polynomial combination", "Polynomials")
+    validator.validate("x**2", 'x', "Power rule (x^2)", "Polynomials")
+    validator.validate("x**5", 'x', "High degree power (x^5)", "Polynomials")
+    validator.validate("3*x**4 - 2*x**2 + 5", 'x', "Polynomial combination", "Polynomials")
     
     # Trigonometric
-    validator.validate("sin(x)", x, "Basic sine", "Trigonometric")
-    validator.validate("cos(x)", x, "Basic cosine", "Trigonometric")
-    validator.validate("tan(x)", x, "Tangent", "Trigonometric")
-    validator.validate("sec(x)**2", x, "Secant squared", "Trigonometric")
-    validator.validate("cos(x)**2", x, "Cosine squared", "Trigonometric")
+    validator.validate("sin(x)", 'x', "Basic sine", "Trigonometric")
+    validator.validate("cos(x)", 'x', "Basic cosine", "Trigonometric")
+    validator.validate("tan(x)", 'x', "Tangent", "Trigonometric")
+    validator.validate("sec(x)**2", 'x', "Secant squared", "Trigonometric")
+    validator.validate("cos(x)**2", 'x', "Cosine squared", "Trigonometric")
     
     # Exponential/Logarithmic
-    validator.validate("exp(x)", x, "Natural exponential", "Exponential")
-    validator.validate("1/x", x, "Natural logarithm (1/x)", "Exponential")
-    validator.validate("log(x)", x, "Logarithm", "Exponential")
+    validator.validate("exp(x)", 'x', "Natural exponential", "Exponential")
+    validator.validate("1/x", 'x', "Natural logarithm (1/x)", "Exponential")
+    validator.validate("log(x)", 'x', "Logarithm", "Exponential")
     
     # Rational Functions
-    validator.validate("1/(x**2 + 1)", x, "Arctan pattern", "Rational")
-    validator.validate("1/(x**2 + 4)", x, "Scaled arctan", "Rational")
-    validator.validate("x/(x**2 + 1)", x, "Rational u-sub", "Rational")
+    validator.validate("1/(x**2 + 1)", 'x', "Arctan pattern", "Rational")
+    validator.validate("1/(x**2 + 4)", 'x', "Scaled arctan", "Rational")
+    validator.validate("x/(x**2 + 1)", 'x', "Rational u-sub", "Rational")
     
     # Square Roots
-    validator.validate("sqrt(x)", x, "Square root", "Radicals")
-    validator.validate("1/sqrt(x)", x, "Inverse square root", "Radicals")
-    validator.validate("x*sqrt(x)", x, "Product with sqrt", "Radicals")
+    validator.validate("sqrt(x)", 'x', "Square root", "Radicals")
+    validator.validate("1/sqrt(x)", 'x', "Inverse square root", "Radicals")
+    validator.validate("x*sqrt(x)", 'x', "Product with sqrt", "Radicals")
     
     # Inverse Trigonometric
-    validator.validate("1/sqrt(1 - x**2)", x, "Arcsin pattern", "Inverse Trig")
-    validator.validate("1/(1 + x**2)", x, "Arctan pattern", "Inverse Trig")
+    validator.validate("1/sqrt(1 - x**2)", 'x', "Arcsin pattern", "Inverse Trig")
+    validator.validate("1/(1 + x**2)", 'x', "Arctan pattern", "Inverse Trig")
     
     # Hyperbolic
-    validator.validate("sinh(x)", x, "Hyperbolic sine", "Hyperbolic")
-    validator.validate("cosh(x)", x, "Hyperbolic cosine", "Hyperbolic")
+    validator.validate("sinh(x)", 'x', "Hyperbolic sine", "Hyperbolic")
+    validator.validate("cosh(x)", 'x', "Hyperbolic cosine", "Hyperbolic")
     
     # Integration by Parts
-    validator.validate("x * exp(x)", x, "By parts: x*e^x", "By Parts")
-    validator.validate("x * sin(x)", x, "By parts: x*sin(x)", "By Parts")
-    validator.validate("x * log(x)", x, "By parts: x*ln(x)", "By Parts")
+    validator.validate("x * exp(x)", 'x', "By parts: x*e^x", "By Parts")
+    validator.validate("x * sin(x)", 'x', "By parts: x*sin(x)", "By Parts")
+    validator.validate("x * log(x)", 'x', "By parts: x*ln(x)", "By Parts")
     
     # Substitution
-    validator.validate("2*x * cos(x**2)", x, "U-substitution: chain rule", "Substitution")
-    validator.validate("x / sqrt(x**2 + 1)", x, "U-sub with sqrt", "Substitution")
+    validator.validate("2*x * cos(x**2)", 'x', "U-substitution: chain rule", "Substitution")
+    validator.validate("x / sqrt(x**2 + 1)", 'x', "U-sub with sqrt", "Substitution")
     
     # Print summary
     passed, total = validator.print_summary()
@@ -193,7 +197,7 @@ def main():
     print("\n| Expression | Calcora Result | SymPy Result | Match | Time (ms) | Technique |")
     print("|------------|----------------|--------------|-------|-----------|-----------|")
     for r in validator.results[:15]:  # First 15 for brevity
-        match_icon = "✅" if r['match'] else "❌"
+        match_icon = "[PASS]" if r['match'] else "[FAIL]"
         expr_short = r['expression'][:20] + "..." if len(r['expression']) > 20 else r['expression']
         calcora_short = str(r['calcora_result'])[:25] + "..." if len(str(r['calcora_result'])) > 25 else str(r['calcora_result'])
         sympy_short = str(r['sympy_result'])[:25] + "..." if len(str(r['sympy_result'])) > 25 else str(r['sympy_result'])

@@ -110,7 +110,8 @@ class IntegrationEngine:
         lower_limit: Optional[float] = None,
         upper_limit: Optional[float] = None,
         verbosity: str = 'detailed',
-        generate_graph: bool = True
+        generate_graph: bool = True,
+        timeout: Optional[float] = 3.0
     ) -> Dict[str, Any]:
         """
         Integrate an expression with comprehensive step-by-step explanation and graphs.
@@ -122,12 +123,35 @@ class IntegrationEngine:
             upper_limit: For definite integrals
             verbosity: Level of detail ('concise', 'detailed', 'teacher')
             generate_graph: Whether to generate graph data
+            timeout: Maximum computation time in seconds (default: 3.0, 0 = no limit)
             
         Returns:
             Dictionary with result, steps, metadata, and graph data
+            
+        Note on timeout:
+            - Uses signal.alarm on Unix (precise)
+            - Uses threading on Windows (approximate)
+            - For production web servers, also configure Gunicorn/uWSGI timeout
         """
         self.steps = []
         self.can_integrate = True
+        
+        # Validate timeout
+        try:
+            from .timeout_wrapper import validate_timeout_value, TimeoutError as CalcoraTimeoutError
+        except ImportError:
+            from timeout_wrapper import validate_timeout_value, TimeoutError as CalcoraTimeoutError
+        
+        try:
+            timeout_val = validate_timeout_value(timeout, min_val=0.1, max_val=30.0)
+        except ValueError as e:
+            return {
+                'operation': 'integrate',
+                'input': expression,
+                'error': str(e),
+                'code': 'INVALID_TIMEOUT',
+                'success': False
+            }
         
         try:
             import sympy as sp
@@ -181,25 +205,30 @@ class IntegrationEngine:
         # Determine integration technique
         technique = self._determine_technique(expr, x)
         
-        # Perform integration with explanation
+        # Perform integration with timeout protection
         try:
-            if technique == 'power_rule':
-                result = self._integrate_power_rule(expr, x, verbosity)
-            elif technique == 'substitution':
-                result = self._integrate_substitution(expr, x, verbosity)
-            elif technique == 'by_parts':
-                result = self._integrate_by_parts(expr, x, verbosity)
-            elif technique == 'trig':
-                result = self._integrate_trig(expr, x, verbosity)
-            elif technique == 'partial_fractions':
-                result = self._integrate_partial_fractions(expr, x, verbosity)
-            elif technique == 'inverse_trig':
-                result = self._integrate_inverse_trig(expr, x, verbosity)
-            elif technique == 'hyperbolic':
-                result = self._integrate_hyperbolic(expr, x, verbosity)
-            else:
-                # General case - let SymPy handle it with fallback
-                result = self._integrate_general(expr, x, verbosity)
+            from .timeout_wrapper import timeout, TimeoutError as CalcoraTimeoutError
+        except ImportError:
+            from timeout_wrapper import timeout, TimeoutError as CalcoraTimeoutError
+        
+        try:
+            # Wrap computation with timeout decorator
+            @timeout(timeout_val)
+            def _perform_computation():
+                return self._perform_integration_by_technique(technique, expr, x, verbosity)
+            
+            result = _perform_computation()
+            
+        except CalcoraTimeoutError as e:
+            return {
+                'operation': 'integrate',
+                'input': expression,
+                'error': f'Computation timeout: Expression took longer than {timeout_val}s to integrate',
+                'code': 'TIMEOUT',
+                'timeout': timeout_val,
+                'technique': technique,
+                'success': False
+            }
         except Exception as e:
             # Try numerical integration as ultimate fallback
             self.steps.append(IntegrationStep(
@@ -299,6 +328,39 @@ class IntegrationEngine:
             return 'trig'
         
         return 'general'
+    
+    def _perform_integration_by_technique(self, technique: str, expr, x, verbosity: str):
+        """
+        Dispatch integration to appropriate technique method.
+        
+        This is separated into its own method to enable timeout wrapping.
+        
+        Args:
+            technique: Integration technique name
+            expr: SymPy expression to integrate
+            x: Variable of integration
+            verbosity: Level of detail ('concise', 'detailed', 'teacher')
+            
+        Returns:
+            SymPy expression (result of integration)
+        """
+        if technique == 'power_rule':
+            return self._integrate_power_rule(expr, x, verbosity)
+        elif technique == 'substitution':
+            return self._integrate_substitution(expr, x, verbosity)
+        elif technique == 'by_parts':
+            return self._integrate_by_parts(expr, x, verbosity)
+        elif technique == 'trig':
+            return self._integrate_trig(expr, x, verbosity)
+        elif technique == 'partial_fractions':
+            return self._integrate_partial_fractions(expr, x, verbosity)
+        elif technique == 'inverse_trig':
+            return self._integrate_inverse_trig(expr, x, verbosity)
+        elif technique == 'hyperbolic':
+            return self._integrate_hyperbolic(expr, x, verbosity)
+        else:
+            # General case - let SymPy handle it with fallback
+            return self._integrate_general(expr, x, verbosity)
     
     def _is_inverse_trig_candidate(self, expr, x) -> bool:
         """Check if expression matches inverse trig integration patterns"""

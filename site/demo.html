@@ -245,7 +245,7 @@
 
         /* Main container */
         .container {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
             padding: 2rem;
         }
@@ -253,14 +253,27 @@
         /* Split layout */
         .split-layout {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: minmax(400px, 1fr) minmax(400px, 1fr);
             gap: 2rem;
             margin-top: 2rem;
         }
 
-        @media (max-width: 1200px) {
+        @media (max-width: 1400px) {
+            .split-layout {
+                grid-template-columns: minmax(350px, 1fr) minmax(350px, 1fr);
+                gap: 1.5rem;
+            }
+        }
+
+        @media (max-width: 1100px) {
             .split-layout {
                 grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
             }
         }
 
@@ -279,6 +292,19 @@
             transform: translateY(-2px);
         }
 
+        @media (max-width: 900px) {
+            .card {
+                padding: 1.75rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .card {
+                padding: 1.25rem;
+                border-radius: 1rem;
+            }
+        }
+
         .card-header {
             display: flex;
             justify-content: space-between;
@@ -286,6 +312,8 @@
             margin-bottom: 2rem;
             padding-bottom: 1.25rem;
             border-bottom: 2px solid rgba(99, 102, 241, 0.1);
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .card-title {
@@ -296,6 +324,27 @@
             align-items: center;
             gap: 0.75rem;
             letter-spacing: -0.02em;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .card-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 768px) {
+            .card-header {
+                gap: 0.75rem;
+            }
+            .card-title {
+                font-size: 1.25rem;
+            }
+            .card-title i {
+                font-size: 1.5rem;
+            }
         }
 
         .card-title i {
@@ -482,6 +531,9 @@
             text-align: center;
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
             transition: all 0.3s ease;
+            overflow-x: auto;
+            overflow-y: hidden;
+            max-width: 100%;
         }
 
         .result-output:hover {
@@ -491,6 +543,28 @@
 
         .result-output .katex {
             font-size: 1.75rem;
+        }
+
+        @media (max-width: 1400px) {
+            .result-output .katex {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .result-output {
+                padding: 1.5rem;
+            }
+            
+            .result-output .katex {
+                font-size: 1.25rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .result-output .katex {
+                font-size: 1.1rem;
+            }
         }
 
         /* Steps with modern card design */
@@ -576,6 +650,29 @@
             font-size: 0.9375rem;
             line-height: 1.7;
             font-weight: 500;
+        }
+
+        /* Responsive step sizing */
+        @media (max-width: 900px) {
+            .step {
+                padding: 1.25rem 1.5rem;
+            }
+            .step-explanation {
+                font-size: 0.875rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .step {
+                padding: 1rem 1.25rem;
+            }
+            .step-rule {
+                font-size: 0.625rem;
+                padding: 0.3rem 0.75rem;
+            }
+            .step-explanation {
+                font-size: 0.8125rem;
+            }
         }
 
         /* Graph container */
@@ -867,15 +964,26 @@
         .format-badge {
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            background: var(--primary);
-            color: white;
-            border-radius: 0.5rem;
-            font-size: 0.875rem;
+            gap: 0.375rem;
+            padding: 0.375rem 0.75rem;
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.05em;
+        }
+
+        .format-badge i {
+            font-size: 0.625rem;
+        }
+
+        @media (max-width: 768px) {
+            .format-badge {
+                display: none;
+            }
         }
 
         /* Matrix display improvements */
@@ -907,9 +1015,76 @@
             display: block;
             white-space: nowrap;
         }
+
+        /* Loading Screen */
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-primary);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .loading-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            text-align: center;
+        }
+
+        .loading-subtext {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-top: -1rem;
+        }
+
+        .loading-logo {
+            font-size: 3rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
     </style>
 </head>
 <body>
+    <!-- Loading Screen -->
+    <div id="loading-overlay" class="loading-overlay">
+        <i class="fas fa-calculator loading-logo"></i>
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Connecting to Calcora Server</div>
+        <div class="loading-subtext">Testing available endpoints...</div>
+    </div>
     <!-- Header -->
     <header class="header">
         <div class="header-content">
@@ -1217,15 +1392,23 @@
                         <h3 class="card-title">
                             <i class="fas fa-check-circle" style="color: var(--success);" aria-hidden="true"></i>
                             Result
+                            <span class="format-badge" id="format-badge" style="margin-left: 0.5rem;">
+                                <i class="fas fa-font"></i> Typeset
+                            </span>
                         </h3>
-                        <div style="display: flex; gap: 0.5rem;">
+                        <div class="card-header-actions">
+                            <button class="btn-icon tooltip" onclick="copyResultToClipboard(event)" title="Copy Result" aria-label="Copy result to clipboard">
+                                <i class="fas fa-copy" aria-hidden="true"></i>
+                                <span class="tooltiptext">Copy (Ctrl+C)</span>
+                            </button>
                             <button class="btn-icon tooltip" onclick="toggleResultFormat()" title="Toggle Format" aria-label="Toggle between typeset and LaTeX format">
                                 <i class="fas fa-exchange-alt" id="format-toggle-icon" aria-hidden="true"></i>
                                 <span class="tooltiptext">Toggle Format (F)</span>
                             </button>
                             <div style="position: relative;">
-                                <button class="btn-icon" onclick="toggleExportMenu()" aria-label="Open export menu" aria-haspopup="menu" aria-expanded="false" id="export-menu-button">
-                                    <i class="fas fa-download"></i>
+                                <button class="btn-icon tooltip" onclick="toggleExportMenu()" aria-label="Open export menu" aria-haspopup="menu" aria-expanded="false" id="export-menu-button">
+                                    <i class="fas fa-download" aria-hidden="true"></i>
+                                    <span class="tooltiptext">Export</span>
                                 </button>
                                 <div class="export-menu" id="export-menu" role="menu" aria-label="Export options">
                                 <div class="export-item" onclick="exportAs('json')">
@@ -1244,14 +1427,6 @@
                         </div>
                     </div>
 
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding: 0.5rem;">
-                        <span class="format-badge" id="format-badge">
-                            <i class="fas fa-font"></i> Typeset Format
-                        </span>
-                        <button class="btn-secondary" style="padding: 0.625rem 1.25rem; font-size: 0.875rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;" onclick="copyResultToClipboard(event)" aria-label="Copy result to clipboard">
-                            <i class="fas fa-copy"></i> Copy Result
-                        </button>
-                    </div>
                     <div class="result-output" id="result-output"></div>
 
                     <div class="result-header">
@@ -1312,7 +1487,18 @@
 
         // Initialize
         async function checkApiAvailability() {
-            for (const endpoint of API_ENDPOINTS) {
+            const loadingOverlay = document.getElementById('loading-overlay');
+            const loadingText = loadingOverlay?.querySelector('.loading-text');
+            const loadingSubtext = loadingOverlay?.querySelector('.loading-subtext');
+            
+            for (let i = 0; i < API_ENDPOINTS.length; i++) {
+                const endpoint = API_ENDPOINTS[i];
+                
+                // Update loading message
+                if (loadingSubtext) {
+                    loadingSubtext.textContent = `Testing endpoint ${i + 1} of ${API_ENDPOINTS.length}...`;
+                }
+                
                 try {
                     const response = await fetch(endpoint, {
                         method: 'POST',
@@ -1328,6 +1514,16 @@
                         API_URL = endpoint;
                         apiAvailable = true;
                         console.log('✓ Using API endpoint:', endpoint);
+                        
+                        // Show success message briefly
+                        if (loadingText) loadingText.textContent = 'Connected Successfully!';
+                        if (loadingSubtext) loadingSubtext.textContent = `Using ${endpoint.includes('localhost') ? 'local' : 'cloud'} server`;
+                        
+                        // Hide loading screen after brief delay
+                        setTimeout(() => {
+                            loadingOverlay?.classList.add('hidden');
+                        }, 500);
+                        
                         return;
                     }
                 } catch (error) {
@@ -1335,7 +1531,16 @@
                 }
             }
             
+            // All endpoints failed
+            if (loadingText) loadingText.textContent = 'Connection Failed';
+            if (loadingSubtext) loadingSubtext.textContent = 'No servers available. Please start the backend.';
+            
             showError('API not available. Please ensure the backend server is running.');
+            
+            // Hide loading screen after showing error
+            setTimeout(() => {
+                loadingOverlay?.classList.add('hidden');
+            }, 2000);
         }
 
         // Theme toggle
@@ -1606,7 +1811,7 @@
             if (window.isTypesetFormat) {
                 // Typeset format (rendered math like in papers)
                 output.className = 'result-output typeset';
-                badge.innerHTML = '<i class="fas fa-font"></i> Typeset Format';
+                badge.innerHTML = '<i class="fas fa-font"></i> Typeset';
                 
                 // Check if it's a matrix
                 const isMatrix = window.currentResultData.output && 
@@ -1632,7 +1837,7 @@
             } else {
                 // Copyable format (raw LaTeX code)
                 output.className = 'result-output copyable';
-                badge.innerHTML = '<i class="fas fa-code"></i> LaTeX Code';
+                badge.innerHTML = '<i class="fas fa-code"></i> LaTeX';
                 
                 // Show LaTeX code
                 if (window.currentResultData.latex) {
@@ -1666,11 +1871,20 @@
                 const btn = event ? event.target.closest('button') : null;
                 if (btn) {
                     const originalHTML = btn.innerHTML;
+                    const originalWidth = btn.style.width;
+                    const originalPadding = btn.style.padding;
+                    
+                    // Expand button to fit text
                     btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                    btn.style.width = 'auto';
+                    btn.style.padding = '0 1rem';
                     btn.style.background = 'var(--success)';
                     btn.style.color = 'white';
+                    
                     setTimeout(() => {
                         btn.innerHTML = originalHTML;
+                        btn.style.width = originalWidth;
+                        btn.style.padding = originalPadding;
                         btn.style.background = '';
                         btn.style.color = '';
                     }, 1500);

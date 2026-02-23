@@ -43,7 +43,7 @@ class TestMalformedInputIntegration:
             "x **",  # Incomplete operator
             "((x",  # Unmatched parentheses
             "x))",  # Unmatched parentheses
-            "x + + x",  # Double operator
+            "x ++ x",  # Invalid C-style operator
         ]
         for expr in test_cases:
             result = self.engine.integrate(expr, variable="x")
@@ -155,7 +155,7 @@ class TestEdgeCases:
         
         # 1/x is discontinuous at x=0
         # Definite integral from -1 to 1 should fail or warn
-        result = integration.integrate("1/x", variable="x", limits=(-1, 1))
+        result = integration.integrate("1/x", variable="x", lower_limit=-1, upper_limit=1)
         # Should either fail or include warning
         if result['success']:
             assert 'warning' in result or 'discontinuous' in str(result).lower()
@@ -165,7 +165,7 @@ class TestEdgeCases:
         integration = IntegrationEngine()
         
         # ∫[1,∞] 1/x² dx should converge to 1
-        result = integration.integrate("1/x**2", variable="x", limits=(1, float('inf')))
+        result = integration.integrate("1/x**2", variable="x", lower_limit=1, upper_limit=float('inf'))
         # Should handle gracefully (may not support infinite limits yet)
         assert 'success' in result
     
@@ -174,7 +174,7 @@ class TestEdgeCases:
         integration = IntegrationEngine()
         
         # √x is undefined for x < 0
-        result = integration.integrate("sqrt(x)", variable="x", limits=(-1, 1))
+        result = integration.integrate("sqrt(x)", variable="x", lower_limit=-1, upper_limit=1)
         # Should detect domain issue
         if result['success']:
             assert 'warning' in result or 'domain' in str(result).lower()
