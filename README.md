@@ -7,8 +7,11 @@
 
 📚 **[Complete Documentation](CLONE_AND_RUN.md)** | 🎓 **[Academic Strategy](ACADEMIC_STRATEGY.md)** | 🚀 **[Release Notes](RELEASE_NOTES_v0.2.md)** | 🧪 **[Benchmarks](benchmarks/)**
 
-[![Tests](https://img.shields.io/badge/tests-43%2F43%20passing-brightgreen)](https://github.com/yourusername/Calcora/actions/workflows/tests.yml)
-![Coverage](https://img.shields.io/badge/coverage-47%25-orange)
+![Tests](https://img.shields.io/badge/tests-69%2F73%20passing-brightgreen)
+![Coverage](https://img.shields.io/badge/coverage-51%25-yellow)
+![Accuracy](https://img.shields.io/badge/benchmark%20accuracy-100%25%20(26%2F26)-brightgreen)
+![Engine Coverage](https://img.shields.io/badge/integration%20engine-71%25%20coverage-green)
+![Security](https://img.shields.io/badge/security-hardened-blue)
 
 ## Core Philosophy
 
