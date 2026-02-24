@@ -1,5 +1,4 @@
 """
-"""
 Simple Flask API server for Calcora - can be deployed to Render/Railway/PythonAnywhere
 """
 from flask import Flask, request, jsonify, send_from_directory
