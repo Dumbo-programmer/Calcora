@@ -20,6 +20,21 @@
 3. **Self-Hosted Option**: Privacy-conscious educators can run locally (no data collection)
 4. **Honest Limitations**: We document what we *can't* do (see Current Limitations below)
 
+## 🖥️ Desktop App (Coming Soon - v0.3)
+
+**Download → Double-click → Compute — No installation required!**
+
+Calcora Desktop will provide:
+- ✅ Single-file executable (Windows, macOS, Linux)
+- ✅ Completely offline — no internet connection needed
+- ✅ Auto-opens browser to localhost interface
+- ✅ All your data stays on your computer (100% private)
+- ✅ Instant response (no network latency)
+
+**Status:** In development. See [DESKTOP_GUIDE.md](DESKTOP_GUIDE.md) for technical details.
+
+**Why desktop?** Web version requires internet and external hosting. Desktop version runs entirely on your machine - perfect for classrooms, exams, or offline use.
+
 ## What Works Well (v0.2)
 
 ### ✅ Current Capabilities

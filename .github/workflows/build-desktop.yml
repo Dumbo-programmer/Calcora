@@ -1,0 +1,113 @@
+name: Build Desktop App
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'  # Trigger on version tags like v0.3.0
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  build:
+    name: Build ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            artifact_name: Calcora.exe
+            asset_name: calcora-windows-x64.exe
+          - os: macos-latest
+            artifact_name: Calcora
+            asset_name: calcora-macos-universal
+          - os: ubuntu-latest
+            artifact_name: Calcora
+            asset_name: calcora-linux-x64
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyinstaller
+          pip install -e ".[engine-sympy,api]"
+
+      - name: Build with PyInstaller (Windows/Linux)
+        if: runner.os != 'macOS'
+        run: pyinstaller calcora-desktop.spec --clean --noconfirm
+
+      - name: Build with PyInstaller (macOS Universal)
+        if: runner.os == 'macOS'
+        run: pyinstaller calcora-desktop.spec --clean --noconfirm --target-arch=universal2
+
+      - name: Test executable (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          echo "Testing if executable runs..."
+          dist\Calcora.exe --help || echo "Help command not implemented yet"
+        continue-on-error: true
+
+      - name: Test executable (macOS/Linux)
+        if: runner.os != 'Windows'
+        run: |
+          echo "Testing if executable runs..."
+          chmod +x dist/Calcora
+          ./dist/Calcora --help || echo "Help command not implemented yet"
+        continue-on-error: true
+
+      - name: Create ZIP package (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          mkdir release
+          copy dist\Calcora.exe release\
+          copy README.md release\
+          copy LICENSE release\
+          Compress-Archive -Path release\* -DestinationPath calcora-windows-x64.zip
+
+      - name: Create TAR.GZ package (macOS/Linux)
+        if: runner.os != 'Windows'
+        run: |
+          mkdir release
+          cp dist/Calcora release/
+          cp README.md release/
+          cp LICENSE release/
+          cd release
+          chmod +x Calcora
+          tar -czf ../calcora-${{ runner.os }}-x64.tar.gz *
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: calcora-${{ matrix.os }}
+          path: |
+            calcora-*.zip
+            calcora-*.tar.gz
+
+  release:
+    name: Create Release
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            calcora-windows-latest/*.zip
+            calcora-macos-latest/*.tar.gz
+            calcora-ubuntu-latest/*.tar.gz
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
