@@ -22,7 +22,7 @@
 
         :root {
             /* Light theme colors */
-            --primary: #6366f1;
+            --primary: #5855e5;
             --primary-dark: #4f46e5;
             --primary-light: #818cf8;
             --secondary: #8b5cf6;
@@ -35,8 +35,8 @@
             --bg-secondary: #f8fafc;
             --bg-tertiary: #f1f5f9;
             --text-primary: #0f172a;
-            --text-secondary: #64748b;
-            --text-tertiary: #94a3b8;
+            --text-secondary: #5a6376;
+            --text-tertiary: #5a6783;
             --border: #e2e8f0;
             --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
             --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
@@ -1113,6 +1113,7 @@
     </header>
 
     <!-- Main Content -->
+    <main role="main">
     <div class="container">
         <!-- Main Layout -->
         <div class="split-layout">
@@ -1136,7 +1137,7 @@
                             <i class="fas fa-integral" aria-hidden="true"></i>
                             Integration
                         </button>
-                        <button class="tab" data-tab="matrix" onclick="switchTab('matrix')" role="tab" aria-selected="false" aria-controls="matrix-content" aria-label="Matrix operations">
+                        <button class="tab" data-tab="matrix" onclick="switchTab('matrix')" role="tab" aria-selected="false" aria-controls="matrix-content" aria-label="Matrices">
                             <i class="fas fa-table" aria-hidden="true"></i>
                             Matrices
                         </button>
@@ -1149,13 +1150,13 @@
                                 <i class="fas fa-lightbulb" aria-hidden="true"></i> Quick Examples
                             </label>
                             <div class="examples">
-                                <span class="example-chip" onclick="setExample('sin(x**2)', 'x')" role="button" tabindex="0" aria-label="Example: sine of x squared">sin(x²)</span>
-                                <span class="example-chip" onclick="setExample('x**3 * cos(x)', 'x')" role="button" tabindex="0" aria-label="Example: x cubed times cosine of x">x³·cos(x)</span>
-                                <span class="example-chip" onclick="setExample('exp(x**2)', 'x')" role="button" tabindex="0" aria-label="Example: exponential of x squared">e^(x²)</span>
-                                <span class="example-chip" onclick="setExample('log(x**2 + 1)', 'x')" role="button" tabindex="0" aria-label="Example: natural log of x squared plus 1">ln(x² + 1)</span>
-                                <span class="example-chip" onclick="setExample('tan(x) + x**2', 'x')" role="button" tabindex="0" aria-label="Example: tangent of x plus x squared">tan(x) + x²</span>
-                                <span class="example-chip" onclick="setExample('(x**2 + 1) / (x - 1)', 'x')" role="button" tabindex="0" aria-label="Example: rational function">Rational</span>
-                                <span class="example-chip" onclick="setExample('sqrt(x**2 + 4)', 'x')" role="button" tabindex="0" aria-label="Example: square root of x squared plus 4">√(x² + 4)</span>
+                                <span class="example-chip" onclick="setExample('sin(x**2)', 'x')" role="button" tabindex="0" aria-label="sin(x²): sine of x squared">sin(x²)</span>
+                                <span class="example-chip" onclick="setExample('x**3 * cos(x)', 'x')" role="button" tabindex="0" aria-label="x³·cos(x): x cubed times cosine of x">x³·cos(x)</span>
+                                <span class="example-chip" onclick="setExample('exp(x**2)', 'x')" role="button" tabindex="0" aria-label="e^(x²): exponential of x squared">e^(x²)</span>
+                                <span class="example-chip" onclick="setExample('log(x**2 + 1)', 'x')" role="button" tabindex="0" aria-label="ln(x² + 1): natural log of x squared plus 1">ln(x² + 1)</span>
+                                <span class="example-chip" onclick="setExample('tan(x) + x**2', 'x')" role="button" tabindex="0" aria-label="tan(x) + x²: tangent of x plus x squared">tan(x) + x²</span>
+                                <span class="example-chip" onclick="setExample('(x**2 + 1) / (x - 1)', 'x')" role="button" tabindex="0" aria-label="Rational: rational function example">Rational</span>
+                                <span class="example-chip" onclick="setExample('sqrt(x**2 + 4)', 'x')" role="button" tabindex="0" aria-label="√(x² + 4): square root of x squared plus 4">√(x² + 4)</span>
                             </div>
                         </div>
 
@@ -1197,7 +1198,7 @@
                         </div>
 
                         <div class="action-bar">
-                            <button class="action-btn" onclick="computeDifferentiate()" aria-label="Compute differentiation">
+                            <button class="action-btn" onclick="computeDifferentiate()" aria-label="Differentiate">
                                 <i class="fas fa-play-circle"></i>
                                 Differentiate
                             </button>
@@ -1211,18 +1212,18 @@
                                 <i class="fas fa-lightbulb"></i> Quick Examples
                             </label>
                             <div class="examples">
-                                <span class="example-chip" onclick="setIntegrationExample('x**2', 'x')" role="button" tabindex="0" aria-label="Example: integral of x squared">x²</span>
-                                <span class="example-chip" onclick="setIntegrationExample('sin(x)', 'x')" role="button" tabindex="0" aria-label="Example: integral of sine of x">sin(x)</span>
-                                <span class="example-chip" onclick="setIntegrationExample('cos(x)**2', 'x')" role="button" tabindex="0" aria-label="Example: integral of cosine squared">cos²(x)</span>
-                                <span class="example-chip" onclick="setIntegrationExample('exp(x)', 'x')" role="button" tabindex="0" aria-label="Example: integral of exponential">e^x</span>
-                                <span class="example-chip" onclick="setIntegrationExample('1/x', 'x')" role="button" tabindex="0" aria-label="Example: integral of one over x">1/x</span>
-                                <span class="example-chip" onclick="setIntegrationExample('x * exp(x)', 'x')" role="button" tabindex="0" aria-label="Example: integration by parts - x times e to the x">x·e^x</span>
-                                <span class="example-chip" onclick="setIntegrationExample('sqrt(x)', 'x')" role="button" tabindex="0" aria-label="Example: integral of square root of x">√x</span>
-                                <span class="example-chip" onclick="setIntegrationExample('1/(x**2 + 1)', 'x')" role="button" tabindex="0" aria-label="Example: integral of one over x squared plus 1">1/(x²+1)</span>
-                                <span class="example-chip" onclick="setIntegrationExample('sinh(x)', 'x')" role="button" tabindex="0" aria-label="Example: integral of hyperbolic sine">sinh(x)</span>
-                                <span class="example-chip" onclick="setIntegrationExample('x * sin(x)', 'x')" role="button" tabindex="0" aria-label="Example: integration by parts - x times sine of x">x·sin(x)</span>
-                                <span class="example-chip" onclick="setIntegrationExample('log(x)', 'x')" role="button" tabindex="0" aria-label="Example: integral of natural log of x">ln(x)</span>
-                                <span class="example-chip" onclick="setIntegrationExample('1/sqrt(1 - x**2)', 'x')" role="button" tabindex="0" aria-label="Example: integral of one over square root of 1 minus x squared">1/√(1-x²)</span>
+                                <span class="example-chip" onclick="setIntegrationExample('x**2', 'x')" role="button" tabindex="0" aria-label="x²: integral of x squared">x²</span>
+                                <span class="example-chip" onclick="setIntegrationExample('sin(x)', 'x')" role="button" tabindex="0" aria-label="sin(x): integral of sine of x">sin(x)</span>
+                                <span class="example-chip" onclick="setIntegrationExample('cos(x)**2', 'x')" role="button" tabindex="0" aria-label="cos²(x): integral of cosine squared">cos²(x)</span>
+                                <span class="example-chip" onclick="setIntegrationExample('exp(x)', 'x')" role="button" tabindex="0" aria-label="e^x: integral of exponential">e^x</span>
+                                <span class="example-chip" onclick="setIntegrationExample('1/x', 'x')" role="button" tabindex="0" aria-label="1/x: integral of one over x">1/x</span>
+                                <span class="example-chip" onclick="setIntegrationExample('x * exp(x)', 'x')" role="button" tabindex="0" aria-label="x·e^x: integration by parts">x·e^x</span>
+                                <span class="example-chip" onclick="setIntegrationExample('sqrt(x)', 'x')" role="button" tabindex="0" aria-label="√x: integral of square root of x">√x</span>
+                                <span class="example-chip" onclick="setIntegrationExample('1/(x**2 + 1)', 'x')" role="button" tabindex="0" aria-label="1/(x²+1): integral arctangent">1/(x²+1)</span>
+                                <span class="example-chip" onclick="setIntegrationExample('sinh(x)', 'x')" role="button" tabindex="0" aria-label="sinh(x): integral of hyperbolic sine">sinh(x)</span>
+                                <span class="example-chip" onclick="setIntegrationExample('x * sin(x)', 'x')" role="button" tabindex="0" aria-label="x·sin(x): integration by parts">x·sin(x)</span>
+                                <span class="example-chip" onclick="setIntegrationExample('log(x)', 'x')" role="button" tabindex="0" aria-label="ln(x): integral of natural log">ln(x)</span>
+                                <span class="example-chip" onclick="setIntegrationExample('1/sqrt(1 - x**2)', 'x')" role="button" tabindex="0" aria-label="1/√(1-x²): integral arcsine">1/√(1-x²)</span>
                             </div>
                         </div>
 
@@ -1451,12 +1452,13 @@
             </div>
         </div>
     </div>
+    </main>
 
     <!-- History Panel -->
     <div class="history-panel" id="history-panel">
         <div class="history-header">
             <h3>Computation History</h3>
-            <button class="btn-icon" onclick="toggleHistory()">
+            <button class="btn-icon" onclick="toggleHistory()" aria-label="Close history panel">
                 <i class="fas fa-times"></i>
             </button>
         </div>
