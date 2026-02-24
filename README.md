@@ -2,10 +2,10 @@
 
 **Calcora** is an open-source educational platform that provides step-by-step explanations for symbolic differentiation, integration, and linear algebra. Built on SymPy and designed for **transparency over power**, Calcora helps students understand *why* solutions work, not just *what* the answer is.
 
-**Status**: v0.2-alpha (Integration Engine Release)  
+**Status**: v0.2.0 (Security & Robustness Release)  
 **Maturity**: Early-stage educational tool — suitable for Calculus I/II coursework, not research computing
 
-📚 **[Complete Documentation](CLONE_AND_RUN.md)** | 🎓 **[Academic Strategy](ACADEMIC_STRATEGY.md)** | 🚀 **[Release Notes](RELEASE_NOTES_v0.2.md)** | 🧪 **[Benchmarks](benchmarks/)**
+📚 **[Getting Started](CLONE_AND_RUN.md)** | 🚀 **[Release Notes](RELEASE_NOTES_v0.2.0.md)** | 📋 **[Changelog](CHANGELOG.md)** | 🧪 **[Benchmarks](benchmarks/)**
 
 ![Tests](https://img.shields.io/badge/tests-69%2F73%20passing-brightgreen)
 ![Coverage](https://img.shields.io/badge/coverage-51%25-yellow)
@@ -311,11 +311,12 @@ See [docs/PLUGINS.md](docs/PLUGINS.md).
 - 🔌 **[Plugins](docs/PLUGINS.md)** - Creating custom rules and solvers
 - 🤝 **[Contributing](CONTRIBUTING.md)** - Development guidelines
 
-### Project Management
-- 🎯 **[Academic Strategy](ACADEMIC_STRATEGY.md)** - v0.2 roadmap for university adoption
+### Release Documentation
+- 📝 **[Release Notes v0.2.0](RELEASE_NOTES_v0.2.0.md)** - Security & Robustness release details
+- 📋 **[Changelog](CHANGELOG.md)** - Complete version history
+- 🎯 **[Release Summary v0.2.0](RELEASE_SUMMARY_v0.2.0.md)** - Release completion and metrics
+- 🔍 **[Architecture Verification](ARCHITECTURE_VERIFICATION_v0.2.md)** - Pre-release validation audit
 - 🗺️ **[Roadmap](ROADMAP.md)** - Feature timeline v0.1 → v0.5
-- 📝 **[Release Notes v0.2](RELEASE_NOTES_v0.2.md)** - What's new in integration engine
-- 📋 **[Changelog](CHANGELOG.md)** - Version history
 
 ### Policies
 - 🛡️ **[Security Policy](SECURITY.md)** - Reporting vulnerabilities
