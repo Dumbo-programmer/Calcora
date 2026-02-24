@@ -230,16 +230,41 @@ class IntegrationEngine:
                 'success': False
             }
         except Exception as e:
-            # Try numerical integration as ultimate fallback
+            # Log the actual error for debugging
+            import traceback
+            error_details = f"{type(e).__name__}: {str(e)}"
+            traceback_str = traceback.format_exc()
+            
             self.steps.append(IntegrationStep(
-                rule="numerical_fallback",
-                explanation=f"Symbolic integration failed. Using numerical approximation.",
+                rule="integration_error",
+                explanation=f"Integration failed with error: {error_details}",
                 expression_before=f"∫ {expr} dx",
-                expression_after="(numerical approximation)",
-                technique="numerical"
+                expression_after=f"Error: {error_details}",
+                technique="error"
             ))
             self.can_integrate = False
-            result = None
+            
+            # Return detailed error instead of None
+            return {
+                'operation': 'integrate',
+                'input': expression,
+                'error': f'Integration failed: {error_details}',
+                'error_type': type(e).__name__,
+                'traceback': traceback_str,
+                'code': 'INTEGRATION_ERROR',
+                'technique': technique,
+                'steps': [
+                    {
+                        'rule': step.rule,
+                        'explanation': step.explanation,
+                        'before': self._format_expression(step.expression_before),
+                        'after': self._format_expression(step.expression_after),
+                        'technique': step.technique
+                    }
+                    for step in self.steps
+                ],
+                'success': False
+            }
         
         # Handle definite integral
         is_definite = lower_limit is not None and upper_limit is not None
