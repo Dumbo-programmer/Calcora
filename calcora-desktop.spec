@@ -32,8 +32,8 @@ a = Analysis(
     pathex=[],
     binaries=[],
     datas=[
-        # Bundle the entire site/ directory
-        ('site', 'site'),
+        # Bundle the actual application UI (not the marketing site!)
+        ('src/calcora/web', 'web'),
         # Bundle API server
         ('api_server.py', '.'),
     ],

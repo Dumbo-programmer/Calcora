@@ -1,4 +1,5 @@
 """
+"""
 Simple Flask API server for Calcora - can be deployed to Render/Railway/PythonAnywhere
 """
 from flask import Flask, request, jsonify, send_from_directory
@@ -7,17 +8,30 @@ from calcora.bootstrap import default_engine
 from calcora.renderers.json_renderer import JsonRenderer
 import json
 import os
+import sys
 
-app = Flask(__name__, static_folder='site', static_url_path='')
+# Determine static folder location (dev vs PyInstaller bundle)
+if getattr(sys, 'frozen', False):
+    # Running as PyInstaller bundle - use bundled web folder
+    STATIC_FOLDER = os.path.join(sys._MEIPASS, 'web')
+else:
+    # Running as script - use src/calcora/web for actual app
+    # For production deployment (Netlify): use 'site' directory
+    STATIC_FOLDER = os.environ.get('CALCORA_STATIC_FOLDER', 'src/calcora/web')
+
+app = Flask(__name__, static_folder=STATIC_FOLDER, static_url_path='/static')
 CORS(app)
 
 @app.route('/')
 def index():
-    return send_from_directory('site', 'index.html')
+    return send_from_directory(STATIC_FOLDER, 'index.html')
 
 @app.route('/<path:path>')
 def serve_static(path):
-    return send_from_directory('site', path)
+    # Don't serve API routes as static files
+    if path.startswith('api/') or path.startswith('.netlify/'):
+        return '', 404
+    return send_from_directory(STATIC_FOLDER, path)
 
 @app.route('/.netlify/functions/calcora_engine', methods=['POST', 'OPTIONS'])
 @app.route('/api/compute', methods=['POST', 'OPTIONS'])
