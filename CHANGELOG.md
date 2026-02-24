@@ -13,6 +13,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Integration engine requires numpy for numerical computations and lambdify operations
   - This was causing all integration operations to fail on deployed backend
   - Local installations worked due to numpy being already installed in dev environments
+- **Integration technique classification** - Moved trigonometric check before substitution check
+  - Previously `sin(x)` was incorrectly classified as "substitution" instead of "trig"
+  - Improved substitution heuristic to exclude simple functions like `sin(x)`, `exp(x)`, `log(x)`
+  - Now correctly uses direct integration formulas for basic functions
+- **Error reporting** - Added detailed error messages with exception type and traceback for integration failures
+  - Helps diagnose production issues on deployed backends
+  - Returns structured error responses instead of generic failures
 
 ## [0.2.0] - 2026-02-24
 
