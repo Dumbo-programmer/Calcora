@@ -361,6 +361,10 @@ class IntegrationEngine:
         if any(expr.has(func) for func in [sp.sinh, sp.cosh, sp.tanh, sp.coth, sp.sech, sp.csch]):
             return 'hyperbolic'
         
+        # Check for trigonometric integrals (BEFORE substitution check!)
+        if any(expr.has(func) for func in [sp.sin, sp.cos, sp.tan, sp.sec, sp.csc, sp.cot]):
+            return 'trig'
+        
         # Check for substitution candidates
         if self._is_substitution_candidate(expr, x):
             return 'substitution'
@@ -368,10 +372,6 @@ class IntegrationEngine:
         # Check for integration by parts
         if self._is_by_parts_candidate(expr, x):
             return 'by_parts'
-        
-        # Check for trigonometric integrals
-        if any(expr.has(func) for func in [sp.sin, sp.cos, sp.tan, sp.sec, sp.csc, sp.cot]):
-            return 'trig'
         
         return 'general'
     
@@ -441,8 +441,24 @@ class IntegrationEngine:
         """Check if expression is a good candidate for u-substitution"""
         import sympy as sp
         
-        # Look for composite functions f(g(x)) * g'(x)
-        # This is a simplified heuristic
+        # Look for composite functions f(g(x)) where g(x) is not just x
+        # Examples: sin(x**2), exp(3*x), log(x**2 + 1)
+        # But NOT simple: sin(x), exp(x), log(x) - these use direct formulas
+        
+        # Simple heuristic: check if expression contains trig/exp/log
+        # AND has a non-trivial argument (like x**2, not just x)
+        if expr.is_polynomial(x):
+            return False
+        
+        # Check for composite structure (rough heuristic)
+        # If it's just sin(x), exp(x), log(x), etc., don't use substitution
+        for func in [sp.sin, sp.cos, sp.exp, sp.log, sp.tan]:
+            if expr.has(func):
+                # Check if it's a simple direct function or composite
+                if expr == func(x):  # e.g., sin(x), exp(x)
+                    return False  # Use direct formula, not substitution
+        
+        # If we get here and have these functions, it's likely composite
         return expr.has(sp.sin, sp.cos, sp.exp, sp.log) and not expr.is_polynomial(x)
     
     def _is_by_parts_candidate(self, expr, x) -> bool:
