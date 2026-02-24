@@ -943,7 +943,22 @@ print(result.output)  # Shows: 2*x + 3</code>
         <p style="margin-top: 0.5rem; font-size: 0.875rem;">
             © 2024-2026 Calcora Contributors. All rights reserved.
         </p>
+        <p id="version-info" style="margin-top: 0.75rem; font-size: 0.8rem; color: #64748b; font-family: 'JetBrains Mono', monospace;"></p>
     </footer>
+
+    <script>
+        // Display version info for desktop mode
+        (function() {
+            const isLocalhost = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost';
+            if (isLocalhost) {
+                const versionElem = document.getElementById('version-info');
+                if (versionElem) {
+                    versionElem.innerHTML = '🖥️ Calcora Desktop v0.3.0 — Running locally on ' + window.location.host;
+                    versionElem.style.color = '#10b981'; // Green to indicate local/secure
+                }
+            }
+        })();
+    </script>
 
     <script>
         // Theme management

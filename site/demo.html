@@ -1475,6 +1475,28 @@
         Esc: Close panels
     </div>
 
+    <!-- Version Footer -->
+    <div id="version-footer" style="position: fixed; bottom: 0; left: 0; right: 0; padding: 0.5rem; text-align: center; font-size: 0.75rem; color: #64748b; background: rgba(255, 255, 255, 0.9); border-top: 1px solid #e2e8f0; font-family: 'JetBrains Mono', monospace; z-index: 1000; display: none;">
+        <span id="version-text"></span>
+    </div>
+
+    <script>
+        // Display version info for desktop mode
+        (function() {
+            const isLocalhost = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost';
+            if (isLocalhost) {
+                const footer = document.getElementById('version-footer');
+                const versionText = document.getElementById('version-text');
+                if (footer && versionText) {
+                    versionText.innerHTML = '🖥️ Calcora Desktop v0.3.0 — Running locally on ' + window.location.host + ' (100% private, offline)';
+                    footer.style.display = 'block';
+                    footer.style.background = 'rgba(16, 185, 129, 0.1)';
+                    footer.style.borderTopColor = '#10b981';
+                    footer.style.color = '#10b981';
+                }
+            }
+        })();
+    </script>
     <script>
         // API Configuration
         const API_ENDPOINTS = [

@@ -250,6 +250,104 @@ app.run(host='127.0.0.1', port=8000)
 
 ---
 
+## 🔄 Dependency Management & Rebuild Policy
+
+### Dependency Pinning Strategy
+
+**CRITICAL:** Desktop builds ship frozen runtime snapshots. Reproducible builds are mandatory.
+
+**Lock File:** `requirements-lock.txt`
+```bash
+# Generate exact dependency versions
+pip freeze > requirements-lock.txt
+
+# Use in CI/CD
+pip install -r requirements-lock.txt
+```
+
+**Pin policy:**
+- MAJOR.MINOR.PATCH for critical deps (Flask, SymPy, NumPy)
+- Lock file regenerated on each release
+- Manual review before updating locked versions
+
+**Why this matters:**
+- Without pinning: `pip install` installs latest → builds non-reproducible
+- With pinning: Same source = same binary (traceable, auditable)
+- CVE tracking: Know exact versions shipped
+
+### Rebuild Cadence Policy
+
+**Desktop binaries are frozen Python ecosystem snapshots.**  
+They don't auto-update dependencies. You MUST rebuild periodically.
+
+**Recommended cadence:**
+
+| Event | Action | Priority |
+|-------|--------|----------|
+| **Critical CVE** (Flask, SymPy, NumPy) | Emergency rebuild + patch release | P0 - within 48hrs |
+| **Minor Calcora release** (new features) | Rebuild + version bump | P1 - next release |
+| **Quarterly maintenance** (dep updates) | Rebuild with latest dependencies | P2 - every 3 months |
+| **Major Python upgrade** (3.11 → 3.12) | Test, rebuild, re-certify | P1 - when stable |
+
+**Workflow for dependency updates:**
+
+1. **Create new venv:**
+   ```bash
+   python -m venv .venv-rebuild
+   .venv-rebuild\Scripts\activate
+   ```
+
+2. **Install latest compatible versions:**
+   ```bash
+   pip install -e ".[engine-sympy,api]"
+   ```
+
+3. **Test thoroughly:**
+   ```bash
+   pytest tests/
+   python -m calcora.cli differentiate "sin(x)"
+   python api_server.py  # Manual integration tests
+   ```
+
+4. **Regenerate lock file:**
+   ```bash
+   pip freeze > requirements-lock.txt
+   ```
+
+5. **Update build:**
+   ```bash
+   .\build-desktop.ps1 -Clean -Test
+   ```
+
+6. **Version bump:**
+   - pyproject.toml: `0.3.1` → `0.3.2`
+   - calcora_desktop.py: `VERSION = "0.3.2"`
+   - CHANGELOG.md: Add `[0.3.2] - Dependency updates`
+
+7. **CI/CD rebuild:**
+   ```bash
+   git tag v0.3.2
+   git push origin v0.3.2
+   ```
+
+**Tracking shipped versions:**
+- Embed `requirements-lock.txt` in releases
+- Tag format: `v0.3.0` includes lock file snapshot
+- Users can verify: `Calcora.exe --version` shows build date + deps digest
+
+**What to monitor:**
+- GitHub Security Advisories (Dependabot)
+- Python CVE database
+- SymPy/NumPy release notes
+- Flask security announcements
+
+**Migration strategy (future):**
+- Python 3.11 → 3.12: Test in v0.4.0-alpha first
+- SymPy major upgrade: Regression test ALL operations
+- NumPy 2.x: Compatibility review before adopting
+
+---
+
 ##  Updates Strategy
 
 ### Phase 1 (v0.3.0): Manual Updates
@@ -257,26 +355,79 @@ app.run(host='127.0.0.1', port=8000)
 **On startup:**
 1. Check GitHub Releases API:
    ```python
-   response = requests.get('https://api.github.com/repos/Dumbo-programmer/Calcora/releases/latest')
-   latest_version = response.json()['tag_name']
+   def check_for_updates():
+       """
+       Check for updates WITHOUT blocking startup.
+       
+       CRITICAL REQUIREMENTS:
+       - 2-second timeout MAX
+       - Non-blocking background thread
+       - Fail silently (never crash app)
+       - Handle rate limits gracefully
+       """
+       try:
+           response = requests.get(
+               'https://api.github.com/repos/Dumbo-programmer/Calcora/releases/latest',
+               timeout=2.0  # CRITICAL: Never block startup
+           )
+           
+           # Handle GitHub API rate limiting (60 req/hr unauthenticated)
+           if response.status_code == 403:
+               # Rate limited - fail silently
+               return None
+           
+           if response.status_code == 200:
+               latest_version = response.json()['tag_name']
+               return latest_version
+               
+       except requests.Timeout:
+           # Network slow - fail silently
+           return None
+       except requests.ConnectionError:
+           # Network blocked/offline - fail silently
+           return None
+       except Exception:
+           # ANY other error - fail silently
+           return None
+   
+   # Run in background thread (non-blocking)
+   def background_update_check():
+       latest = check_for_updates()
+       if latest and latest > CURRENT_VERSION:
+           show_update_banner()  # Non-modal, dismissible
+   
+   # Start check in daemon thread
+   update_thread = threading.Thread(target=background_update_check, daemon=True)
+   update_thread.start()
+   # DO NOT .join() - let it run async
    ```
 
-2. Compare versions:
-   ```python
-   if latest_version > current_version:
-       show_update_banner()
-   ```
+2. **UX Requirements:**
+   - Update check MUST NOT block startup
+   - If network unavailable: App starts normally (no error)
+   - If GitHub rate limited: App starts normally (silent)
+   - If check times out: App starts normally (2s max timeout)
+   - Banner appears ONLY if update found AND check succeeded
+   - Banner is dismissible and non-modal
 
 3. **User action:**
-   - Click "Download" → Opens GitHub Releases page
+   - Click "Download v0.X.Y" → Opens GitHub Releases page
    - User manually downloads and replaces
+   - Banner shows once per session (dismiss persists)
 
 **Advantages:**
 - Simple & safe
 - No auto-execution risk
 - User stays in control
+- Never blocks startup (worst case: 2s delay in background)
+- Graceful degradation in offline/blocked environments
 
-**Implementation priority:** v0.3.1 (not v0.3.0)
+**Implementation priority:** v0.3.1 (NOT v0.3.0)
+
+**Why delayed to v0.3.1:**
+- v0.3.0 ships without update checker (simpler, safer)
+- Allows real-world testing first
+- Avoids premature API rate limit issues
 
 ### Phase 2 (v0.4.0+): Optional Auto-Updater
 
