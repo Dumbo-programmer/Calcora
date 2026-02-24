@@ -25,10 +25,138 @@ CORS(app)
 def index():
     return send_from_directory(STATIC_FOLDER, 'index.html')
 
+# GET endpoint for differentiate (used by src/calcora/web/app.js)
+@app.route('/differentiate', methods=['GET', 'OPTIONS'])
+def differentiate_get():
+    if request.method == 'OPTIONS':
+        return '', 204
+    
+    try:
+        expr = request.args.get('expr')
+        variable = request.args.get('variable', 'x')
+        order = int(request.args.get('order', 1))
+        verbosity = request.args.get('verbosity', 'detailed')
+        
+        if not expr:
+            return jsonify({'error': 'Missing required parameter: expr'}), 400
+        
+        engine = default_engine(load_entry_points=True)
+        result = engine.run(
+            operation='differentiate',
+            expression=expr,
+            variable=variable,
+            order=order
+        )
+        
+        renderer = engine.registry.get_renderer(format='json') or JsonRenderer()
+        rendered = renderer.render(result=result, format='json', verbosity=verbosity)
+        response_data = json.loads(rendered) if isinstance(rendered, str) else rendered
+        
+        return jsonify(response_data), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# GET endpoint for integrate (used by src/calcora/web/app.js)
+@app.route('/integrate', methods=['GET', 'OPTIONS'])
+def integrate_get():
+    if request.method == 'OPTIONS':
+        return '', 204
+    
+    try:
+        from calcora.integration_engine import IntegrationEngine
+        
+        expr = request.args.get('expr')
+        variable = request.args.get('variable', 'x')
+        lower_limit = request.args.get('lower', None)
+        upper_limit = request.args.get('upper', None)
+        verbosity = request.args.get('verbosity', 'detailed')
+        
+        if not expr:
+            return jsonify({'error': 'Missing required parameter: expr'}), 400
+        
+        # Convert limits to float if provided
+        if lower_limit is not None and lower_limit != '':
+            lower_limit = float(lower_limit)
+        else:
+            lower_limit = None
+            
+        if upper_limit is not None and upper_limit != '':
+            upper_limit = float(upper_limit)
+        else:
+            upper_limit = None
+        
+        int_engine = IntegrationEngine()
+        result = int_engine.integrate(
+            expression=expr,
+            variable=variable,
+            lower_limit=lower_limit,
+            upper_limit=upper_limit,
+            verbosity=verbosity,
+            generate_graph=True
+        )
+        
+        return jsonify(result), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# POST endpoints for matrix operations (used by src/calcora/web/app.js)
+@app.route('/matrix/<operation>', methods=['POST', 'OPTIONS'])
+def matrix_operation(operation):
+    if request.method == 'OPTIONS':
+        return '', 204
+    
+    try:
+        data = request.get_json()
+        
+        # For multiply: app.js sends matrix_a and matrix_b
+        # For other ops: app.js sends matrix
+        if operation == 'multiply':
+            matrix = data.get('matrix_a') or data.get('matrix')
+            matrix_b = data.get('matrix_b')
+            if not matrix or not matrix_b:
+                return jsonify({'error': 'matrix_multiply requires matrix_a and matrix_b'}), 400
+        else:
+            matrix = data.get('matrix')
+            if not matrix:
+                return jsonify({'error': 'Missing required field: matrix'}), 400
+        
+        verbosity = data.get('verbosity', 'detailed')
+        
+        engine = default_engine(load_entry_points=True)
+        
+        # Map URL operation to engine operation
+        op_map = {
+            'multiply': 'matrix_multiply',
+            'determinant': 'matrix_determinant',
+            'inverse': 'matrix_inverse',
+            'rref': 'matrix_rref',
+            'eigenvalues': 'matrix_eigenvalues',
+            'lu': 'matrix_lu'
+        }
+        
+        engine_op = op_map.get(operation)
+        if not engine_op:
+            return jsonify({'error': f'Unsupported matrix operation: {operation}'}), 400
+        
+        kwargs = {'operation': engine_op, 'expression': matrix}
+        
+        if operation == 'multiply':
+            kwargs['matrix_b'] = matrix_b
+        
+        result = engine.run(**kwargs)
+        
+        renderer = engine.registry.get_renderer(format='json') or JsonRenderer()
+        rendered = renderer.render(result=result, format='json', verbosity=verbosity)
+        response_data = json.loads(rendered) if isinstance(rendered, str) else rendered
+        
+        return jsonify(response_data), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/<path:path>')
 def serve_static(path):
     # Don't serve API routes as static files
-    if path.startswith('api/') or path.startswith('.netlify/'):
+    if path.startswith('api/') or path.startswith('.netlify/') or path.startswith('differentiate') or path.startswith('integrate') or path.startswith('matrix/'):
         return '', 404
     return send_from_directory(STATIC_FOLDER, path)
 
