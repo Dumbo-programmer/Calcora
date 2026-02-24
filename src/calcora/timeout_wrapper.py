@@ -35,8 +35,11 @@ def timeout(seconds: float = 3.0):
     """
     Decorator to add timeout to a function.
     
-    Uses signal.alarm on Unix (accurate, low overhead)
-    Uses threading.Timer on Windows (approximate, higher overhead)
+    Uses signal.alarm on Unix/main thread (accurate, low overhead)
+    Uses threading.Timer on Windows or worker threads (approximate, higher overhead)
+    
+    Note: Web servers (Flask/Gunicorn) run in worker threads where signal.alarm
+    doesn't work, so threading fallback is used automatically.
     
     Args:
         seconds: Maximum execution time in seconds
@@ -56,8 +59,11 @@ def timeout(seconds: float = 3.0):
                 # No timeout enforcement
                 return func(*args, **kwargs)
             
-            if IS_UNIX:
-                # Unix: Use signal.alarm (precise, lightweight)
+            # Check if we're in the main thread (signal only works there)
+            is_main_thread = threading.current_thread() == threading.main_thread()
+            
+            if IS_UNIX and is_main_thread:
+                # Unix + main thread: Use signal.alarm (precise, lightweight)
                 def _timeout_handler(signum, frame):
                     raise TimeoutError(f'Operation exceeded {timeout_value:.1f}s timeout')
                 
@@ -75,7 +81,7 @@ def timeout(seconds: float = 3.0):
                 return result
             
             else:
-                # Windows: Use threading.Timer (less precise but portable)
+                # Windows OR non-main thread: Use threading.Timer (portable but less precise)
                 result = [None]
                 exception = [None]
                 
