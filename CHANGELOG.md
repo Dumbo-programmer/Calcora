@@ -5,6 +5,15 @@ All notable changes to Calcora will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.1] - 2026-02-24
+
+### Fixed
+- **Critical: Integration API returning "None + C"** - Added proper None check in integration engine before formatting results
+- **Critical: Missing NumPy dependency** - Added `numpy>=1.26` to both `pyproject.toml` and `requirements-api.txt`
+  - Integration engine requires numpy for numerical computations and lambdify operations
+  - This was causing all integration operations to fail on deployed backend
+  - Local installations worked due to numpy being already installed in dev environments
+
 ## [0.2.0] - 2026-02-24
 
 ### Added (Integration Engine)
