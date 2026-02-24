@@ -102,8 +102,8 @@ def log_error(error: Exception, context: str = ""):
 def open_browser(port: int, delay: float = 1.5):
     """Open browser after short delay to ensure server is ready."""
     time.sleep(delay)
-    # Open directly to the demo app, not the marketing landing page
-    url = f"http://127.0.0.1:{port}/demo.html"
+    # Open to root URL which serves index.html (the actual calculator app)
+    url = f"http://127.0.0.1:{port}/"
     print(f"Opening browser to {url}...")
     webbrowser.open(url)
 
