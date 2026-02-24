@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.2.1] - 2026-02-24
 
 ### Fixed
+- **CRITICAL: Timeout wrapper failing in production worker threads** - Fixed `ValueError: signal only works in main thread`
+  - Render/Gunicorn runs Flask in worker threads where `signal.alarm` cannot be used
+  - Now detects if running in worker thread via `threading.current_thread()` 
+  - Automatically falls back to threading-based timeout in worker threads
+  - Signal-based timeout still used in main thread on Unix for optimal performance
+  - This was preventing ALL integration operations from working on deployed backend
 - **Critical: Integration API returning "None + C"** - Added proper None check in integration engine before formatting results
 - **Critical: Missing NumPy dependency** - Added `numpy>=1.26` to both `pyproject.toml` and `requirements-api.txt`
   - Integration engine requires numpy for numerical computations and lambdify operations
