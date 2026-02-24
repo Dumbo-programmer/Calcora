@@ -259,9 +259,30 @@ class IntegrationEngine:
                     technique="numerical"
                 ))
         
+        # Check if integration failed
+        if result is None and not is_definite:
+            return {
+                'operation': 'integrate',
+                'input': expression,
+                'error': 'Unable to compute symbolic integral. The expression may be too complex or non-elementary.',
+                'code': 'INTEGRATION_FAILED',
+                'technique': technique,
+                'steps': [
+                    {
+                        'rule': step.rule,
+                        'explanation': step.explanation,
+                        'before': self._format_expression(step.expression_before),
+                        'after': self._format_expression(step.expression_after),
+                        'technique': step.technique
+                    }
+                    for step in self.steps
+                ],
+                'success': False
+            }
+        
         # Generate graph data
         graph_data = None
-        if generate_graph:
+        if generate_graph and result is not None:
             graph_data = self._generate_graph_data(
                 expr, result, x, lower_limit, upper_limit, definite_value
             )
