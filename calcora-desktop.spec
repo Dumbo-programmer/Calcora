@@ -116,8 +116,10 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    # Add icon here (create calcora.ico for Windows, calcora.icns for macOS)
-    icon=None,  # TODO: icon='media/calcora-icon.ico'
+    # Custom application icon
+    icon='media/calcora-icon.ico' if os.path.exists('media/calcora-icon.ico') else None,
+    # Windows version information (visible in Properties)
+    version='version_info.txt' if os.path.exists('version_info.txt') else None,
 )
 
 # macOS app bundle (optional, for .app creation)

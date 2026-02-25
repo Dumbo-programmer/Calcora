@@ -242,5 +242,45 @@ def compute():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/shutdown', methods=['POST', 'OPTIONS'])
+def shutdown():
+    """
+    Gracefully shutdown the server (desktop mode only).
+    
+    This endpoint is only functional when running via calcora_desktop.py
+    and should only be accessible from localhost.
+    """
+    if request.method == 'OPTIONS':
+        return '', 204
+    
+    # Security: Only allow shutdown from localhost
+    if request.remote_addr not in ('127.0.0.1', 'localhost', '::1'):
+        return jsonify({'error': 'Shutdown only allowed from localhost'}), 403
+    
+    # Attempt graceful shutdown
+    try:
+        # Method 1: Try werkzeug's shutdown function (if available)
+        shutdown_func = request.environ.get('werkzeug.server.shutdown')
+        if shutdown_func:
+            shutdown_func()
+            return jsonify({'message': 'Server shutting down...'}), 200
+        
+        # Method 2: For newer Werkzeug versions, use os._exit as last resort
+        # This is intentionally delayed to allow the response to be sent
+        import signal
+        import os
+        import threading
+        
+        def delayed_shutdown():
+            import time
+            time.sleep(0.5)  # Allow response to be sent
+            os.kill(os.getpid(), signal.SIGTERM)
+        
+        threading.Thread(target=delayed_shutdown, daemon=True).start()
+        return jsonify({'message': 'Server shutting down...'}), 200
+        
+    except Exception as e:
+        return jsonify({'error': f'Shutdown failed: {str(e)}'}), 500
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

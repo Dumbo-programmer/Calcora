@@ -100,25 +100,90 @@ def log_error(error: Exception, context: str = ""):
         pass
 
 def open_browser(port: int, delay: float = 1.5):
-    """Open browser after short delay to ensure server is ready."""
+    """
+    Open browser after short delay to ensure server is ready.
+    
+    Includes health check and fallback strategies for maximum reliability.
+    """
     time.sleep(delay)
-    # Open to root URL which serves index.html (the actual calculator app)
+    
+    # Health check: Verify server is responding before opening browser
     url = f"http://127.0.0.1:{port}/"
-    print(f"Opening browser to {url}...")
-    webbrowser.open(url)
+    max_retries = 5
+    for i in range(max_retries):
+        try:
+            import urllib.request
+            urllib.request.urlopen(url, timeout=1)
+            break  # Server is ready
+        except:
+            if i < max_retries - 1:
+                time.sleep(0.5)  # Wait and retry
+            else:
+                # Server didn't respond, but still try to open browser
+                # (server might start just after this check)
+                pass
+    
+    # Try to open browser with fallback strategies
+    try:
+        # Strategy 1: Default browser
+        if webbrowser.open(url):
+            return  # Success
+        
+        # Strategy 2: Explicitly try common browsers (in order of preference)
+        browsers = [
+            'windows-default',  # Windows default
+            'chrome',
+            'firefox',
+            'edge',
+            'safari',
+        ]
+        
+        for browser_name in browsers:
+            try:
+                browser = webbrowser.get(browser_name)
+                if browser.open(url):
+                    return  # Success
+            except:
+                continue  # Try next browser
+        
+        # If we get here, we couldn't open any browser
+        # Print URL for manual access
+        print(f"\n⚠ Could not automatically open browser.")
+        print(f"  Please manually open: {url}")
+        print()
+        
+    except Exception as e:
+        print(f"\n⚠ Browser launch failed: {e}")
+        print(f"  Please manually open: {url}")
+        print()
 
 def main():
     """Main entry point for Calcora Desktop."""
-    print("=" * 60)
-    print("  Calcora Desktop - Computational Mathematics Engine")
-    print(f"  Version {VERSION}")
-    print("=" * 60)
+    # Try to use colorama for colored output (fallback gracefully if not available)
+    try:
+        from colorama import init, Fore, Style
+        init(autoreset=True)
+        use_colors = True
+    except ImportError:
+        # Fallback: no colors
+        class Fore:
+            GREEN = YELLOW = CYAN = RED = RESET = ''
+        class Style:
+            BRIGHT = RESET_ALL = ''
+        use_colors = False
+    
+    # Header
+    print()
+    print(f"{Fore.CYAN}{'=' * 70}")
+    print(f"{Fore.CYAN}{Style.BRIGHT}  🧮 Calcora Desktop v{VERSION}")
+    print(f"{Fore.CYAN}  Computational Mathematics Engine — Privacy-First, Offline")
+    print(f"{Fore.CYAN}{'=' * 70}")
     print()
     
     # Get available port from OS (cleaner than scanning)
     try:
         port = get_available_port()
-        print(f"✓ Using port {port} (OS-assigned)")
+        print(f"{Fore.GREEN}✓ Network port assigned: {Style.BRIGHT}{port}{Style.RESET_ALL} (OS-managed)")
     except Exception as e:
         log_error(e, "Port assignment failed")
         show_error_dialog(
@@ -128,27 +193,12 @@ def main():
         )
         return 1
     
-    # Start browser opener in background thread
-    browser_thread = threading.Thread(target=open_browser, args=(port,), daemon=True)
-    browser_thread.start()
-    
-    print()
-    print("Starting Calcora server...")
-    print(f"Server running at: http://127.0.0.1:{port}")
-    print()
-    print("=" * 60)
-    print("  Tips:")
-    print("  - Your browser will open automatically")
-    print("  - All computation runs locally (offline)")
-    print("  - Press Ctrl+C to stop the server")
-    print("=" * 60)
-    print()
-    
     # Import Flask app (do this after port check to fail fast)
     try:
         from flask import Flask
         from flask_cors import CORS
         from api_server import app
+        print(f"{Fore.GREEN}✓ Mathematical engine loaded")
     except ImportError as e:
         log_error(e, "Failed to import server components")
         show_error_dialog(
@@ -158,6 +208,29 @@ def main():
         )
         return 1
     
+    # Start browser opener in background thread
+    browser_thread = threading.Thread(target=open_browser, args=(port,), daemon=True)
+    browser_thread.start()
+    print(f"{Fore.GREEN}✓ Browser will open automatically in 1-2 seconds...")
+    
+    print()
+    print(f"{Fore.YELLOW}{'─' * 70}")
+    print(f"{Fore.YELLOW}{Style.BRIGHT}  Server Status:")
+    print(f"{Fore.YELLOW}  • Running at: {Fore.CYAN}{Style.BRIGHT}http://127.0.0.1:{port}{Style.RESET_ALL}")
+    print(f"{Fore.YELLOW}  • Mode: {Fore.GREEN}Private{Style.RESET_ALL} (localhost only, not exposed to internet)")
+    print(f"{Fore.YELLOW}  • Computation: {Fore.GREEN}100% Offline{Style.RESET_ALL} (no data sent externally)")
+    print(f"{Fore.YELLOW}{'─' * 70}")
+    print()
+    print(f"{Fore.CYAN}  How to use:")
+    print(f"  • The calculator will open in your browser automatically")
+    print(f"  • Click {Style.BRIGHT}'Quit Calcora'{Style.RESET_ALL} button in the footer to shut down")
+    print(f"  • Or press {Style.BRIGHT}Ctrl+C{Style.RESET_ALL} in this window to stop the server")
+    print()
+    print(f"{Fore.CYAN}{'=' * 70}")
+    print(f"{Fore.GREEN}{Style.BRIGHT}  ✓ Calcora is now running — enjoy mathematical computation!")
+    print(f"{Fore.CYAN}{'=' * 70}")
+    print()
+
     # Override Flask settings for desktop mode
     app.config.update(
         DEBUG=False,
@@ -181,8 +254,21 @@ def main():
             threaded=True,
         )
     except KeyboardInterrupt:
-        print("\n\nShutting down Calcora...")
-        print("Goodbye!")
+        # Graceful shutdown on Ctrl+C
+        try:
+            from colorama import Fore, Style
+        except:
+            class Fore:
+                YELLOW = CYAN = ''
+            class Style:
+                BRIGHT = RESET_ALL = ''
+        
+        print(f"\n\n{Fore.YELLOW}{'─' * 70}")
+        print(f"{Fore.YELLOW}  Shutting down Calcora...")
+        print(f"{Fore.CYAN}{'─' * 70}")
+        print(f"{Fore.CYAN}  Thank you for using Calcora!")
+        print(f"{Fore.CYAN}  https://github.com/Dumbo-programmer/Calcora")
+        print(f"{Fore.CYAN}{'─' * 70}\n")
         return 0
     except Exception as e:
         log_error(e, "Server runtime error")

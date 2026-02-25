@@ -374,6 +374,11 @@
           <a href="https://github.com/Dumbo-programmer/Calcora" target="_blank" rel="noopener noreferrer" style="color: var(--primary); text-decoration: none; margin-top: 0.5rem; display: inline-block;">
             <i class="fab fa-github"></i> View on GitHub
           </a>
+          <br>
+          <!-- Desktop mode shutdown button (only visible when running locally) -->
+          <button id="shutdown-btn" style="display: none; margin-top: 1rem; padding: 0.5rem 1rem; background: var(--danger); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'" onclick="shutdownServer()">
+            <i class="fas fa-power-off"></i> Quit Calcora
+          </button>
         </p>
       </div>
     </footer>
@@ -490,6 +495,66 @@
           }
         }
       });
+      
+      // Desktop mode detection and shutdown functionality
+      (function() {
+        const hostname = window.location.hostname;
+        const isDesktopMode = hostname === '127.0.0.1' || hostname === 'localhost';
+        
+        if (isDesktopMode) {
+          // Show shutdown button in desktop mode
+          const shutdownBtn = document.getElementById('shutdown-btn');
+          if (shutdownBtn) {
+            shutdownBtn.style.display = 'inline-block';
+          }
+          
+          // Add desktop mode indicator to footer
+          const footerText = document.querySelector('.footer-text');
+          if (footerText) {
+            const desktopIndicator = document.createElement('span');
+            desktopIndicator.style.cssText = 'display: inline-block; margin-left: 0.5rem; padding: 0.25rem 0.5rem; background: var(--success); color: white; border-radius: 4px; font-size: 0.75rem; font-weight: 600;';
+            desktopIndicator.innerHTML = '<i class="fas fa-desktop"></i> Desktop Mode';
+            footerText.insertBefore(desktopIndicator, footerText.firstChild);
+          }
+        }
+      })();
+      
+      // Shutdown server function (desktop mode only)
+      async function shutdownServer() {
+        if (!confirm('Are you sure you want to quit Calcora?\n\nThis will close the application and stop the server.')) {
+          return;
+        }
+        
+        try {
+          const response = await fetch('/shutdown', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+          });
+          
+          if (response.ok) {
+            // Show farewell message
+            document.body.innerHTML = `
+              <div style="display: flex; align-items: center; justify-content: center; height: 100vh; background: var(--bg-primary); color: var(--text-primary); flex-direction: column; font-family: Inter, sans-serif;">
+                <div style="text-align: center;">
+                  <i class="fas fa-check-circle" style="font-size: 4rem; color: var(--success); margin-bottom: 1rem;"></i>
+                  <h1 style="margin: 0; font-size: 2rem;">Calcora has been shut down</h1>
+                  <p style="margin-top: 1rem; color: var(--text-secondary);">You can close this window now.</p>
+                </div>
+              </div>
+            `;
+            
+            // Close window after 2 seconds
+            setTimeout(() => {
+              window.close();
+            }, 2000);
+          } else {
+            alert('Failed to shutdown server. Please close the console window manually.');
+          }
+        } catch (error) {
+          console.error('Shutdown error:', error);
+          alert('Failed to shutdown server. Please close the console window manually.');
+        }
+      }
     </script>
     <script src="/static/app.js?v=6"></script>
   </body>

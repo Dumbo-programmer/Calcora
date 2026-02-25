@@ -1,0 +1,39 @@
+# UTF-8
+#
+# Windows version resource for Calcora Desktop
+#
+VSVersionInfo(
+  ffi=FixedFileInfo(
+    # filevers and prodvers should be 4-part tuples (1, 0, 0, 0)
+    filevers=(0, 3, 0, 0),
+    prodvers=(0, 3, 0, 0),
+    # File flags
+    mask=0x3f,
+    flags=0x0,
+    # OS: Windows NT
+    OS=0x40004,
+    # File type: Application
+    fileType=0x1,
+    # File subtype: Not used for applications
+    subtype=0x0,
+    # Date (deprecated, set to 0)
+    date=(0, 0)
+  ),
+  kids=[
+    StringFileInfo(
+      [
+      StringTable(
+        u'040904B0',
+        [StringStruct(u'CompanyName', u'Calcora Project'),
+        StringStruct(u'FileDescription', u'Calcora - Computational Mathematics Engine'),
+        StringStruct(u'FileVersion', u'0.3.0'),
+        StringStruct(u'InternalName', u'Calcora'),
+        StringStruct(u'LegalCopyright', u'MIT License - Open Source'),
+        StringStruct(u'OriginalFilename', u'Calcora.exe'),
+        StringStruct(u'ProductName', u'Calcora Desktop'),
+        StringStruct(u'ProductVersion', u'0.3.0')])
+      ]
+    ),
+    VarFileInfo([VarStruct(u'Translation', [1033, 1200])])
+  ]
+)
