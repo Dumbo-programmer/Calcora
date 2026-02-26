@@ -1,162 +1,73 @@
-# Windows SmartScreen & Code Signing Guide
+# Code Signing Notes
 
-**Issue:** Windows shows "Windows protected your PC" warning when running Calcora.exe  
-**Impact:** Destroys user trust, blocks adoption  
-**Priority:** CRITICAL for v0.3.0 success  
+So Windows is throwing that annoying "Windows protected your PC" message when people try to run Calcora. It's expected (we're not signed yet), but it looks sketchy to users who don't know better.
 
----
+## Why This Happens
 
-## 🔍 Why This Happens
+Windows SmartScreen flags unsigned executables from unknown publishers. Since we're using PyInstaller and don't have a code signing cert yet, Windows doesn't trust us. It's not malware detection - just lack of digital signature + low reputation score.
 
-Windows SmartScreen blocks unsigned executables from unknown publishers. This affects:
-- All PyInstaller apps (Calcora included)
-- Any unsigned .exe downloaded from the internet
-- New publishers without "reputation"
+## Quick Fixes
 
-**This is NOT a malware detection** — it's lack of digital signature + low download count.
+### Right Now (Free)
 
----
-
-## 🚀 Solutions (Priority Order)
-
-### ⚡ **Immediate Actions (Today - Free)**
-
-#### 1. Generate File Checksums
-Provide SHA256 hash for users to verify integrity:
+**Generate checksums for integrity verification:**
 
 ```powershell
-# Generate checksums
-Get-FileHash .\dist\Calcora.exe -Algorithm SHA256 | Format-List
-
-# Add to release notes:
-# SHA256: [hash will be here]
+Get-FileHash .\dist\Calcora.exe -Algorithm SHA256
 ```
 
-#### 2. Submit to Microsoft SmartScreen
-Tell Microsoft the file is safe (builds reputation over time):
+Add the resulting hash to release notes so users can verify they got the real deal.
 
-**Steps:**
-1. Go to: https://www.microsoft.com/en-us/wdsi/filesubmission
-2. Upload: `Calcora.exe`
-3. Category: "Software Developer"
-4. Description: "Open-source mathematical computation desktop app"
-5. Submit for review
+**Submit to Microsoft SmartScreen:**
+https://www.microsoft.com/en-us/wdsi/filesubmission
 
-**Timeline:** 1-7 days for review, reputation builds over weeks
+Upload Calcora.exe, mark it as safe software. Takes 1-7 days for review, then reputation builds gradually over time.
 
-#### 3. Update Release Notes
-Add "Security & Trust" section explaining the warning:
+**Update docs to explain the warning:**
 
-```markdown
-### ⚠️ Windows SmartScreen Warning (Expected)
+Tell users in the README and release notes that the warning is expected, how to bypass it ("More info" → "Run anyway"), and that v0.3.1 will have a signed exe. Also mention the checksum verification.
 
-**You may see:** "Windows protected your PC" when first running Calcora.exe
+### Near Term ($199/year)
 
-**Why?** Calcora is not yet code-signed (requires paid certificate). This is a 
-standard warning for new open-source applications.
+**Get a code signing certificate:**
 
-**Is it safe?**
-✅ Source code is publicly auditable on GitHub  
-✅ Built with PyInstaller (industry-standard Python packager)  
-✅ No telemetry, no network calls (100% offline)  
-✅ SHA256 checksum provided for verification  
+This is the real solution. Sign the exe with a trusted cert and the warning disappears immediately.
 
-**To run anyway:**
-1. Click "More info"
-2. Click "Run anyway"
+**Recommended providers:**
+- **SSL.com** - $199/year for individuals, fast approval (1-3 days), cloud signing (no USB token needed)
+- **Sectigo** - $179/year, good reputation, requires physical USB token
+- **DigiCert** - $469/year, premium option
 
-**Coming in v0.3.1:** Code-signed executable (no warning)
-```
+For open source projects, might be able to get a discount if we reach out.
 
----
+**Verification requirements:**
+- Government ID
+- Phone + email verification
+- Takes 1-3 business days for individual certs
 
-### 🛡️ **Short-Term Solution (1-2 Weeks - $100-500/year)**
+**Once we have the cert:**
 
-#### Get Code Signing Certificate
-
-**What it does:**
-- Digitally signs the .exe with your identity
-- Tells Windows "This file is from a verified publisher"
-- Eliminates SmartScreen warning IMMEDIATELY after signing
-
-**Certificate Providers (Trusted by Windows):**
-
-1. **SSL.com** (Recommended for open source)
-   - Cost: $199/year (individual), $299/year (organization)
-   - Fast approval (1-3 days)
-   - eSigner cloud signing (USB not required)
-   - Link: https://www.ssl.com/certificates/code-signing/
-
-2. **Sectigo (Comodo)**
-   - Cost: $179/year (individual)
-   - Good reputation
-   - Physical USB token required
-
-3. **DigiCert**
-   - Cost: $469/year (organization only)
-   - Premium option, best for commercial
-
-**For Open Source Projects:**
-Some CAs offer discounts for verified open-source projects.
-
-#### Verification Requirements
-
-**Individual Code Signing:**
-- Government-issued ID
-- Phone number verification
-- Email verification
-- Takes: 1-3 business days
-
-**Organization Code Signing:**
-- Business registration documents
-- D-U-N-S number (optional but helps)
-- Takes: 3-7 business days
-
-#### After Getting Certificate
-
-**Windows Signing Process:**
 ```powershell
-# Install certificate (provided by CA)
-# Then sign the executable:
+# Sign the exe (add this to build script)
+signtool sign /f "cert.pfx" /p $env:CERT_PASSWORD /tr http://timestamp.sectigo.com /td sha256 /fd sha256 "dist\Calcora.exe"
 
-signtool sign /f "certificate.pfx" /p "password" /tr http://timestamp.sectigo.com /td sha256 /fd sha256 "dist\Calcora.exe"
-
-# Verify signature:
+# Verify it worked
 signtool verify /pa "dist\Calcora.exe"
 ```
 
-**Add to build script:**
-```powershell
-# build-desktop.ps1 (after PyInstaller)
+Make sure to use a timestamp server so the signature stays valid even after the cert expires.
 
-if (Test-Path "cert\calcora-codesign.pfx") {
-    Write-Info "Signing executable..."
-    signtool sign /f "cert\calcora-codesign.pfx" /p $env:CERT_PASSWORD /tr http://timestamp.sectigo.com /td sha256 /fd sha256 "dist\Calcora.exe"
-    Write-Success "✓ Executable signed"
-} else {
-    Write-Warning "⚠ Certificate not found - executable unsigned"
-}
-```
+### Long Term (Optional - $474/year)
 
----
+**Extended Validation (EV) code signing:**
 
-### 🏆 **Long-Term Solution (Optional - $474/year)**
-
-#### Extended Validation (EV) Code Signing
-
-**Benefits:**
-- **INSTANT** SmartScreen trust (no reputation period needed)
-- Shows organization name in UAC prompts
-- Highest trust level
-
-**Cost:** ~$474/year (DigiCert, Sectigo)
-
-**Requirements:**
-- Must be organization (not individual)
-- Physical USB token shipped to business address
+This gives **instant** SmartScreen trust (no reputation building period needed) and shows our org name in UAC prompts. But it requires:
+- Business entity (not individual)
+- Physical USB token
 - More rigorous verification (7-14 days)
+- Higher cost
 
-**Worth it?** Only if you're releasing frequently or need immediate trust.
+Probably not worth it unless we're releasing frequently or need immediate trust. Standard code signing works fine once reputation builds.
 
 ---
 
@@ -192,80 +103,69 @@ Write-Output "SHA256: $($hash.Hash)" | Out-File checksums.txt
 - Signed version builds reputation faster
 ```
 
----
+## Action Plan
 
-## 💰 **Budget Considerations**
+### Phase 1: Today
+1. Generate SHA256 checksum of Calcora.exe
+2. Add checksum + warning explanation to release notes
+3. Submit exe to Microsoft SmartScreen
+4. Update README with security verification section
 
-| Solution | Cost | Timeline | Effectiveness |
-|----------|------|----------|---------------|
-| Checksums + Docs | $0 | Today | Low (explains, doesn't fix) |
-| SmartScreen Submit | $0 | 1-7 days review, weeks for reputation | Medium (slow) |
-| Code Signing (Individual) | $199/year | 1-3 days | **High (immediate)** |
-| Code Signing (Org) | $299/year | 3-7 days | High |
-| EV Code Signing | $474/year | 7-14 days | Highest (instant trust) |
+### Phase 2: This Week
+1. Apply for SSL.com individual code signing cert ($199/year)
+2. Complete verification (1-3 days)
+3. Sign Calcora.exe
+4. Release v0.3.1 with signed executable
 
-**Recommended:** Get individual code signing cert ($199/year) — best ROI for trust.
+### Phase 3: Ongoing
+Each download builds SmartScreen reputation. After ~50-100 successful runs, the warning might disappear even for unsigned builds (but better to just stay signed).
 
----
+## Budget
 
-## 🔒 **Security Best Practices**
+| Solution | Cost | Timeline | Impact |
+|----------|------|----------|--------|
+| Checksums + docs | $0 | Today | Low (just explains the warning) |
+| SmartScreen submit | $0 | 1-7 days review + weeks for reputation | Medium (slow build) |
+| Code signing cert | $199/year | 1-3 days | **High (immediate fix)** |
+| EV code signing | $474/year | 7-14 days | Highest (instant trust) |
 
-**For Users (Add to README):**
+Recommendation: Get the $199/year cert. Best value for eliminating the warning.
+
+## Security Notes
+
+**For users (add to README):**
 ```markdown
-### Verifying Download Integrity
+### Verifying Download
 
 Before running Calcora.exe, verify the checksum:
 
 ```powershell
-# Windows PowerShell
 Get-FileHash Calcora.exe -Algorithm SHA256
-
-# Expected hash:
-# SHA256: [hash from release notes]
+# Expected: [hash from release notes]
 ```
 
-If hashes match → safe to run!
+If it matches, you're good to go.
 ```
 
-**For Developers (Build Transparency):**
-- Publish checksums with every release
-- Document build process in DESKTOP_GUIDE.md
-- Keep source code visible on GitHub
-- Use GitHub Actions for reproducible builds
+**For the build:**
+- Never commit .pfx cert files to git
+- Store cert password in environment variable
+- Use timestamp server so signatures remain valid after cert expires
+- Keep build process documented and transparent
 
----
+## Resources
 
-## 📚 **Additional Resources**
+- Microsoft SmartScreen submission: https://www.microsoft.com/en-us/wdsi/filesubmission
+- SSL.com code signing: https://www.ssl.com/certificates/code-signing/
+- Microsoft code signing docs: https://learn.microsoft.com/en-us/windows/win32/seccrypto/crystography-tools
 
-- **Microsoft SmartScreen Submission:** https://www.microsoft.com/en-us/wdsi/filesubmission
-- **Code Signing Guide:** https://learn.microsoft.com/en-us/windows/win32/seccrypto/cryptography-tools
-- **SSL.com Code Signing:** https://www.ssl.com/certificates/code-signing/
-- **PyInstaller Security:** https://pyinstaller.org/en/stable/usage.html#using-upx
+## Important
 
----
+- Don't use self-signed certs (Windows won't trust them)
+- Use timestamp servers (signatures stay valid after cert expiry)
+- Protect the certificate file (never commit to version control)
+- Budget for annual renewal
 
-## 🎯 **v0.3.1 Goals**
+## Next Steps
 
-**Must Have:**
-- ✅ Code-signed executable (no SmartScreen warning)
-- ✅ SHA256 checksums in release notes
-- ✅ Security verification section in README
-
-**Nice to Have:**
-- ⏳ Automated signing in build script
-- ⏳ GitHub Actions builds with signing
-- ⏳ Multi-platform signing (macOS notarization)
-
----
-
-## ⚠️ **Important Notes**
-
-1. **Don't self-sign** — Windows doesn't trust self-signed certificates
-2. **Use timestamp server** — Certificate expiry won't invalidate old signatures
-3. **Protect certificate** — Never commit `.pfx` files to Git
-4. **Annual renewal** — Budget for yearly certificate renewal
-5. **Reputation takes time** — Even signed apps need initial downloads to build trust
-
----
-
-**Next Step:** Generate checksums and update release notes today, then order code signing certificate this week.
+Generate checksums and update docs today, then order the cert this week. Should have signed builds for v0.3.1.

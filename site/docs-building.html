@@ -4,23 +4,68 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Build from Source Guide - Calcora</title>
-    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --gradient-mesh: radial-gradient(at 40% 20%, hsla(28,100%,74%,0.15) 0px, transparent 50%),
+                radial-gradient(at 80% 0%, hsla(189,100%,56%,0.15) 0px, transparent 50%),
+                radial-gradient(at 0% 50%, hsla(355,100%,93%,0.15) 0px, transparent 50%);
+        }
+        body.dark-theme {
+            --primary: #818cf8;
+            --secondary: #a78bfa;
+            --success: #34d399;
+            --warning: #fbbf24;
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.5);
+            --gradient-mesh: radial-gradient(at 40% 20%, hsla(28,100%,74%,0.08) 0px, transparent 50%);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            transition: all 0.3s;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: var(--gradient-mesh);
+            animation: gradientShift 20s ease infinite;
+            pointer-events: none;
+            z-index: -1;
+        }
+        @keyframes gradientShift { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; } }
         header {
             position: sticky;
             top: 0;
             z-index: 100;
             background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px) saturate(180%);
+            backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border);
-            box-shadow: var(--shadow-sm);
         }
-        
-        body.dark-theme header {
-            background: rgba(15, 23, 42, 0.7);
-        }
-        
+        body.dark-theme header { background: rgba(15, 23, 42, 0.7); }
         .header-content {
             max-width: 1200px;
             margin: 0 auto;
@@ -31,65 +76,89 @@
             flex-wrap: wrap;
             gap: 1rem;
         }
-        
         .logo {
             font-size: 1.5rem;
             font-weight: 800;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
-        
-        .nav-group {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            flex-wrap: wrap;
-        }
-        
-        nav {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-        
+        .nav-group { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+        nav { display: flex; gap: 0.5rem; flex-wrap: wrap; }
         nav a {
             color: var(--text-secondary);
             text-decoration: none;
             padding: 0.5rem 1rem;
             border-radius: 8px;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
             font-weight: 500;
         }
-        
         nav a:hover, nav a.active {
             color: var(--text-primary);
             background: rgba(99, 102, 241, 0.1);
         }
-        
         .theme-toggle {
             width: 2.5rem;
             height: 2.5rem;
-            padding: 0;
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             border-radius: 0.75rem;
             background: var(--bg-secondary);
             border: 1px solid var(--border);
             color: var(--text-primary);
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
         }
-        
-        .theme-toggle:hover {
+        .theme-toggle:hover { background: var(--bg-tertiary); }
+        .tip, .feature-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--primary);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            color: var(--text-primary);
+        }
+        .tip strong, .feature-card strong { color: var(--primary); }
+        .tip code, .feature-card code {
+            background: var(--bg-secondary);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875em;
+        }
+        section {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        h2, h3, h4 { color: var(--text-primary); }
+        p, li { color: var(--text-secondary); }
+        a { color: var(--primary); transition: color 0.3s; }
+        a:hover { color: var(--primary-dark); }
+        code {
             background: var(--bg-tertiary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875em;
+            color: var(--text-primary);
         }
-        
+        pre {
+            background: var(--bg-tertiary);
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            border: 1px solid var(--border);
+        }
+        pre code { background: transparent; padding: 0; }
         footer {
             max-width: 1200px;
             margin: 5rem auto 0;
@@ -98,7 +167,6 @@
             text-align: center;
             color: var(--text-secondary);
         }
-        
         .footer-links {
             display: flex;
             justify-content: center;
@@ -106,48 +174,9 @@
             margin-bottom: 2rem;
             flex-wrap: wrap;
         }
-        
-        .footer-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-        
-        .footer-links a:hover {
-            color: var(--primary);
-        }
-        
-        .docs-nav {
-            background: var(--bg-secondary);
-            padding: 2rem;
-            border-radius: 12px;
-            margin-bottom: 2rem;
-        }
-        .docs-nav a {
-            display: inline-block;
-            margin-right: 1.5rem;
-            color: var(--primary);
-            text-decoration: none;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            transition: all 0.3s;
-        }
-        .docs-nav a:hover {
-            background: var(--primary);
-            color: white;
-        }
-        .docs-nav a.active {
-            background: var(--primary);
-            color: white;
-        }
-        .feature-card {
-            background: var(--bg-secondary);
-            padding: 1.5rem;
-            border-radius: 8px;
-            margin: 1rem 0;
-            border-left: 4px solid var(--primary);
-        }
-        code {
+        .footer-links a { color: var(--text-secondary); text-decoration: none; transition: color 0.3s; }
+        .footer-links a:hover { color: var(--primary); }
+    </style>
             background: var(--bg);
             padding: 0.25rem 0.5rem;
             border-radius: 4px;
@@ -222,13 +251,6 @@
             Build and package Calcora from source code, including the desktop application and custom deployments.
         </p>
 
-        <!-- Documentation Navigation -->
-        <div class="docs-nav">
-            <a href="docs-api.html">API Reference</a>
-            <a href="docs-user-guide.html">User Guide</a>
-            <a href="docs-self-hosting.html">Self-Hosting</a>
-            <a href="docs-building.html" class="active">Build from Source</a>
-        </div>
 
         <!-- Overview -->
         <section>
