@@ -7,6 +7,116 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        body.dark-theme header {
+            background: rgba(15, 23, 42, 0.7);
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .nav-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        
+        nav {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        nav a:hover, nav a.active {
+            color: var(--text-primary);
+            background: rgba(99, 102, 241, 0.1);
+        }
+        
+        .theme-toggle {
+            width: 2.5rem;
+            height: 2.5rem;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.75rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .theme-toggle:hover {
+            background: var(--bg-tertiary);
+        }
+        
+        footer {
+            max-width: 1200px;
+            margin: 5rem auto 0;
+            padding: 3rem 2rem;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            color: var(--text-secondary);
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+        
         .docs-nav {
             background: var(--bg-secondary);
             padding: 2rem;
@@ -81,21 +191,27 @@
 </head>
 <body>
     <header>
-        <nav class="navbar">
+        <div class="header-content">
             <div class="logo">
-                <span class="logo-symbol">∫</span>
-                <span class="logo-text">Calcora</span>
+                <i class="fas fa-calculator"></i> Calcora
             </div>
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="demo.html">Demo</a></li>
-                <li><a href="docs-api.html">API Docs</a></li>
-                <li><a href="docs-user-guide.html">User Guide</a></li>
-                <li><a href="https://github.com/Dumbo-programmer/Calcora" target="_blank">
-                    <i class="fab fa-github"></i> GitHub
-                </a></li>
-            </ul>
-        </nav>
+            <div class="nav-group">
+                <nav>
+                    <a href="index.html">Home</a>
+                    <a href="demo.html">Demo</a>
+                    <a href="docs-api.html">API Docs</a>
+                    <a href="docs-user-guide.html">User Guide</a>
+                    <a href="docs-self-hosting.html">Self-Hosting</a>
+                    <a href="docs-building.html" class="active">Build Guide</a>
+                </nav>
+                <a href="https://github.com/Dumbo-programmer/Calcora" target="_blank" rel="noopener" style="color: var(--text-secondary); text-decoration: none;">
+                    <i class="fab fa-github"></i>
+                </a>
+                <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
     </header>
 
     <main style="padding: 2rem; max-width: 1200px; margin: 0 auto;">
@@ -719,13 +835,56 @@ pyinstaller --debug=all calcora-desktop.spec</code></pre>
             <a href="https://github.com/Dumbo-programmer/Calcora" target="_blank" rel="noopener">
                 <i class="fab fa-github"></i> GitHub
             </a>
-            <a href="docs-api.html">API Docs</a>
-            <a href="docs-user-guide.html">User Guide</a>
+            <a href="../README.md">Documentation</a>
+            <a href="../ARCHITECTURE.md">Architecture</a>
+            <a href="../docs/PLUGINS.md">Plugins</a>
             <a href="demo.html">Live Demo</a>
         </div>
         <p style="margin-top: 1rem;">
             Calcora is open-source under MIT License. Built with ❤️ by the community.
         </p>
+        <p style="margin-top: 0.5rem; font-size: 0.875rem;">
+            © 2024-2026 Calcora Contributors. All rights reserved.
+        </p>
+        <p id="version-info" style="margin-top: 0.75rem; font-size: 0.8rem; color: #64748b; font-family: 'JetBrains Mono', monospace;"></p>
     </footer>
+
+    <script>
+        // Display version info for desktop mode
+        (function() {
+            const isLocalhost = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost';
+            if (isLocalhost) {
+                const versionElem = document.getElementById('version-info');
+                if (versionElem) {
+                    versionElem.innerHTML = '🖥️ Calcora Desktop v0.3.0 — Running locally on ' + window.location.host;
+                    versionElem.style.color = '#10b981';
+                }
+            }
+        })();
+    </script>
+
+    <script>
+        // Theme management
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.querySelector('.theme-toggle i');
+            const isDark = body.classList.toggle('dark-theme');
+            
+            themeIcon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        }
+        
+        // Load saved theme
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const themeIcon = document.querySelector('.theme-toggle i');
+            
+            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                document.body.classList.add('dark-theme');
+                if (themeIcon) themeIcon.className = 'fas fa-sun';
+            }
+        });
+    </script>
 </body>
 </html>
