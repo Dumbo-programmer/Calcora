@@ -1,0 +1,43 @@
+# Calcora v0.3.0 File Integrity Checksums
+
+## Calcora.exe (Desktop App - Windows)
+SHA256: 53CE893F6A634043573111D43A8B07E62BCE4A9EC38E39B3D3F1AFF5C386A5EC
+Size: 37,259,776 bytes (37.26 MB)
+Build Date: 2026-02-26
+
+## Verification Instructions
+
+### Windows PowerShell:
+```powershell
+Get-FileHash Calcora.exe -Algorithm SHA256
+```
+
+### Linux/macOS:
+```bash
+sha256sum Calcora.exe
+```
+
+### Expected Output:
+```
+53CE893F6A634043573111D43A8B07E62BCE4A9EC38E39B3D3F1AFF5C386A5EC
+```
+
+If the hash matches → **File is authentic and unmodified**
+
+## Why Verify?
+
+- Ensures download wasn't corrupted
+- Confirms file hasn't been tampered with
+- Builds trust for unsigned executables
+
+## Code Signing Status
+
+**v0.3.0:** Not code-signed (expect Windows SmartScreen warning)
+**v0.3.1:** Will be code-signed (no warning)
+
+Code signing certificate costs ~$200/year and requires publisher verification.
+We're applying this week to eliminate the warning in the next release.
+
+---
+
+For more information, see: docs/CODE_SIGNING_GUIDE.md

@@ -232,11 +232,48 @@ docs/releases/v0.3/
 
 ### Windows
 1. Download `Calcora.exe` (37.25 MB)
-2. Double-click to run (no installation needed)
-3. Calculator opens in your browser automatically
+2. **Windows SmartScreen Warning (Expected)** — See below
+3. Double-click to run (no installation needed)
+4. Calculator opens in your browser automatically
+
+### ⚠️ Windows SmartScreen Warning (Expected)
+
+**You will see:** "Windows protected your PC" warning on first run.
+
+**Why this happens:**
+- Calcora is not yet code-signed (requires paid certificate ~$200/year)
+- This is **standard for new open-source applications**
+- It's NOT a malware detection — just lack of publisher signature
+
+**Is Calcora safe?**
+- ✅ **Source code** publicly auditable on GitHub
+- ✅ **Built with** PyInstaller (industry-standard Python packager)
+- ✅ **No telemetry** — 100% offline, no network calls
+- ✅ **SHA256 checksum** provided below for verification
+- ✅ **Open source** MIT License
+
+**To run Calcora:**
+1. Click **"More info"** (small link in warning dialog)
+2. Click **"Run anyway"** button that appears
+3. App launches normally — warning only shows once
+
+**Verifying authenticity:**
+```powershell
+# Check file integrity (Windows PowerShell):
+Get-FileHash Calcora.exe -Algorithm SHA256
+
+# Expected hash:
+# 53CE893F6A634043573111D43A8B07E62BCE4A9EC38E39B3D3F1AFF5C386A5EC
+```
+
+If hashes match → **100% safe to run!**
+
+**Coming in v0.3.1:** Code-signed executable (no SmartScreen warning)
+
+---
 
 ### First Run
-- May trigger Windows Defender scan (one-time delay)
+- May trigger Windows Defender scan (one-time ~5-10s delay)
 - Creates `~/.calcora/error.log` for troubleshooting
 - No admin privileges required
 

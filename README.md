@@ -20,18 +20,35 @@
 3. **Self-Hosted Option**: Privacy-conscious educators can run locally (no data collection)
 4. **Honest Limitations**: We document what we *can't* do (see Current Limitations below)
 
-## 🖥️ Desktop App (Coming Soon - v0.3)
+## 🖥️ Desktop App (Available Now - v0.3)
 
 **Download → Double-click → Compute — No installation required!**
 
-Calcora Desktop will provide:
-- ✅ Single-file executable (Windows, macOS, Linux)
+**[📥 Download Calcora.exe (37 MB)](https://github.com/Dumbo-programmer/Calcora/releases/latest/download/Calcora.exe)**
+
+### Features:
+- ✅ Single-file executable (Windows 10/11)
 - ✅ Completely offline — no internet connection needed
 - ✅ Auto-opens browser to localhost interface
 - ✅ All your data stays on your computer (100% private)
-- ✅ Instant response (no network latency)
+- ✅ Custom application icon with professional branding
+- ✅ Graceful shutdown system (no zombie processes)
 
-**Status:** In development. See [DESKTOP_GUIDE.md](DESKTOP_GUIDE.md) for technical details.
+### ⚠️ First-Run Security Warning
+
+**Windows will show "Windows protected your PC" warning** — this is expected for unsigned open-source apps.
+
+**Why?** Code signing certificates cost ~$200/year. v0.3.0 is unsigned; v0.3.1 will be signed.
+
+**Is it safe?**
+- ✅ Open source (audit the code on GitHub)
+- ✅ Built with PyInstaller (standard Python packager)
+- ✅ 100% offline, no telemetry
+- ✅ SHA256: `53CE893F6A634043573111D43A8B07E62BCE4A9EC38E39B3D3F1AFF5C386A5EC`
+
+**To run:** Click "More info" → "Run anyway" (warning only shows once)
+
+**More details:** See [DESKTOP_GUIDE.md](DESKTOP_GUIDE.md) and [CODE_SIGNING_GUIDE.md](docs/CODE_SIGNING_GUIDE.md)
 
 **Why desktop?** Web version requires internet and external hosting. Desktop version runs entirely on your machine - perfect for classrooms, exams, or offline use.
 
