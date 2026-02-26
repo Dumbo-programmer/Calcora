@@ -870,9 +870,10 @@ print(result.output)  # Shows: 2*x + 3</code>
             <a href="https://github.com/Dumbo-programmer/Calcora" target="_blank" rel="noopener">
                 <i class="fab fa-github"></i> GitHub
             </a>
-            <a href="../README.md">Documentation</a>
-            <a href="../ARCHITECTURE.md">Architecture</a>
-            <a href="../docs/PLUGINS.md">Plugins</a>
+            <a href="docs-api.html">API Docs</a>
+            <a href="docs-user-guide.html">User Guide</a>
+            <a href="docs-self-hosting.html">Self-Hosting</a>
+            <a href="docs-building.html">Build Guide</a>
             <a href="demo.html">Live Demo</a>
         </div>
         <p style="margin-top: 1rem;">
@@ -881,7 +882,22 @@ print(result.output)  # Shows: 2*x + 3</code>
         <p style="margin-top: 0.5rem; font-size: 0.875rem;">
             © 2024-2026 Calcora Contributors. All rights reserved.
         </p>
+        <p id="version-info" style="margin-top: 0.75rem; font-size: 0.8rem; color: #64748b; font-family: 'JetBrains Mono', monospace;"></p>
     </footer>
+
+    <script>
+        // Display version info for desktop mode
+        (function() {
+            const isLocalhost = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost';
+            if (isLocalhost) {
+                const versionElem = document.getElementById('version-info');
+                if (versionElem) {
+                    versionElem.innerHTML = '🖥️ Calcora Desktop v0.3.0 — Running locally on ' + window.location.host;
+                    versionElem.style.color = '#10b981';
+                }
+            }
+        })();
+    </script>
 
     <script>
         // Copy code to clipboard
