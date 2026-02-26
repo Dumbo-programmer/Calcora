@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Self-Hosting Guide - Calcora</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .docs-nav {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+        .docs-nav a {
+            display: inline-block;
+            margin-right: 1.5rem;
+            color: var(--primary);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        .docs-nav a:hover {
+            background: var(--primary);
+            color: white;
+        }
+        .docs-nav a.active {
+            background: var(--primary);
+            color: white;
+        }
+        .feature-card {
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 4px solid var(--primary);
+        }
+        code {
+            background: var(--bg);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875em;
+        }
+        pre {
+            background: var(--bg);
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 0.875rem;
+        }
+        .tip {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        .warning {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        .security-card {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <span class="logo-symbol">∫</span>
+                <span class="logo-text">Calcora</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="demo.html">Demo</a></li>
+                <li><a href="docs-api.html">API Docs</a></li>
+                <li><a href="docs-user-guide.html">User Guide</a></li>
+                <li><a href="https://github.com/Dumbo-programmer/Calcora" target="_blank">
+                    <i class="fab fa-github"></i> GitHub
+                </a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main style="padding: 2rem; max-width: 1200px; margin: 0 auto;">
+        <h1 style="margin-bottom: 0.5rem;">
+            <i class="fas fa-server"></i> Self-Hosting Guide
+        </h1>
+        <p style="color: var(--text-muted); margin-bottom: 2rem;">
+            Host Calcora on your own server with full control over deployment, privacy, and customization.
+        </p>
+
+        <!-- Documentation Navigation -->
+        <div class="docs-nav">
+            <a href="docs-api.html">API Reference</a>
+            <a href="docs-user-guide.html">User Guide</a>
+            <a href="docs-self-hosting.html" class="active">Self-Hosting</a>
+            <a href="docs-building.html">Build from Source</a>
+        </div>
+
+        <!-- Overview -->
+        <section>
+            <h2><i class="fas fa-info-circle"></i> Overview</h2>
+            <p>
+                Calcora can be self-hosted for maximum privacy, control, and customization. Perfect for:
+            </p>
+            <ul>
+                <li>🏫 <strong>Educational institutions</strong> wanting private infrastructure</li>
+                <li>🔒 <strong>Privacy-conscious users</strong> who want full data control</li>
+                <li>⚙️ <strong>Developers</strong> integrating Calcora into their systems</li>
+                <li>🌐 <strong>Organizations</strong> with airgapped or restricted networks</li>
+            </ul>
+
+            <div class="tip">
+                <strong>💡 Quick Start:</strong> For the simplest setup, use the <a href="#python-package">Python package method</a> with <code>pip install calcora && calcora serve</code>
+            </div>
+        </section>
+
+        <!-- Method 1: Python Package -->
+        <section id="python-package">
+            <h2><i class="fab fa-python"></i> Method 1: Python Package (Recommended)</h2>
+            <p>The easiest way to self-host Calcora. Requires Python 3.10 or later.</p>
+
+            <h3>Installation</h3>
+            <pre><code># Install Calcora with API server dependencies
+pip install calcora[api]
+
+# Or install from GitHub (latest development version)
+pip install git+https://github.com/Dumbo-programmer/Calcora.git</code></pre>
+
+            <h3>Running the Server</h3>
+            <pre><code># Start the API server (defaults to port 5000)
+calcora serve
+
+# Specify custom port and host
+calcora serve --port 8080 --host 0.0.0.0
+
+# Production mode with Gunicorn (recommended)
+pip install gunicorn
+gunicorn -w 4 -b 0.0.0.0:5000 api_server:app</code></pre>
+
+            <h3>Environment Variables</h3>
+            <div class="feature-card">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr>
+                        <th style="text-align: left; padding: 0.5rem; border-bottom: 1px solid var(--border);">Variable</th>
+                        <th style="text-align: left; padding: 0.5rem; border-bottom: 1px solid var(--border);">Default</th>
+                        <th style="text-align: left; padding: 0.5rem; border-bottom: 1px solid var(--border);">Description</th>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.5rem;"><code>CALCORA_STATIC_FOLDER</code></td>
+                        <td style="padding: 0.5rem;"><code>src/calcora/web</code></td>
+                        <td style="padding: 0.5rem;">Path to static web files</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.5rem;"><code>FLASK_ENV</code></td>
+                        <td style="padding: 0.5rem;"><code>production</code></td>
+                        <td style="padding: 0.5rem;">Flask environment mode</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.5rem;"><code>CALCORA_MAX_TIMEOUT</code></td>
+                        <td style="padding: 0.5rem;"><code>10</code></td>
+                        <td style="padding: 0.5rem;">Maximum computation timeout (seconds)</td>
+                    </tr>
+                </table>
+            </div>
+
+            <h3>Example: Production Setup</h3>
+            <pre><code># Create a systemd service (Linux)
+# Save as /etc/systemd/system/calcora.service
+
+[Unit]
+Description=Calcora API Server
+After=network.target
+
+[Service]
+Type=simple
+User=calcora
+WorkingDirectory=/opt/calcora
+Environment="FLASK_ENV=production"
+Environment="CALCORA_STATIC_FOLDER=/opt/calcora/site"
+ExecStart=/usr/bin/gunicorn -w 4 -b 127.0.0.1:5000 api_server:app
+Restart=always
+
+[Install]
+WantedBy=multi-user.target</code></pre>
+
+            <pre><code># Enable and start the service
+sudo systemctl enable calcora
+sudo systemctl start calcora
+sudo systemctl status calcora</code></pre>
+        </section>
+
+        <!-- Method 2: Docker -->
+        <section id="docker">
+            <h2><i class="fab fa-docker"></i> Method 2: Docker Deployment</h2>
+            <p>Containerized deployment for consistent, isolated environments.</p>
+
+            <h3>Create Dockerfile</h3>
+            <pre><code># Dockerfile
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install dependencies
+COPY requirements-api.txt .
+RUN pip install --no-cache-dir -r requirements-api.txt && \
+    pip install --no-cache-dir gunicorn
+
+# Copy application
+COPY api_server.py .
+COPY src/ src/
+COPY site/ site/
+
+# Set environment variables
+ENV FLASK_ENV=production
+ENV CALCORA_STATIC_FOLDER=/app/site
+
+# Expose port
+EXPOSE 5000
+
+# Run with Gunicorn
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "api_server:app"]</code></pre>
+
+            <h3>Build and Run</h3>
+            <pre><code># Build the Docker image
+docker build -t calcora:latest .
+
+# Run the container
+docker run -d -p 5000:5000 --name calcora-server calcora:latest
+
+# Check logs
+docker logs calcora-server
+
+# Stop the container
+docker stop calcora-server</code></pre>
+
+            <h3>Docker Compose</h3>
+            <pre><code># docker-compose.yml
+version: '3.8'
+
+services:
+  calcora:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=production
+      - CALCORA_STATIC_FOLDER=/app/site
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3</code></pre>
+
+            <pre><code># Start with Docker Compose
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop
+docker-compose down</code></pre>
+        </section>
+
+        <!-- Method 3: From Source -->
+        <section id="from-source">
+            <h2><i class="fas fa-code"></i> Method 3: Running from Source</h2>
+            <p>For development or when you need the latest features.</p>
+
+            <pre><code># Clone the repository
+git clone https://github.com/Dumbo-programmer/Calcora.git
+cd Calcora
+
+# Create virtual environment
+python -m venv .venv
+.venv\Scripts\Activate.ps1  # Windows
+source .venv/bin/activate   # Linux/Mac
+
+# Install dependencies
+pip install -r requirements-api.txt
+
+# Run the server
+python api_server.py</code></pre>
+
+            <p>For detailed build instructions, see the <a href="docs-building.html">Build from Source Guide</a>.</p>
+        </section>
+
+        <!-- Reverse Proxy Configuration -->
+        <section id="reverse-proxy">
+            <h2><i class="fas fa-network-wired"></i> Reverse Proxy Configuration</h2>
+            <p>Setup HTTPS and domain routing with nginx or Apache.</p>
+
+            <h3>nginx Configuration</h3>
+            <pre><code># /etc/nginx/sites-available/calcora
+
+server {
+    listen 80;
+    server_name calcora.yourdomain.com;
+
+    # Redirect HTTP to HTTPS
+    return 301 https://$server_name$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name calcora.yourdomain.com;
+
+    # SSL certificates (use Let's Encrypt: certbot --nginx)
+    ssl_certificate /etc/letsencrypt/live/calcora.yourdomain.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/calcora.yourdomain.com/privkey.pem;
+
+    # Security headers
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+
+    # Proxy to Calcora
+    location / {
+        proxy_pass http://127.0.0.1:5000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        
+        # Timeouts for long computations
+        proxy_connect_timeout 60s;
+        proxy_send_timeout 60s;
+        proxy_read_timeout 60s;
+    }
+
+    # Rate limiting (optional)
+    limit_req_zone $binary_remote_addr zone=calcora_limit:10m rate=10r/s;
+    limit_req zone=calcora_limit burst=20 nodelay;
+}</code></pre>
+
+            <pre><code># Enable the site
+sudo ln -s /etc/nginx/sites-available/calcora /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl reload nginx</code></pre>
+
+            <h3>Apache Configuration</h3>
+            <pre><code># /etc/apache2/sites-available/calcora.conf
+
+&lt;VirtualHost *:80&gt;
+    ServerName calcora.yourdomain.com
+    Redirect permanent / https://calcora.yourdomain.com/
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost *:443&gt;
+    ServerName calcora.yourdomain.com
+
+    SSLEngine on
+    SSLCertificateFile /etc/letsencrypt/live/calcora.yourdomain.com/fullchain.pem
+    SSLCertificateKeyFile /etc/letsencrypt/live/calcora.yourdomain.com/privkey.pem
+
+    # Security headers
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-XSS-Protection "1; mode=block"
+
+    # Proxy to Calcora
+    ProxyPreserveHost On
+    ProxyPass / http://127.0.0.1:5000/
+    ProxyPassReverse / http://127.0.0.1:5000/
+&lt;/VirtualHost&gt;</code></pre>
+
+            <pre><code># Enable required modules and site
+sudo a2enmod ssl proxy proxy_http headers
+sudo a2ensite calcora
+sudo systemctl reload apache2</code></pre>
+        </section>
+
+        <!-- Security Considerations -->
+        <section id="security">
+            <h2><i class="fas fa-shield-alt"></i> Security Considerations</h2>
+
+            <div class="security-card">
+                <h3>🔒 Essential Security Measures</h3>
+                <ul>
+                    <li><strong>HTTPS Required:</strong> Always use SSL/TLS in production (use <a href="https://letsencrypt.org/">Let's Encrypt</a> for free certificates)</li>
+                    <li><strong>Rate Limiting:</strong> Implement request rate limits to prevent abuse (shown in nginx config above)</li>
+                    <li><strong>Firewall:</strong> Only expose necessary ports (443/80 for web, not 5000 directly)</li>
+                    <li><strong>Updates:</strong> Keep Calcora and dependencies up to date with security patches</li>
+                    <li><strong>Resource Limits:</strong> Configure computation timeouts to prevent resource exhaustion</li>
+                </ul>
+            </div>
+
+            <h3>Rate Limiting Configuration</h3>
+            <pre><code># Using Flask-Limiter (install: pip install Flask-Limiter)
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+
+limiter = Limiter(
+    app,
+    key_func=get_remote_address,
+    default_limits=["200 per day", "50 per hour"]
+)
+
+@app.route('/differentiate')
+@limiter.limit("10 per minute")
+def differentiate_get():
+    # ... existing code ...</code></pre>
+
+            <h3>Input Validation</h3>
+            <p>Calcora includes built-in input validation and timeout protection:</p>
+            <ul>
+                <li>Expression parsing with syntax validation</li>
+                <li>Timeout wrapper prevents infinite loops (default: 10 seconds)</li>
+                <li>Safe evaluation using SymPy (no arbitrary code execution)</li>
+            </ul>
+
+            <div class="warning">
+                <strong>⚠️ Security Warning:</strong> While Calcora uses safe symbolic computation, always run it in a sandboxed environment (Docker, VM, or isolated user) when exposing to the internet.
+            </div>
+        </section>
+
+        <!-- Performance Optimization -->
+        <section id="performance">
+            <h2><i class="fas fa-tachometer-alt"></i> Performance Optimization</h2>
+
+            <h3>Production Server Configuration</h3>
+            <pre><code># Gunicorn with 4 workers (adjust based on CPU cores)
+gunicorn -w 4 \
+  --worker-class sync \
+  --timeout 60 \
+  --keep-alive 5 \
+  --max-requests 1000 \
+  --max-requests-jitter 100 \
+  -b 0.0.0.0:5000 \
+  api_server:app</code></pre>
+
+            <h3>Worker Count Formula</h3>
+            <p>Recommended workers: <code>(2 × CPU cores) + 1</code></p>
+            <pre><code># Auto-calculate workers
+WORKERS=$(( $(nproc) * 2 + 1 ))
+gunicorn -w $WORKERS -b 0.0.0.0:5000 api_server:app</code></pre>
+
+            <div class="tip">
+                <strong>💡 Performance Tips:</strong>
+                <ul>
+                    <li>Use a reverse proxy (nginx/Apache) for static file serving</li>
+                    <li>Enable gzip compression for API responses</li>
+                    <li>Consider Redis caching for frequently requested computations</li>
+                    <li>Monitor resource usage with tools like <code>htop</code> or Prometheus</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Monitoring & Logging -->
+        <section id="monitoring">
+            <h2><i class="fas fa-chart-line"></i> Monitoring & Logging</h2>
+
+            <h3>Basic Logging Setup</h3>
+            <pre><code># Configure Python logging in api_server.py
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('/var/log/calcora/api.log'),
+        logging.StreamHandler()
+    ]
+)
+
+logger = logging.getLogger(__name__)</code></pre>
+
+            <h3>Health Check Endpoint</h3>
+            <p>Add a health check endpoint for monitoring:</p>
+            <pre><code>@app.route('/health')
+def health():
+    return jsonify({
+        'status': 'healthy',
+        'version': '0.2.0',
+        'timestamp': datetime.now().isoformat()
+    })</code></pre>
+
+            <h3>Monitoring Tools</h3>
+            <ul>
+                <li><strong>Uptime Monitoring:</strong> UptimeRobot, Pingdom, or StatusCake</li>
+                <li><strong>Application Monitoring:</strong> Prometheus + Grafana</li>
+                <li><strong>Log Aggregation:</strong> ELK Stack (Elasticsearch, Logstash, Kibana)</li>
+            </ul>
+        </section>
+
+        <!-- Troubleshooting -->
+        <section id="troubleshooting">
+            <h2><i class="fas fa-wrench"></i> Troubleshooting</h2>
+
+            <div class="feature-card">
+                <h3>Server won't start</h3>
+                <ul>
+                    <li>Check if port 5000 is already in use: <code>netstat -tulpn | grep 5000</code></li>
+                    <li>Verify Python version: <code>python --version</code> (requires 3.10+)</li>
+                    <li>Check dependencies: <code>pip list | grep -E "flask|sympy|numpy"</code></li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <h3>502 Bad Gateway (nginx)</h3>
+                <ul>
+                    <li>Ensure Calcora is running: <code>systemctl status calcora</code></li>
+                    <li>Check proxy_pass URL matches Calcora's host:port</li>
+                    <li>Verify firewall allows internal connections to port 5000</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <h3>Slow computations / timeouts</h3>
+                <ul>
+                    <li>Increase timeout in nginx/Apache config (see <code>proxy_read_timeout</code>)</li>
+                    <li>Add more Gunicorn workers for parallel processing</li>
+                    <li>Check system resources: <code>htop</code> or <code>top</code></li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <h3>CORS errors in browser</h3>
+                <ul>
+                    <li>Verify Flask-CORS is installed: <code>pip show flask-cors</code></li>
+                    <li>Check CORS configuration in api_server.py</li>
+                    <li>Ensure reverse proxy passes headers correctly</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Cloud Deployment Options -->
+        <section id="cloud">
+            <h2><i class="fas fa-cloud"></i> Cloud Deployment Options</h2>
+            <p>Quick deployment on popular cloud platforms:</p>
+
+            <div class="feature-card">
+                <h3>Render.com</h3>
+                <pre><code># render.yaml (included in repository)
+services:
+  - type: web
+    name: calcora
+    env: python
+    buildCommand: pip install -r requirements-api.txt
+    startCommand: gunicorn -w 4 -b 0.0.0.0:$PORT api_server:app</code></pre>
+                <p>Deploy: Connect GitHub repo → Render auto-deploys on push</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>Railway.app</h3>
+                <pre><code># railway.json
+{
+  "build": {
+    "builder": "nixpacks"
+  },
+  "deploy": {
+    "startCommand": "gunicorn -w 4 -b 0.0.0.0:$PORT api_server:app"
+  }
+}</code></pre>
+            </div>
+
+            <div class="feature-card">
+                <h3>DigitalOcean App Platform</h3>
+                <p>Use the Dockerfile method shown above, or:</p>
+                <pre><code># .do/app.yaml
+name: calcora
+services:
+  - name: api
+    github:
+      repo: Dumbo-programmer/Calcora
+      branch: main
+    run_command: gunicorn -w 4 -b 0.0.0.0:8080 api_server:app
+    http_port: 8080</code></pre>
+            </div>
+        </section>
+
+        <!-- Support -->
+        <section style="background: var(--bg-secondary); padding: 2rem; border-radius: 12px; margin-top: 3rem;">
+            <h2><i class="fas fa-question-circle"></i> Need Help?</h2>
+            <p>Self-hosting support resources:</p>
+            <ul>
+                <li><a href="https://github.com/Dumbo-programmer/Calcora/issues">GitHub Issues</a> — Report deployment issues or bugs</li>
+                <li><a href="https://github.com/Dumbo-programmer/Calcora/discussions">GitHub Discussions</a> — Ask questions about self-hosting</li>
+                <li><a href="docs-building.html">Build from Source Guide</a> — Building desktop or custom deployments</li>
+                <li><a href="docs-api.html">API Documentation</a> — API reference for custom integrations</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-links">
+            <a href="https://github.com/Dumbo-programmer/Calcora" target="_blank" rel="noopener">
+                <i class="fab fa-github"></i> GitHub
+            </a>
+            <a href="docs-api.html">API Docs</a>
+            <a href="docs-user-guide.html">User Guide</a>
+            <a href="demo.html">Live Demo</a>
+        </div>
+        <p style="margin-top: 1rem;">
+            Calcora is open-source under MIT License. Built with ❤️ by the community.
+        </p>
+    </footer>
+</body>
+</html>

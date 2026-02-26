@@ -50,7 +50,31 @@ Calcora supports:
 
 Plugins must declare supported `domains` and `operations` and are validated at load time.
 
-## Current implementation status (v0.1)
+## Current implementation status (v0.3)
+
+### Deployment Modes
+
+Calcora supports three deployment modes:
+
+1. **Desktop App (v0.3+)** — Standalone Windows executable
+   - PyInstaller-packaged single-file .exe
+   - Embedded Python 3.13.7 runtime + all dependencies
+   - Launches Flask server on OS-assigned localhost port
+   - Auto-opens browser to localhost interface
+   - Graceful shutdown via UI button or Ctrl+C
+   - Professional console output with colorama
+   - Custom application icon and Windows exe metadata
+
+2. **Python Package** — Install via pip
+   - `pip install calcora`
+   - API access for programmatic use
+   - CLI tools for command-line workflows
+   - Self-hosting with `calcora serve`
+
+3. **Web Demo** — Browser-based (Netlify)
+   - Instant access, no installation
+   - Full mathematical engine
+   - Limited to web API interface
 
 ### Completed features
 
@@ -63,10 +87,26 @@ Plugins must declare supported `domains` and `operations` and are validated at l
   - Chain rules for: sin, cos, tan, sec, csc, cot, exp, log
   - Inverse trig: asin, acos, atan
   - SymPy fallback for complex expressions
+- ✅ **Integration engine (v0.2+):**
+  - 10 core techniques covering ~80% of Calculus II
+  - Power rule, u-substitution, integration by parts (LIATE)
+  - Partial fractions, trig identities, inverse trig patterns
+  - Hyperbolic functions, exponentials, logarithms
+  - Definite integrals with area visualization
+- ✅ **Matrix operations (v0.2+):**
+  - Determinant, inverse, eigenvalues
+  - LU decomposition, RREF, matrix rank
 - ✅ Text and JSON renderers with verbosity levels
-- ✅ FastAPI HTTP API with local web GUI
+- ✅ Flask HTTP API with responsive web GUI
 - ✅ Typer CLI interface
 - ✅ Plugin entry point discovery
+- ✅ **Desktop app architecture (v0.3):**
+  - OS-managed ephemeral port assignment (security)
+  - Health check before browser launch (5 retries)
+  - Multi-browser fallback strategy
+  - Localhost-only shutdown API endpoint
+  - Top-level exception boundary (no raw tracebacks)
+  - Professional colored console output
 
 ### Architecture improvements
 
@@ -83,9 +123,19 @@ Plugins must declare supported `domains` and `operations` and are validated at l
 
 This ordering ensures pedagogically meaningful step sequences.
 
-## Future architecture (v0.2+)
+**Desktop app security (v0.3):**
+- Localhost-only binding (127.0.0.1, never 0.0.0.0)
+- OS-assigned ephemeral ports (unpredictable, reduces collision risk)
+- Shutdown endpoint validates request origin (localhost-only)
+- No external network calls (100% offline computation)
+- No telemetry or analytics
 
-- AST-level expression validation
+## Future architecture (v0.4+)
+
+- **PyWebView native GUI** — Replace browser-launcher with native window wrapper
+- **LaTeX export** — AST-level expression → LaTeX transformation
+- **Multi-platform builds** — macOS .app, Linux .AppImage
+- **Code signing** — Eliminate SmartScreen warnings (v0.3.1)
 - Domain-specific rule whitelists
 - Solver plugins with step emission
 - Enhanced metadata (confidence scores, multiple proof strategies)

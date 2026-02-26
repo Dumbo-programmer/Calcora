@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build from Source Guide - Calcora</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .docs-nav {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+        .docs-nav a {
+            display: inline-block;
+            margin-right: 1.5rem;
+            color: var(--primary);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        .docs-nav a:hover {
+            background: var(--primary);
+            color: white;
+        }
+        .docs-nav a.active {
+            background: var(--primary);
+            color: white;
+        }
+        .feature-card {
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 4px solid var(--primary);
+        }
+        code {
+            background: var(--bg);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875em;
+        }
+        pre {
+            background: var(--bg);
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 0.875rem;
+        }
+        .tip {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        .warning {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        .step-number {
+            display: inline-block;
+            width: 2rem;
+            height: 2rem;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 2rem;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <span class="logo-symbol">∫</span>
+                <span class="logo-text">Calcora</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="demo.html">Demo</a></li>
+                <li><a href="docs-api.html">API Docs</a></li>
+                <li><a href="docs-user-guide.html">User Guide</a></li>
+                <li><a href="https://github.com/Dumbo-programmer/Calcora" target="_blank">
+                    <i class="fab fa-github"></i> GitHub
+                </a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main style="padding: 2rem; max-width: 1200px; margin: 0 auto;">
+        <h1 style="margin-bottom: 0.5rem;">
+            <i class="fas fa-hammer"></i> Build from Source Guide
+        </h1>
+        <p style="color: var(--text-muted); margin-bottom: 2rem;">
+            Build and package Calcora from source code, including the desktop application and custom deployments.
+        </p>
+
+        <!-- Documentation Navigation -->
+        <div class="docs-nav">
+            <a href="docs-api.html">API Reference</a>
+            <a href="docs-user-guide.html">User Guide</a>
+            <a href="docs-self-hosting.html">Self-Hosting</a>
+            <a href="docs-building.html" class="active">Build from Source</a>
+        </div>
+
+        <!-- Overview -->
+        <section>
+            <h2><i class="fas fa-info-circle"></i> Overview</h2>
+            <p>
+                This guide covers building Calcora from source for:
+            </p>
+            <ul>
+                <li>🖥️ <strong>Desktop Application:</strong> Standalone Windows executable</li>
+                <li>🔧 <strong>Development:</strong> Contributing to Calcora or testing new features</li>
+                <li>📦 <strong>Custom Packaging:</strong> Creating your own distributions</li>
+                <li>🐛 <strong>Debugging:</strong> Troubleshooting issues locally</li>
+            </ul>
+        </section>
+
+        <!-- Requirements -->
+        <section id="requirements">
+            <h2><i class="fas fa-list-check"></i> System Requirements</h2>
+
+            <div class="feature-card">
+                <h3>Software Requirements</h3>
+                <ul>
+                    <li><strong>Python:</strong> 3.10, 3.11, 3.12, or 3.13 (recommended: 3.11)</li>
+                    <li><strong>Git:</strong> For cloning the repository</li>
+                    <li><strong>pip:</strong> Python package manager (included with Python 3.4+)</li>
+                    <li><strong>Windows 10/11:</strong> For building desktop app (64-bit)</li>
+                    <li><strong>PowerShell 5.1+:</strong> For running build scripts (Windows)</li>
+                </ul>
+            </div>
+
+            <div class="tip">
+                <strong>💡 Quick Version Check:</strong><br>
+                <code>python --version</code> should show Python 3.10 or higher<br>
+                <code>git --version</code> to verify Git is installed<br>
+                <code>pip --version</code> to ensure pip is available
+            </div>
+
+            <h3>Disk Space Requirements</h3>
+            <ul>
+                <li><strong>Source code:</strong> ~5 MB</li>
+                <li><strong>Dependencies:</strong> ~150 MB (including SymPy, NumPy, Flask)</li>
+                <li><strong>Build artifacts:</strong> ~200 MB (PyInstaller temporary files)</li>
+                <li><strong>Desktop executable:</strong> ~37 MB (final .exe)</li>
+                <li><strong>Total:</strong> ~400 MB free space recommended</li>
+            </ul>
+        </section>
+
+        <!-- Step 1: Clone Repository -->
+        <section id="clone">
+            <h2><span class="step-number">1</span> Clone the Repository</h2>
+            <p>Download the Calcora source code from GitHub.</p>
+
+            <pre><code># Clone with HTTPS
+git clone https://github.com/Dumbo-programmer/Calcora.git
+cd Calcora
+
+# Or clone with SSH (if you have SSH keys configured)
+git clone git@github.com:Dumbo-programmer/Calcora.git
+cd Calcora</code></pre>
+
+            <h3>Verify Repository Contents</h3>
+            <pre><code># List important files
+ls -la
+
+# Expected files and directories:
+# - api_server.py         (Flask API server)
+# - calcora_desktop.py    (Desktop app entry point)
+# - build-desktop.ps1     (Desktop build script)
+# - pyproject.toml        (Python project metadata)
+# - requirements-api.txt  (API dependencies)
+# - src/                  (Source code)
+# - tests/                (Test suite)
+# - site/                 (Web UI files)</code></pre>
+        </section>
+
+        <!-- Step 2: Virtual Environment -->
+        <section id="venv">
+            <h2><span class="step-number">2</span> Create Virtual Environment</h2>
+            <p>Isolate dependencies from system Python installation.</p>
+
+            <h3>Windows (PowerShell)</h3>
+            <pre><code># Create virtual environment
+python -m venv .venv
+
+# Activate virtual environment
+.\.venv\Scripts\Activate.ps1
+
+# Verify activation (should show (.venv) in prompt)
+python -c "import sys; print(sys.prefix)"</code></pre>
+
+            <div class="warning">
+                <strong>⚠️ PowerShell Execution Policy:</strong> If you get an error about script execution, run:<br>
+                <code>Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser</code>
+            </div>
+
+            <h3>Linux / macOS (Bash/Zsh)</h3>
+            <pre><code># Create virtual environment
+python3 -m venv .venv
+
+# Activate virtual environment
+source .venv/bin/activate
+
+# Verify activation
+which python  # Should show path inside .venv/</code></pre>
+        </section>
+
+        <!-- Step 3: Install Dependencies -->
+        <section id="dependencies">
+            <h2><span class="step-number">3</span> Install Dependencies</h2>
+            <p>Install required Python packages for development and building.</p>
+
+            <h3>Core Dependencies</h3>
+            <pre><code># Install API server dependencies
+pip install -r requirements-api.txt
+
+# Verify installation
+pip list | grep -E "flask|sympy|numpy|pydantic"
+
+# Expected output:
+# Flask            3.0.0+
+# flask-cors       4.0.0+
+# sympy            1.12+
+# numpy            1.26+
+# pydantic         2.7+</code></pre>
+
+            <h3>Development Dependencies</h3>
+            <pre><code># Install testing and build tools
+pip install pytest pytest-cov pyinstaller
+
+# Optional: Install code quality tools
+pip install black flake8 mypy pylint</code></pre>
+
+            <div class="tip">
+                <strong>💡 Dependency Conflicts?</strong> If you encounter version conflicts, try:<br>
+                <code>pip install --upgrade pip setuptools wheel</code><br>
+                Then reinstall dependencies.
+            </div>
+        </section>
+
+        <!-- Step 4: Running Tests -->
+        <section id="tests">
+            <h2><span class="step-number">4</span> Run Tests</h2>
+            <p>Ensure everything is working correctly before building.</p>
+
+            <h3>Basic Test Suite</h3>
+            <pre><code># Run all tests
+pytest
+
+# Run with verbose output
+pytest -v
+
+# Run with coverage report
+pytest --cov=src --cov-report=html
+
+# Run specific test file
+pytest tests/test_integration_engine.py</code></pre>
+
+            <h3>Expected Test Results (v0.2.0)</h3>
+            <div class="feature-card">
+                <ul>
+                    <li><strong>Total tests:</strong> 73</li>
+                    <li><strong>Passing:</strong> 69 ✅</li>
+                    <li><strong>Coverage:</strong> 51% (engine: 71%)</li>
+                    <li><strong>Benchmark accuracy:</strong> 100% (26/26)</li>
+                </ul>
+            </div>
+
+            <div class="warning">
+                <strong>⚠️ Known Test Issues:</strong> Some tests may fail on Windows due to path handling. This is expected and won't affect the build. Check the <a href="https://github.com/Dumbo-programmer/Calcora/issues">GitHub Issues</a> for updates.
+            </div>
+
+            <h3>Manual Testing</h3>
+            <pre><code># Test the API server locally
+python api_server.py
+
+# In another terminal/browser:
+# Navigate to http://localhost:5000
+# Try computing: d/dx (x^2 + 3x + 1)</code></pre>
+        </section>
+
+        <!-- Step 5: Build Desktop App -->
+        <section id="desktop-build">
+            <h2><span class="step-number">5</span> Build Desktop Application</h2>
+            <p>Create a standalone Windows executable using PyInstaller.</p>
+
+            <h3>Using the Build Script (Recommended)</h3>
+            <pre><code># Run the desktop build script
+.\build-desktop.ps1
+
+# Build with clean (removes previous builds)
+.\build-desktop.ps1 -Clean
+
+# Build and test immediately
+.\build-desktop.ps1 -Test</code></pre>
+
+            <h3>What the Build Script Does</h3>
+            <ol>
+                <li>Checks that virtual environment is activated</li>
+                <li>Installs PyInstaller if not present</li>
+                <li>Runs PyInstaller with the <code>calcora-desktop.spec</code> configuration</li>
+                <li>Bundles Python runtime, dependencies, and web UI files</li>
+                <li>Creates single-file executable in <code>dist/Calcora.exe</code></li>
+                <li>Reports build size and success status</li>
+            </ol>
+
+            <h3>Build Output</h3>
+            <pre><code>============================================================
+  Calcora Desktop Builder v0.3
+============================================================
+
+Checking for PyInstaller...
+PyInstaller is installed
+
+Building Calcora Desktop executable...
+This may take 2-5 minutes...
+
+[PyInstaller build output...]
+
+Build successful!
+Executable: dist\Calcora.exe
+Size: 36.8 MB
+
+To test the executable, run:
+  .\dist\Calcora.exe</code></pre>
+
+            <div class="tip">
+                <strong>💡 Build Time:</strong> First build takes 3-5 minutes. Subsequent builds (without <code>-Clean</code>) are faster (~1-2 minutes).
+            </div>
+        </section>
+
+        <!-- PyInstaller Configuration -->
+        <section id="pyinstaller-config">
+            <h2><i class="fas fa-cog"></i> PyInstaller Configuration</h2>
+            <p>Understanding the <code>calcora-desktop.spec</code> file.</p>
+
+            <h3>Key Configuration Options</h3>
+            <div class="feature-card">
+                <pre><code># calcora-desktop.spec (simplified)
+
+a = Analysis(
+    ['calcora_desktop.py'],           # Entry point script
+    pathex=[],
+    binaries=[],
+    datas=[
+        ('src/calcora/web', 'web'),    # Bundle web UI files
+        ('site', 'web'),               # Alternative web files
+    ],
+    hiddenimports=[
+        'calcora.engine_implementations.sympy_engine',
+        'sympy.parsing.sympy_parser',
+    ],
+    hookspath=[],
+    hooksconfig={},
+    runtime_hooks=[],
+    excludes=[],
+    noarchive=False,
+)
+
+pyz = PYZ(a.pure)
+
+exe = EXE(
+    pyz,
+    a.scripts,
+    a.binaries,
+    a.datas,
+    [],
+    name='Calcora',                    # Executable name
+    debug=False,                       # Disable debug mode
+    bootloader_ignore_signals=False,
+    strip=False,
+    upx=True,                          # Compress with UPX
+    upx_exclude=[],
+    runtime_tmpdir=None,
+    console=False,                     # No console window
+    disable_windowed_traceback=False,
+    argv_emulation=False,
+    target_arch=None,
+    codesign_identity=None,
+    entitlements_file=None,
+    icon='media/icon.ico',             # Application icon
+)</code></pre>
+            </div>
+
+            <h3>Customizing the Build</h3>
+            <p>Edit <code>calcora-desktop.spec</code> to customize:</p>
+            <ul>
+                <li><strong>Icon:</strong> Change <code>icon='media/icon.ico'</code></li>
+                <li><strong>Name:</strong> Change <code>name='Calcora'</code></li>
+                <li><strong>Console:</strong> Set <code>console=True</code> to keep terminal window open for debugging</li>
+                <li><strong>Hidden imports:</strong> Add modules to <code>hiddenimports=[]</code> if missing at runtime</li>
+                <li><strong>Data files:</strong> Add additional files to <code>datas=[]</code></li>
+            </ul>
+
+            <h3>Manual Build (without script)</h3>
+            <pre><code># Build directly with PyInstaller
+pyinstaller calcora-desktop.spec --clean --noconfirm
+
+# Or create spec file from scratch
+pyinstaller --onefile \
+  --windowed \
+  --icon=media/icon.ico \
+  --name=Calcora \
+  --add-data "src/calcora/web;web" \
+  calcora_desktop.py</code></pre>
+        </section>
+
+        <!-- Troubleshooting Builds -->
+        <section id="troubleshooting">
+            <h2><i class="fas fa-wrench"></i> Troubleshooting Build Issues</h2>
+
+            <div class="feature-card">
+                <h3>Build fails with "Module not found"</h3>
+                <p><strong>Solution:</strong> Add missing module to <code>hiddenimports</code> in spec file:</p>
+                <pre><code>hiddenimports=[
+    'calcora.engine_implementations.sympy_engine',
+    'your_missing_module_here',
+]</code></pre>
+            </div>
+
+            <div class="feature-card">
+                <h3>Executable won't start / crashes immediately</h3>
+                <p><strong>Solution:</strong> Build with console enabled to see error messages:</p>
+                <pre><code># Edit calcora-desktop.spec: set console=True
+# Then rebuild:
+.\build-desktop.ps1 -Clean</code></pre>
+            </div>
+
+            <div class="feature-card">
+                <h3>"Virtual environment not activated" error</h3>
+                <p><strong>Solution:</strong> Activate virtual environment first:</p>
+                <pre><code>.\.venv\Scripts\Activate.ps1  # Windows
+source .venv/bin/activate      # Linux/Mac</code></pre>
+            </div>
+
+            <div class="feature-card">
+                <h3>Web UI not loading (blank page)</h3>
+                <p><strong>Solution:</strong> Verify data files are bundled correctly:</p>
+                <pre><code># Check datas in calcora-desktop.spec
+datas=[
+    ('src/calcora/web', 'web'),
+    ('site', 'web'),  # Ensure this path exists
+]</code></pre>
+            </div>
+
+            <div class="feature-card">
+                <h3>Build is too large (>50 MB)</h3>
+                <p><strong>Solutions:</strong></p>
+                <ul>
+                    <li>Ensure UPX compression is enabled: <code>upx=True</code></li>
+                    <li>Exclude unnecessary packages in spec file: <code>excludes=['matplotlib', 'tkinter']</code></li>
+                    <li>Use <code>--exclude-module</code> flag with PyInstaller</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <h3>PyInstaller fails on Windows Defender</h3>
+                <p><strong>Solution:</strong> Add exception for build directory:</p>
+                <pre><code># Add folder exclusion in Windows Security:
+# Settings > Privacy & Security > Windows Security
+# > Virus & threat protection > Manage settings
+# > Exclusions > Add folder: B:\Development\Calcora\dist</code></pre>
+            </div>
+
+            <h3>Testing the Executable</h3>
+            <pre><code># Test the built executable
+cd dist
+.\Calcora.exe
+
+# Check if server starts properly:
+# 1. Browser should open automatically to http://localhost:5000
+# 2. UI should load without errors
+# 3. Try a computation: d/dx (x^2)
+# 4. Close browser or click "Shutdown" to exit gracefully</code></pre>
+        </section>
+
+        <!-- Packaging -->
+        <section id="packaging">
+            <h2><i class="fas fa-box"></i> Creating Distribution Packages</h2>
+            <p>Package your build for distribution to users.</p>
+
+            <h3>Windows Installer (Optional)</h3>
+            <pre><code># Use Inno Setup or NSIS to create installer
+# Example Inno Setup script structure:
+
+[Setup]
+AppName=Calcora
+AppVersion=0.3.0
+DefaultDirName={pf}\Calcora
+DefaultGroupName=Calcora
+OutputBaseFilename=CalcoraSetup
+Compression=lzma2
+SolidCompression=yes
+
+[Files]
+Source: "dist\Calcora.exe"; DestDir: "{app}"
+
+[Icons]
+Name: "{group}\Calcora"; Filename: "{app}\Calcora.exe"</code></pre>
+
+            <h3>Portable ZIP Package</h3>
+            <pre><code># Create portable package
+mkdir Calcora-Portable
+cp dist/Calcora.exe Calcora-Portable/
+cp README.md Calcora-Portable/
+cp LICENSE Calcora-Portable/
+
+# Create ZIP archive
+Compress-Archive -Path Calcora-Portable -DestinationPath Calcora-v0.3.0-Portable.zip
+
+# Calculate checksum (for verification)
+Get-FileHash Calcora-v0.3.0-Portable.zip -Algorithm SHA256</code></pre>
+
+            <h3>Using package-desktop.ps1</h3>
+            <pre><code># Run the packaging script (if available)
+.\package-desktop.ps1
+
+# This creates:
+# - ZIP archive with executable
+# - SHA256 checksum file
+# - Ready for GitHub release</code></pre>
+        </section>
+
+        <!-- Code Signing -->
+        <section id="code-signing">
+            <h2><i class="fas fa-certificate"></i> Code Signing (Optional)</h2>
+            <p>Sign your executable to remove Windows security warnings.</p>
+
+            <div class="warning">
+                <strong>⚠️ Cost:</strong> Code signing certificates cost ~$200-400/year from Certificate Authorities (Sectigo, DigiCert, etc.).
+            </div>
+
+            <h3>Obtaining a Certificate</h3>
+            <ol>
+                <li>Purchase from: Sectigo, DigiCert, GlobalSign, or SSL.com</li>
+                <li>Complete identity verification (business or individual)</li>
+                <li>Receive certificate file (.pfx or .p12)</li>
+                <li>Install on Windows Certificate Store</li>
+            </ol>
+
+            <h3>Signing the Executable</h3>
+            <pre><code># Using signtool.exe (Windows SDK)
+signtool sign /f certificate.pfx /p password /t http://timestamp.digicert.com dist\Calcora.exe
+
+# Verify signature
+signtool verify /pa dist\Calcora.exe</code></pre>
+
+            <p>See the <a href="CODE_SIGNING_GUIDE.md">Code Signing Guide</a> for detailed instructions.</p>
+        </section>
+
+        <!-- Contributing -->
+        <section id="contributing">
+            <h2><i class="fas fa-code-branch"></i> Contributing to Calcora</h2>
+            <p>Help improve Calcora by contributing code, documentation, or bug reports.</p>
+
+            <h3>Development Workflow</h3>
+            <ol>
+                <li><strong>Fork the repository</strong> on GitHub</li>
+                <li><strong>Clone your fork:</strong> <code>git clone https://github.com/YOUR_USERNAME/Calcora.git</code></li>
+                <li><strong>Create a branch:</strong> <code>git checkout -b feature/your-feature-name</code></li>
+                <li><strong>Make changes</strong> and write tests</li>
+                <li><strong>Run tests:</strong> <code>pytest</code></li>
+                <li><strong>Commit:</strong> <code>git commit -m "Add feature: your description"</code></li>
+                <li><strong>Push:</strong> <code>git push origin feature/your-feature-name</code></li>
+                <li><strong>Create Pull Request</strong> on GitHub</li>
+            </ol>
+
+            <h3>Code Standards</h3>
+            <pre><code># Format code with Black
+black src/ tests/
+
+# Check code quality
+flake8 src/ tests/ --max-line-length=100
+
+# Type checking
+mypy src/</code></pre>
+
+            <h3>Writing Tests</h3>
+            <pre><code># Create test file in tests/ directory
+# Example: tests/test_new_feature.py
+
+import pytest
+from calcora.bootstrap import default_engine
+
+def test_new_integration_rule():
+    """Test new integration rule implementation"""
+    engine = default_engine(load_entry_points=True)
+    result = engine.run(
+        operation='integrate',
+        expression='sin(x)',
+        variable='x'
+    )
+    assert result.output == '-cos(x)'
+    assert result.success is True</code></pre>
+
+            <h3>Documentation</h3>
+            <ul>
+                <li>Update <code>README.md</code> for user-facing changes</li>
+                <li>Add docstrings to new functions/classes</li>
+                <li>Update <code>CHANGELOG.md</code> with your changes</li>
+                <li>Create/update docs in <code>docs/</code> directory</li>
+            </ul>
+
+            <div class="tip">
+                <strong>💡 First-time contributors:</strong> Check out issues labeled <a href="https://github.com/Dumbo-programmer/Calcora/labels/good%20first%20issue">"good first issue"</a> on GitHub for beginner-friendly tasks.
+            </div>
+
+            <h3>Guidelines</h3>
+            <ul>
+                <li>Follow existing code style and patterns</li>
+                <li>Write clear commit messages</li>
+                <li>Add tests for new features</li>
+                <li>Update documentation for API changes</li>
+                <li>Be respectful in discussions (see <a href="CODE_OF_CONDUCT.md">Code of Conduct</a>)</li>
+            </ul>
+
+            <p>Read the full <a href="CONTRIBUTING.md">Contributing Guide</a> for more details.</p>
+        </section>
+
+        <!-- Advanced Topics -->
+        <section id="advanced">
+            <h2><i class="fas fa-graduation-cap"></i> Advanced Topics</h2>
+
+            <div class="feature-card">
+                <h3>Cross-Platform Builds</h3>
+                <p>PyInstaller builds for the platform you're running on:</p>
+                <ul>
+                    <li><strong>Windows .exe:</strong> Build on Windows</li>
+                    <li><strong>Linux binary:</strong> Build on Linux</li>
+                    <li><strong>macOS .app:</strong> Build on macOS</li>
+                </ul>
+                <p>Use VMs or CI/CD (GitHub Actions) for multi-platform builds.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>Automated Builds with GitHub Actions</h3>
+                <pre><code># .github/workflows/build.yml
+name: Build Desktop App
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - run: |
+          python -m venv .venv
+          .\.venv\Scripts\Activate.ps1
+          pip install -r requirements-api.txt
+          pip install pyinstaller
+          .\build-desktop.ps1
+      - uses: actions/upload-artifact@v3
+        with:
+          name: Calcora-Windows
+          path: dist/Calcora.exe</code></pre>
+            </div>
+
+            <div class="feature-card">
+                <h3>Debugging PyInstaller Builds</h3>
+                <pre><code># Enable debug mode in spec file
+exe = EXE(
+    ...,
+    debug=True,  # Enable debug output
+    console=True,  # Show console window
+    ...
+)
+
+# Run with debug flags
+pyinstaller --debug=all calcora-desktop.spec</code></pre>
+            </div>
+
+            <div class="feature-card">
+                <h3>Optimizing Build Size</h3>
+                <ul>
+                    <li>Use <code>--exclude-module</code> for unused packages</li>
+                    <li>Enable UPX compression (already enabled in spec)</li>
+                    <li>Strip debug symbols (not recommended for production)</li>
+                    <li>Consider lazy imports for optional dependencies</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Support -->
+        <section style="background: var(--bg-secondary); padding: 2rem; border-radius: 12px; margin-top: 3rem;">
+            <h2><i class="fas fa-question-circle"></i> Need Help?</h2>
+            <p>Build and development support resources:</p>
+            <ul>
+                <li><a href="https://github.com/Dumbo-programmer/Calcora/issues">GitHub Issues</a> — Report build problems or bugs</li>
+                <li><a href="https://github.com/Dumbo-programmer/Calcora/discussions">GitHub Discussions</a> — Ask development questions</li>
+                <li><a href="CONTRIBUTING.md">Contributing Guide</a> — Detailed contribution instructions</li>
+                <li><a href="docs-self-hosting.html">Self-Hosting Guide</a> — Deploy your build to production</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-links">
+            <a href="https://github.com/Dumbo-programmer/Calcora" target="_blank" rel="noopener">
+                <i class="fab fa-github"></i> GitHub
+            </a>
+            <a href="docs-api.html">API Docs</a>
+            <a href="docs-user-guide.html">User Guide</a>
+            <a href="demo.html">Live Demo</a>
+        </div>
+        <p style="margin-top: 1rem;">
+            Calcora is open-source under MIT License. Built with ❤️ by the community.
+        </p>
+    </footer>
+</body>
+</html>

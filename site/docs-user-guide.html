@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Guide - Calcora</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .docs-nav {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+        .docs-nav a {
+            display: inline-block;
+            margin-right: 1.5rem;
+            color: var(--primary);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        .docs-nav a:hover {
+            background: var(--primary);
+            color: white;
+        }
+        .docs-nav a.active {
+            background: var(--primary);
+            color: white;
+        }
+        .feature-card {
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        code {
+            background: var(--bg);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875em;
+        }
+        pre {
+            background: var(--bg);
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 0.875rem;
+        }
+        .tip {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        .warning {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <span class="logo-symbol">∫</span>
+                <span class="logo-text">Calcora</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="demo.html">Demo</a></li>
+                <li><a href="docs-api.html">API Docs</a></li>
+                <li><a href="docs-user-guide.html" class="active">User Guide</a></li>
+                <li><a href="https://github.com/Dumbo-programmer/Calcora" target="_blank">
+                    <i class="fab fa-github"></i> GitHub
+                </a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main style="padding: 2rem; max-width: 1200px; margin: 0 auto;">
+        <h1 style="margin-bottom: 0.5rem;">
+            <i class="fas fa-book"></i> User Guide
+        </h1>
+        <p style="color: var(--text-muted); margin-bottom: 2rem;">
+            Learn how to use Calcora effectively for calculus computations and step-by-step explanations.
+        </p>
+
+        <!-- Documentation Navigation -->
+        <div class="docs-nav">
+            <a href="docs-api.html">API Reference</a>
+            <a href="docs-user-guide.html" class="active">User Guide</a>
+            <a href="docs-self-hosting.html">Self-Hosting</a>
+            <a href="docs-building.html">Build from Source</a>
+        </div>
+
+        <!-- Getting Started -->
+        <section>
+            <h2><i class="fas fa-rocket"></i> Getting Started</h2>
+            
+            <h3>Option 1: Desktop App (Recommended)</h3>
+            <div class="feature-card">
+                <h4><i class="fas fa-desktop"></i> Windows Desktop App</h4>
+                <ol>
+                    <li>Download <code>Calcora.exe</code> from <a href="https://github.com/Dumbo-programmer/Calcora/releases/latest">GitHub Releases</a></li>
+                    <li>Click "More info" → "Run anyway" (SmartScreen warning is expected for unsigned apps)</li>
+                    <li>Browser opens automatically to <code>http://localhost:PORT</code></li>
+                    <li>Start computing! No installation needed.</li>
+                </ol>
+                
+                <div class="tip">
+                    <strong><i class="fas fa-lightbulb"></i> Tip:</strong> The desktop app runs 100% offline. No data leaves your computer.
+                </div>
+            </div>
+
+            <h3>Option 2: Web Demo</h3>
+            <p>Try Calcora instantly in your browser: <a href="demo.html">Live Demo</a></p>
+            <ul>
+                <li>✅ No installation</li>
+                <li>✅ Works on any device</li>
+                <li>⚠️ Requires internet connection</li>
+            </ul>
+
+            <h3>Option 3: Python Package</h3>
+            <pre><code>pip install calcora</code></pre>
+            <p>Use Calcora as a Python library or run the web interface locally:</p>
+            <pre><code>calcora serve  # Starts web server at http://localhost:5000</code></pre>
+        </section>
+
+        <!-- Basic Operations -->
+        <section>
+            <h2><i class="fas fa-calculator"></i> Basic Operations</h2>
+            
+            <h3>Differentiation</h3>
+            <div class="feature-card">
+                <h4>Input Syntax</h4>
+                <p>Enter expressions using standard mathematical notation:</p>
+                <ul>
+                    <li><code>x**2</code> — x squared (power)</li>
+                    <li><code>sin(x)</code>, <code>cos(x)</code>, <code>tan(x)</code> — Trigonometric functions</li>
+                    <li><code>exp(x)</code> or <code>e**x</code> — Exponential</li>
+                    <li><code>log(x)</code> — Natural logarithm</li>
+                    <li><code>sqrt(x)</code> or <code>x**(1/2)</code> — Square root</li>
+                </ul>
+
+                <h4>Examples</h4>
+                <pre><code>Input: x**2 + 3*x + 2
+Output: 2*x + 3
+
+Input: sin(x)*cos(x)
+Output: cos(x)**2 - sin(x)**2
+
+Input: e**(x**2)
+Output: 2*x*e**(x**2)</code></pre>
+            </div>
+
+            <h3>Integration</h3>
+            <div class="feature-card">
+                <h4>Indefinite Integrals</h4>
+                <p>Calcora supports 10 integration techniques:</p>
+                <ul>
+                    <li>✅ Power rule</li>
+                    <li>✅ U-substitution</li>
+                    <li>✅ Integration by parts (LIATE heuristic)</li>
+                    <li>✅ Partial fractions</li>
+                    <li>✅ Trigonometric identities</li>
+                    <li>✅ Inverse trig patterns</li>
+                    <li>✅ Hyperbolic functions</li>
+                    <li>✅ Exponentials and logarithms</li>
+                </ul>
+
+                <h4>Definite Integrals</h4>
+                <p>Specify lower and upper bounds:</p>
+                <pre><code>Input: x**2, from 0 to 2
+Output: 8/3 ≈ 2.667</code></pre>
+                <p>Includes area visualization under the curve!</p>
+            </div>
+
+            <h3>Matrix Operations</h3>
+            <div class="feature-card">
+                <h4>Supported Operations</h4>
+                <ul>
+                    <li><code>Determinant</code> — Matrix determinant</li>
+                    <li><code>Inverse</code> — Matrix inverse (if exists)</li>
+                    <li><code>Eigenvalues</code> — Eigenvalue computation</li>
+                    <li><code>RREF</code> — Reduced row echelon form</li>
+                    <li><code>LU Decomposition</code> — Lower-upper factorization</li>
+                    <li><code>Rank</code> — Matrix rank</li>
+                </ul>
+
+                <h4>Example</h4>
+                <pre><code>Matrix: [[1, 2], [3, 4]]
+Determinant: -2
+Inverse: [[-2, 1], [1.5, -0.5]]</code></pre>
+            </div>
+        </section>
+
+        <!-- Verbosity Modes -->
+        <section>
+            <h2><i class="fas fa-sliders-h"></i> Verbosity Modes</h2>
+            <p>Calcora offers three explanation detail levels:</p>
+            
+            <div class="feature-card">
+                <h3><i class="fas fa-compress"></i> Concise Mode</h3>
+                <p><strong>Best for:</strong> Quick answers, intermediate students</p>
+                <p><strong>Shows:</strong> Final result + key transformation steps</p>
+                <pre><code>d/dx[x**2 + 3*x]
+= 2*x + 3</code></pre>
+            </div>
+
+            <div class="feature-card">
+                <h3><i class="fas fa-expand"></i> Detailed Mode (Default)</h3>
+                <p><strong>Best for:</strong> Learning, homework verification</p>
+                <p><strong>Shows:</strong> Every rule applied + intermediate steps</p>
+                <pre><code>d/dx[x**2 + 3*x]
+Step 1: Apply sum rule: d/dx[f + g] = f' + g'
+Step 2: Apply power rule to x**2: 2*x
+Step 3: Apply constant multiple rule to 3*x: 3
+Result: 2*x + 3</code></pre>
+            </div>
+
+            <div class="feature-card">
+                <h3><i class="fas fa-chalkboard-teacher"></i> Teacher Mode</h3>
+                <p><strong>Best for:</strong> Teaching, exam prep, deep understanding</p>
+                <p><strong>Shows:</strong> Definitions, theorems, pedagogical notes</p>
+                <pre><code>d/dx[x**2 + 3*x]
+**Sum Rule:** If f and g are differentiable, then d/dx[f + g] = f' + g'
+**Power Rule:** For any real number n, d/dx[x^n] = n*x^(n-1)
+...detailed explanation with theorem citations...</code></pre>
+            </div>
+        </section>
+
+        <!-- Tips & Best Practices -->
+        <section>
+            <h2><i class="fas fa-lightbulb"></i> Tips & Best Practices</h2>
+            
+            <div class="tip">
+                <h4>✅ DO:</h4>
+                <ul>
+                    <li>Use parentheses for clarity: <code>sin(2*x)</code> not <code>sin 2x</code></li>
+                    <li>Use <code>**</code> for powers: <code>x**2</code> not <code>x^2</code></li>
+                    <li>Check step-by-step explanations to understand the process</li>
+                    <li>Verify results against known solutions</li>
+                    <li>Use Teacher Mode when learning new concepts</li>
+                </ul>
+            </div>
+
+            <div class="warning">
+                <h4>⚠️ AVOID:</h4>
+                <ul>
+                    <li>Very complex expressions (>50 terms) — performance may suffer</li>
+                    <li>Using Calcora for graded work without understanding the steps</li>
+                    <li>Assuming 100% accuracy — always verify critical computations</li>
+                    <li>Relying solely on answers — focus on understanding the method</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Keyboard Shortcuts -->
+        <section>
+            <h2><i class="fas fa-keyboard"></i> Keyboard Shortcuts</h2>
+            <table class="param-table">
+                <thead>
+                    <tr>
+                        <th>Shortcut</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>Ctrl/Cmd + Enter</code></td>
+                        <td>Compute (submit expression)</td>
+                    </tr>
+                    <tr>
+                        <td><code>Ctrl/Cmd + K</code></td>
+                        <td>Clear input</td>
+                    </tr>
+                    <tr>
+                        <td><code>Ctrl/Cmd + D</code></td>
+                        <td>Toggle dark mode</td>
+                    </tr>
+                    <tr>
+                        <td><code>Ctrl/Cmd + V</code></td>
+                        <td>Cycle verbosity modes</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Common Issues -->
+        <section>
+            <h2><i class="fas fa-wrench"></i> Troubleshooting</h2>
+            
+            <h3>Desktop App Issues</h3>
+            <div class="feature-card">
+                <h4>Windows SmartScreen Warning</h4>
+                <p><strong>Issue:</strong> "Windows protected your PC" message</p>
+                <p><strong>Solution:</strong> Click "More info" → "Run anyway". This is expected for unsigned open-source apps. See <a href="https://github.com/Dumbo-programmer/Calcora/blob/main/docs/CODE_SIGNING_GUIDE.md">Code Signing Guide</a> for details.</p>
+            </div>
+
+            <div class="feature-card">
+                <h4>Browser Doesn't Open</h4>
+                <p><strong>Solution:</strong> Manually open browser and navigate to the URL shown in the console window (e.g., <code>http://localhost:54782</code>)</p>
+            </div>
+
+            <h3>Computation Issues</h3>
+            <div class="feature-card">
+                <h4>"Cannot compute integral"</h4>
+                <p><strong>Reason:</strong> Expression requires advanced techniques not yet implemented (e.g., trigonometric substitution)</p>
+                <p><strong>Workaround:</strong> Try simplifying the expression or use SymPy directly</p>
+            </div>
+
+            <div class="feature-card">
+                <h4>Incorrect Result</h4>
+                <p><strong>Action:</strong> Report on <a href="https://github.com/Dumbo-programmer/Calcora/issues">GitHub Issues</a> with:</p>
+                <ul>
+                    <li>Input expression</li>
+                    <li>Expected result</li>
+                    <li>Actual result</li>
+                    <li>Verbosity mode used</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Privacy & Offline -->
+        <section>
+            <h2><i class="fas fa-shield-alt"></i> Privacy & Security</h2>
+            
+            <div class="tip">
+                <h4>🔒 Your Data is Private</h4>
+                <ul>
+                    <li>✅ Desktop app runs 100% offline (no internet required)</li>
+                    <li>✅ No data collection or telemetry</li>
+                    <li>✅ All computations happen locally on your device</li>
+                    <li>✅ No accounts or sign-up required</li>
+                    <li>✅ Open source — audit the code yourself!</li>
+                </ul>
+            </div>
+
+            <p><strong>Web Demo Note:</strong> The live demo on Netlify does send requests to a server, but does not log or store any data.</p>
+        </section>
+
+        <!-- Support -->
+        <section style="background: var(--bg-secondary); padding: 2rem; border-radius: 12px; margin-top: 3rem;">
+            <h2><i class="fas fa-question-circle"></i> Need More Help?</h2>
+            <ul>
+                <li><a href="docs-api.html">API Documentation</a> — For developers integrating Calcora</li>
+                <li><a href="docs-self-hosting.html">Self-Hosting Guide</a> — Run your own Calcora server</li>
+                <li><a href="https://github.com/Dumbo-programmer/Calcora/issues">GitHub Issues</a> — Report bugs or request features</li>
+                <li><a href="https://github.com/Dumbo-programmer/Calcora/discussions">GitHub Discussions</a> — Ask questions</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-links">
+            <a href="https://github.com/Dumbo-programmer/Calcora" target="_blank" rel="noopener">
+                <i class="fab fa-github"></i> GitHub
+            </a>
+            <a href="docs-api.html">API Docs</a>
+            <a href="docs-user-guide.html">User Guide</a>
+            <a href="demo.html">Live Demo</a>
+        </div>
+        <p style="margin-top: 1rem;">
+            Calcora is open-source under MIT License. Built with ❤️ by the community.
+        </p>
+    </footer>
+</body>
+</html>
