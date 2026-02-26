@@ -30,6 +30,10 @@
               <div class="stat-value">100%</div>
               <div class="stat-label">Step-by-Step</div>
             </div>
+            <!-- Desktop mode quit button (only visible when running locally) -->
+            <button id="shutdown-btn" class="theme-toggle" style="display: none; background: var(--danger);" onclick="shutdownServer()" title="Quit Calcora Desktop" aria-label="Quit Calcora">
+              <i class="fas fa-power-off" aria-hidden="true"></i>
+            </button>
             <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme" aria-label="Toggle dark mode">
               <i class="fas fa-moon" id="theme-icon" aria-hidden="true"></i>
             </button>
@@ -374,11 +378,6 @@
           <a href="https://github.com/Dumbo-programmer/Calcora" target="_blank" rel="noopener noreferrer" style="color: var(--primary); text-decoration: none; margin-top: 0.5rem; display: inline-block;">
             <i class="fab fa-github"></i> View on GitHub
           </a>
-          <br>
-          <!-- Desktop mode shutdown button (only visible when running locally) -->
-          <button id="shutdown-btn" style="display: none; margin-top: 1rem; padding: 0.5rem 1rem; background: var(--danger); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'" onclick="shutdownServer()">
-            <i class="fas fa-power-off"></i> Quit Calcora
-          </button>
         </p>
       </div>
     </footer>
@@ -505,7 +504,7 @@
           // Show shutdown button in desktop mode
           const shutdownBtn = document.getElementById('shutdown-btn');
           if (shutdownBtn) {
-            shutdownBtn.style.display = 'inline-block';
+            shutdownBtn.style.display = 'inline-flex';
           }
           
           // Add desktop mode indicator to footer
