@@ -711,6 +711,75 @@
     <section class="installation" id="install">
         <h2 class="section-title">Installation</h2>
         
+        <!-- Desktop App Download -->
+        <div style="background: linear-gradient(135deg, var(--primary), var(--success)); padding: 2rem; border-radius: 12px; margin-bottom: 3rem; text-align: center;">
+            <div style="display: inline-block; background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 20px; margin-bottom: 1rem;">
+                <i class="fas fa-desktop" style="color: white; margin-right: 0.5rem;"></i>
+                <span style="color: white; font-weight: 600; font-size: 0.9rem;">RECOMMENDED</span>
+            </div>
+            <h3 style="margin: 0 0 0.5rem; font-size: 1.8rem; color: white;">Desktop App (Windows)</h3>
+            <p style="color: rgba(255,255,255,0.9); margin-bottom: 1.5rem; font-size: 1rem;">
+                Download the standalone desktop application — no Python installation required!
+            </p>
+            <a href="https://github.com/Dumbo-programmer/Calcora/releases/latest/download/Calcora.exe" 
+               class="btn" 
+               style="background: white; color: var(--primary); font-weight: 600; padding: 0.875rem 2rem; font-size: 1.1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+                <i class="fas fa-download"></i> Download Calcora.exe (37 MB)
+            </a>
+            <div style="margin-top: 1rem; font-size: 0.85rem; color: rgba(255,255,255,0.8);">
+                <i class="fas fa-check-circle"></i> Portable • 
+                <i class="fas fa-shield-alt"></i> Offline • 
+                <i class="fas fa-bolt"></i> No Setup Required
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+            <div style="padding: 1.5rem; background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border);">
+                <h4 style="margin: 0 0 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-desktop" style="color: var(--primary);"></i>
+                    Desktop App
+                </h4>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0 0 1rem;">
+                    Single .exe file, runs anywhere, no dependencies
+                </p>
+                <ul style="color: var(--text-muted); font-size: 0.85rem; margin: 0; padding-left: 1.2rem;">
+                    <li>Windows 10/11 (64-bit)</li>
+                    <li>Auto-opens in browser</li>
+                    <li>100% offline</li>
+                </ul>
+            </div>
+            
+            <div style="padding: 1.5rem; background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border);">
+                <h4 style="margin: 0 0 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-terminal" style="color: var(--success);"></i>
+                    Python Package
+                </h4>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0 0 1rem;">
+                    Install via pip, full API access, CLI tools
+                </p>
+                <ul style="color: var(--text-muted); font-size: 0.85rem; margin: 0; padding-left: 1.2rem;">
+                    <li>Python 3.11+ required</li>
+                    <li>Cross-platform</li>
+                    <li>Programmatic access</li>
+                </ul>
+            </div>
+            
+            <div style="padding: 1.5rem; background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border);">
+                <h4 style="margin: 0 0 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-globe" style="color: var(--accent);"></i>
+                    Web Demo
+                </h4>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0 0 1rem;">
+                    Try online instantly, no installation needed
+                </p>
+                <ul style="color: var(--text-muted); font-size: 0.85rem; margin: 0; padding-left: 1.2rem;">
+                    <li>Runs in browser</li>
+                    <li>No signup required</li>
+                    <li>Limited features</li>
+                </ul>
+            </div>
+        </div>
+        
         <h3 style="margin: 2rem 0 1rem; font-size: 1.5rem;">Python Installation</h3>
         <p style="color: var(--text-muted); margin-bottom: 1rem;">
             Install Calcora with all features using pip:
