@@ -1,0 +1,95 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout 
+    title="Calcora User Guide | How to Use Calcora"
+    description="Learn how to use Calcora for mathematical computations with step-by-step instructions."
+    currentPage="docs-user-guide"
+>
+    <main style="padding: 2rem; max-width: 1200px; margin: 0 auto;">
+        <h1><i class="fas fa-book"></i> User Guide</h1>
+        <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+            Learn how to use Calcora effectively for mathematical computations.
+        </p>
+
+        <section>
+            <h2>Getting Started</h2>
+            <p>Calcora offers three ways to get started:</p>
+            <ul>
+                <li><strong>Web Demo:</strong> Try it instantly at <a href="/demo">calcoralive.netlify.app/demo</a></li>
+                <li><strong>Desktop App:</strong> Download the Windows app for offline use</li>
+                <li><strong>Python Package:</strong> Install via <code>pip install calcora</code></li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Differentiation</h2>
+            <p>Compute derivatives with step-by-step explanations.</p>
+            
+            <h3>Example</h3>
+            <pre><code>differentiate("x**2 + 3*x", "x")</code></pre>
+            
+            <div class="tip">
+                <strong>Tip:</strong> Use <code>verbosity="detailed"</code> for educational explanations showing each rule applied.
+            </div>
+        </section>
+
+        <section>
+            <h2>Matrix Operations</h2>
+            <p>Perform matrix calculations including determinants, inverses, and eigenvalues.</p>
+            
+            <h3>Supported Operations</h3>
+            <ul>
+                <li>Determinant calculation</li>
+                <li>Matrix inverse</li>
+                <li>Eigenvalues and eigenvectors</li>
+                <li>Row operations and RREF</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Tips & Tricks</h2>
+            <ul>
+                <li>Use <code>**</code> for exponentiation (not <code>^</code>)</li>
+                <li>Wrap function arguments in parentheses: <code>sin(x)</code></li>
+                <li>Use symbolic variables: <code>Matrix([[a, b], [c, d]])</code></li>
+            </ul>
+        </section>
+    </main>
+</Layout>
+
+<style>
+    section {
+        margin: 3rem 0;
+    }
+
+    h2 {
+        font-size: 2rem;
+        margin: 2rem 0 1rem;
+        color: var(--primary);
+    }
+
+    h3 {
+        font-size: 1.5rem;
+        margin: 1.5rem 0 0.75rem;
+    }
+
+    ul, ol {
+        margin: 1rem 0;
+        padding-left: 2rem;
+    }
+
+    li {
+        margin: 0.5rem 0;
+    }
+
+    a {
+        color: var(--primary);
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+</style>

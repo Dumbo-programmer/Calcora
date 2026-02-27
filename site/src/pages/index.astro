@@ -1,0 +1,276 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Calcora — Open-Source Mathematical Computation Engine" currentPage="home">
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Open-Source Mathematical<br>Computation Engine</h1>
+        <p class="subtitle">
+            Free, open-source computational mathematics with step-by-step explanations. 
+            Differentiation, integration, matrix operations — offline, private, explainable.
+        </p>
+        <div class="hero-buttons">
+            <a href="/demo" class="btn btn-primary">
+                <i class="fas fa-play-circle"></i> Try Live Demo
+            </a>
+            <a href="https://github.com/Dumbo-programmer/Calcora/releases/latest/download/Calcora.exe" class="btn btn-secondary">
+                <i class="fas fa-download"></i> Download v0.3.0
+            </a>
+        </div>
+
+        <!-- Video Demo -->
+        <div class="video-container" style="margin-top: 3rem;">
+            <video autoplay loop muted playsinline>
+                <source src="/media/calcora-demo.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features">
+        <h2 class="section-title">Key Features</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-function"></i>
+                </div>
+                <h3>Differentiation</h3>
+                <p>Compute derivatives with step-by-step explanations. Supports chain rule, product rule, quotient rule, and more.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-th"></i>
+                </div>
+                <h3>Matrix Operations</h3>
+                <p>Determinants, inverses, eigenvalues, LU decomposition, with detailed step-by-step processes.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h3>Privacy First</h3>
+                <p>All computations run locally. No data sent to servers. Works completely offline.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-code"></i>
+                </div>
+                <h3>Developer Friendly</h3>
+                <p>REST API, Python SDK, and CLI tools for integration into your applications.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <h3>Educational</h3>
+                <p>Detailed explanations make it perfect for learning and teaching mathematics.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-code-branch"></i>
+                </div>
+                <h3>Open Source</h3>
+                <p>MIT licensed. Contribute, customize, and self-host without restrictions.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Installation -->
+    <section class="installation">
+        <h2 class="section-title">Quick Start</h2>
+        <p style="text-align: center; margin-bottom: 2rem;">Get started with Calcora in seconds</p>
+        
+        <h3>Python Package</h3>
+        <div class="code-block">
+            <code>pip install calcora</code>
+        </div>
+
+        <h3>Desktop App</h3>
+        <p>Download the standalone Windows application:</p>
+        <div style="text-align: center; margin: 2rem 0;">
+            <a href="https://github.com/Dumbo-programmer/Calcora/releases/latest/download/Calcora.exe" class="btn btn-primary">
+                <i class="fas fa-download"></i> Download for Windows
+            </a>
+        </div>
+
+        <h3>Docker</h3>
+        <div class="code-block">
+            <code>docker pull ghcr.io/dumbo-programmer/calcora:latest
+docker run -p 5000:5000 ghcr.io/dumbo-programmer/calcora:latest</code>
+        </div>
+    </section>
+</Layout>
+
+<style>
+    .hero {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 5rem 2rem;
+        text-align: center;
+    }
+    
+    .hero h1 {
+        font-size: 3.5rem;
+        font-weight: 800;
+        line-height: 1.2;
+        margin-bottom: 1.5rem;
+        background: var(--gradient-1);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: fadeInUp 0.8s ease;
+    }
+    
+    .hero .subtitle {
+        font-size: 1.25rem;
+        color: var(--text-secondary);
+        max-width: 700px;
+        margin: 0 auto 2.5rem;
+        animation: fadeInUp 0.8s ease 0.2s both;
+    }
+    
+    .hero-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        animation: fadeInUp 0.8s ease 0.4s both;
+    }
+    
+    .video-container {
+        position: relative;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(99, 102, 241, 0.3);
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(20px) saturate(180%);
+        border: 2px solid rgba(99, 102, 241, 0.2);
+        transition: all 0.4s ease;
+        animation: fadeInUp 0.8s ease 0.6s both;
+    }
+    
+    .video-container:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 30px 80px rgba(99, 102, 241, 0.4);
+    }
+    
+    body.dark-theme .video-container {
+        background: rgba(30, 41, 59, 0.8);
+        border: 2px solid rgba(99, 102, 241, 0.3);
+    }
+    
+    .video-container video {
+        width: 100%;
+        display: block;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .features {
+        max-width: 1200px;
+        margin: 4rem auto;
+        padding: 0 2rem;
+    }
+    
+    .section-title {
+        text-align: center;
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 3rem;
+        background: var(--gradient-1);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+    
+    .feature-card {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(20px) saturate(180%);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 2rem;
+        transition: all 0.3s ease;
+    }
+    
+    body.dark-theme .feature-card {
+        background: rgba(30, 41, 59, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-xl);
+        border-color: rgba(99, 102, 241, 0.3);
+    }
+    
+    .feature-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 14px;
+        background: var(--gradient-1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+        color: white;
+    }
+    
+    .feature-card h3 {
+        font-size: 1.375rem;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+    }
+    
+    .feature-card p {
+        color: var(--text-secondary);
+        line-height: 1.7;
+    }
+    
+    .installation {
+        max-width: 900px;
+        margin: 5rem auto;
+        padding: 0 2rem;
+    }
+    
+    h3 {
+        font-size: 1.5rem;
+        margin: 2rem 0 1rem;
+    }
+    
+    @media (max-width: 768px) {
+        .hero h1 {
+            font-size: 2.25rem;
+        }
+        
+        .hero .subtitle {
+            font-size: 1.125rem;
+        }
+        
+        .features-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>

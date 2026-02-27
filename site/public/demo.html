@@ -1,0 +1,2765 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calcora — Interactive Mathematical Computation Platform</title>
+    
+    <!-- External Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Light theme colors */
+            --primary: #5855e5;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --secondary: #8b5cf6;
+            --accent: #ec4899;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --text-primary: #0f172a;
+            --text-secondary: #5a6376;
+            --text-tertiary: #5a6783;
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+            
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --gradient-mesh: 
+                radial-gradient(at 40% 20%, hsla(28,100%,74%,0.15) 0px, transparent 50%),
+                radial-gradient(at 80% 0%, hsla(189,100%,56%,0.15) 0px, transparent 50%),
+                radial-gradient(at 0% 50%, hsla(355,100%,93%,0.15) 0px, transparent 50%),
+                radial-gradient(at 80% 50%, hsla(340,100%,76%,0.15) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, hsla(22,100%,77%,0.15) 0px, transparent 50%),
+                radial-gradient(at 80% 100%, hsla(242,100%,70%,0.15) 0px, transparent 50%);
+        }
+
+        body.dark-theme {
+            --primary: #818cf8;
+            --primary-dark: #6366f1;
+            --primary-light: #a5b4fc;
+            --secondary: #a78bfa;
+            --accent: #f472b6;
+            --success: #34d399;
+            --warning: #fbbf24;
+            --error: #f87171;
+            
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-tertiary: #94a3b8;
+            --border: #334155;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.5);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.5);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.5);
+            
+            --gradient-mesh: 
+                radial-gradient(at 40% 20%, hsla(28,100%,74%,0.08) 0px, transparent 50%),
+                radial-gradient(at 80% 0%, hsla(189,100%,56%,0.08) 0px, transparent 50%),
+                radial-gradient(at 0% 50%, hsla(355,100%,93%,0.08) 0px, transparent 50%),
+                radial-gradient(at 80% 50%, hsla(340,100%,76%,0.08) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, hsla(22,100%,77%,0.08) 0px, transparent 50%),
+                radial-gradient(at 80% 100%, hsla(242,100%,70%,0.08) 0px, transparent 50%);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: var(--gradient-mesh);
+            z-index: -1;
+            opacity: 1;
+        }
+
+        /* Glassmorphism utilities */
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        body.dark-theme .glass {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Modern scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Header with glass effect */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 1.5rem 2rem;
+            backdrop-filter: blur(20px) saturate(180%);
+            background: rgba(255, 255, 255, 0.7);
+            border-bottom: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+
+        body.dark-theme .header {
+            background: rgba(15, 23, 42, 0.7);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo i {
+            font-size: 2rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--gradient-1);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+
+        .btn-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.75rem;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            font-size: 1.25rem;
+        }
+
+        .btn-icon:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-icon:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        /* Main container */
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Split layout */
+        .split-layout {
+            display: grid;
+            grid-template-columns: minmax(400px, 1fr) minmax(400px, 1fr);
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 1400px) {
+            .split-layout {
+                grid-template-columns: minmax(350px, 1fr) minmax(350px, 1fr);
+                gap: 1.5rem;
+            }
+        }
+
+        @media (max-width: 1100px) {
+            .split-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+        }
+
+        /* Card with modern design */
+        .card {
+            background: var(--bg-primary);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card:hover {
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.12);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 900px) {
+            .card {
+                padding: 1.75rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .card {
+                padding: 1.25rem;
+                border-radius: 1rem;
+            }
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.25rem;
+            border-bottom: 2px solid rgba(99, 102, 241, 0.1);
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            letter-spacing: -0.02em;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .card-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 768px) {
+            .card-header {
+                gap: 0.75rem;
+            }
+            .card-title {
+                font-size: 1.25rem;
+            }
+            .card-title i {
+                font-size: 1.5rem;
+            }
+        }
+
+        .card-title i {
+            color: var(--primary);
+            font-size: 1.75rem;
+        }
+
+        /* Tabs with modern design */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: var(--bg-tertiary);
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 0.875rem 1.5rem;
+            background: transparent;
+            border: none;
+            border-radius: 0.75rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .tab:hover {
+            color: var(--text-primary);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .tab:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        .tab.active {
+            background: var(--bg-primary);
+            color: var(--primary);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Form elements with modern style */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 0.75rem;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9375rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            background: var(--bg-primary);
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* Example chips */
+        .examples {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .example-chip {
+            padding: 0.5rem 1rem;
+            background: var(--bg-tertiary);
+            border: 2px solid transparent;
+            border-radius: 2rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            white-space: nowrap;
+        }
+
+        .example-chip:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .example-chip:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        /* Results area */
+        .result-section {
+            margin-top: 2rem;
+            padding: 2rem;
+            background: var(--bg-tertiary);
+            border-radius: 1.5rem;
+            border: 2px dashed var(--border);
+            min-height: 300px;
+            display: none;
+        }
+
+        .result-section.visible {
+            display: block;
+            animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-header {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 2.5rem 0 1.25rem;
+            padding: 0 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            position: relative;
+        }
+
+        .result-header::after {
+            content: '';
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(99, 102, 241, 0.2) 0%, transparent 100%);
+            margin-left: 1rem;
+        }
+
+        .result-header i {
+            color: var(--primary);
+            font-size: 1.25rem;
+        }
+
+        .result-output {
+            padding: 2.5rem;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.03) 0%, rgba(139, 92, 246, 0.03) 100%);
+            border: 2px solid rgba(99, 102, 241, 0.1);
+            border-radius: 1.25rem;
+            margin-bottom: 2rem;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s ease;
+            overflow-x: auto;
+            overflow-y: hidden;
+            max-width: 100%;
+        }
+
+        .result-output:hover {
+            border-color: rgba(99, 102, 241, 0.2);
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.08);
+        }
+
+        .result-output .katex {
+            font-size: 1.75rem;
+        }
+
+        @media (max-width: 1400px) {
+            .result-output .katex {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .result-output {
+                padding: 1.5rem;
+            }
+            
+            .result-output .katex {
+                font-size: 1.25rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .result-output .katex {
+                font-size: 1.1rem;
+            }
+        }
+
+        /* Steps with modern card design */
+        .steps {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .step {
+            position: relative;
+            padding: 1.5rem 1.75rem;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
+            border-radius: 1rem;
+            border: 1px solid rgba(99, 102, 241, 0.15);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: fadeInStep 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            opacity: 0;
+            overflow: hidden;
+        }
+
+        .step::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+
+        .step:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(99, 102, 241, 0.15);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .step:nth-child(1) { animation-delay: 0.05s; }
+        .step:nth-child(2) { animation-delay: 0.1s; }
+        .step:nth-child(3) { animation-delay: 0.15s; }
+        .step:nth-child(4) { animation-delay: 0.2s; }
+        .step:nth-child(5) { animation-delay: 0.25s; }
+        .step:nth-child(6) { animation-delay: 0.3s; }
+        .step:nth-child(7) { animation-delay: 0.35s; }
+
+        @keyframes fadeInStep {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .step-rule {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.375rem 0.875rem;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%);
+            border: 1px solid rgba(99, 102, 241, 0.25);
+            border-radius: 0.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 0.6875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .step-rule::before {
+            content: '▶';
+            font-size: 0.5rem;
+            opacity: 0.6;
+        }
+
+        .step-explanation {
+            color: var(--text-primary);
+            font-size: 0.9375rem;
+            line-height: 1.7;
+            font-weight: 500;
+        }
+
+        /* Responsive step sizing */
+        @media (max-width: 900px) {
+            .step {
+                padding: 1.25rem 1.5rem;
+            }
+            .step-explanation {
+                font-size: 0.875rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .step {
+                padding: 1rem 1.25rem;
+            }
+            .step-rule {
+                font-size: 0.625rem;
+                padding: 0.3rem 0.75rem;
+            }
+            .step-explanation {
+                font-size: 0.8125rem;
+            }
+        }
+
+        /* Graph container */
+        .graph-container {
+            background: var(--bg-primary);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: var(--shadow-lg);
+            display: none;
+        }
+
+        .graph-container.visible {
+            display: block;
+            animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .graph-canvas-wrapper {
+            position: relative;
+            height: 400px;
+            background: var(--bg-secondary);
+            border-radius: 1rem;
+            padding: 1rem;
+        }
+
+        /* Loading state */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .loading.visible {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--border);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        /* Error state */
+        .error-banner {
+            display: none;
+            padding: 1.5rem;
+            background: var(--error);
+            color: white;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
+            animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .error-banner.visible {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .error-banner i {
+            font-size: 1.5rem;
+        }
+
+        /* History panel */
+        .history-panel {
+            position: fixed;
+            right: -400px;
+            top: 0;
+            width: 400px;
+            height: 100vh;
+            background: var(--bg-primary);
+            box-shadow: var(--shadow-xl);
+            transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .history-panel.visible {
+            right: 0;
+        }
+
+        .history-header {
+            padding: 2rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history-item {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .history-item:hover {
+            background: var(--bg-secondary);
+        }
+
+        /* Keyboard shortcuts tooltip */
+        .shortcuts-hint {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            padding: 1rem 1.5rem;
+            background: var(--bg-primary);
+            border-radius: 1rem;
+            box-shadow: var(--shadow-xl);
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            display: none;
+        }
+
+        .shortcuts-hint.visible {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Success pulse animation */
+        @keyframes successPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .result-section.visible {
+            animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1), successPulse 0.6s ease-in-out 0.5s;
+        }
+        
+        /* Input focus highlight */
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1), 0 0 20px rgba(99, 102, 241, 0.2);
+            background: var(--bg-primary);
+            transform: translateY(-1px);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .card {
+                padding: 1.5rem;
+            }
+
+            .history-panel {
+                width: 100%;
+                right: -100%;
+            }
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            background-color: var(--bg-tertiary);
+            color: var(--text-primary);
+            text-align: center;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            white-space: nowrap;
+            font-size: 0.875rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Action buttons */
+        .action-bar {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 1rem;
+            background: var(--gradient-1);
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .action-btn:focus-visible {
+            outline: 3px solid var(--primary-light);
+            outline-offset: 3px;
+        }
+
+        .action-btn:active {
+            transform: translateY(0);
+        }
+
+        .action-btn i {
+            font-size: 1.25rem;
+        }
+
+        /* Export menu */
+        .export-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 0.5rem;
+            background: var(--bg-primary);
+            border-radius: 0.75rem;
+            box-shadow: var(--shadow-xl);
+            padding: 0.5rem;
+            min-width: 200px;
+            display: none;
+        }
+
+        .export-menu.visible {
+            display: block;
+            animation: fadeIn 0.2s;
+        }
+
+        .export-item {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .export-item:hover {
+            background: var(--bg-secondary);
+        }
+
+        /* Format badge */
+        .format-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.375rem 0.75rem;
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .format-badge i {
+            font-size: 0.625rem;
+        }
+
+        @media (max-width: 768px) {
+            .format-badge {
+                display: none;
+            }
+        }
+
+        /* Matrix display improvements */
+        .result-output.copyable {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            text-align: left;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            user-select: all;
+            cursor: text;
+        }
+
+        .result-output.typeset {
+            text-align: center;
+        }
+
+        .matrix-display {
+            display: inline-block;
+            text-align: left;
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--bg-secondary);
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem;
+            border: 1px solid var(--border);
+        }
+
+        .matrix-row {
+            display: block;
+            white-space: nowrap;
+        }
+
+        /* Loading Screen */
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-primary);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .loading-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            text-align: center;
+        }
+
+        .loading-subtext {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-top: -1rem;
+        }
+
+        .loading-logo {
+            font-size: 3rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-overlay" class="loading-overlay">
+        <i class="fas fa-calculator loading-logo"></i>
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Connecting to Calcora Server</div>
+        <div class="loading-subtext">Testing available endpoints...</div>
+    </div>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-calculator"></i>
+                <span>Calcora</span>
+            </div>
+            <div class="header-actions">
+                <button class="btn-icon tooltip" onclick="toggleHistory()" title="Computation History" aria-label="Show computation history">
+                    <i class="fas fa-history" aria-hidden="true"></i>
+                    <span class="tooltiptext">History (Ctrl+H)</span>
+                </button>
+                <button class="btn-icon tooltip" onclick="toggleTheme()" title="Toggle Theme" aria-label="Toggle dark mode">
+                    <i class="fas fa-moon" id="theme-icon" aria-hidden="true"></i>
+                    <span class="tooltiptext">Toggle Theme</span>
+                </button>
+                <button class="btn-icon tooltip" onclick="showShortcuts()" title="Keyboard Shortcuts" aria-label="Show keyboard shortcuts">
+                    <i class="fas fa-keyboard" aria-hidden="true"></i>
+                    <span class="tooltiptext">Shortcuts (Ctrl+/)</span>
+                </button>
+                <a href="index.html" class="btn btn-secondary">
+                    <i class="fas fa-home"></i> Home
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main role="main">
+    <div class="container">
+        <!-- Main Layout -->
+        <div class="split-layout">
+            <!-- Left: Input Panel -->
+            <div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-edit"></i>
+                            Input
+                        </h3>
+                    </div>
+
+                    <!-- Tabs -->
+                    <div class="tabs" role="tablist">
+                        <button class="tab active" data-tab="differentiate" onclick="switchTab('differentiate')" role="tab" aria-selected="true" aria-controls="differentiate-content" aria-label="Differentiation operations">
+                            <i class="fas fa-function" aria-hidden="true"></i>
+                            Differentiation
+                        </button>
+                        <button class="tab" data-tab="integrate" onclick="switchTab('integrate')" role="tab" aria-selected="false" aria-controls="integrate-content" aria-label="Integration operations">
+                            <i class="fas fa-integral" aria-hidden="true"></i>
+                            Integration
+                        </button>
+                        <button class="tab" data-tab="matrix" onclick="switchTab('matrix')" role="tab" aria-selected="false" aria-controls="matrix-content" aria-label="Matrices">
+                            <i class="fas fa-table" aria-hidden="true"></i>
+                            Matrices
+                        </button>
+                    </div>
+
+                    <!-- Differentiation Tab -->
+                    <div class="tab-content active" id="differentiate-content" role="tabpanel" aria-labelledby="differentiate">
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-lightbulb" aria-hidden="true"></i> Quick Examples
+                            </label>
+                            <div class="examples">
+                                <span class="example-chip" onclick="setExample('sin(x**2)', 'x')" role="button" tabindex="0" aria-label="sin(x²): sine of x squared">sin(x²)</span>
+                                <span class="example-chip" onclick="setExample('x**3 * cos(x)', 'x')" role="button" tabindex="0" aria-label="x³·cos(x): x cubed times cosine of x">x³·cos(x)</span>
+                                <span class="example-chip" onclick="setExample('exp(x**2)', 'x')" role="button" tabindex="0" aria-label="e^(x²): exponential of x squared">e^(x²)</span>
+                                <span class="example-chip" onclick="setExample('log(x**2 + 1)', 'x')" role="button" tabindex="0" aria-label="ln(x² + 1): natural log of x squared plus 1">ln(x² + 1)</span>
+                                <span class="example-chip" onclick="setExample('tan(x) + x**2', 'x')" role="button" tabindex="0" aria-label="tan(x) + x²: tangent of x plus x squared">tan(x) + x²</span>
+                                <span class="example-chip" onclick="setExample('(x**2 + 1) / (x - 1)', 'x')" role="button" tabindex="0" aria-label="Rational: rational function example">Rational</span>
+                                <span class="example-chip" onclick="setExample('sqrt(x**2 + 4)', 'x')" role="button" tabindex="0" aria-label="√(x² + 4): square root of x squared plus 4">√(x² + 4)</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-function"></i> Expression
+                                <span style="color: var(--error); margin-left: 4px;" id="expr-required">*</span>
+                            </label>
+                            <input type="text" id="diff-expr" class="form-input" placeholder="Try: sin(x**2) or x**3*cos(x)" value="sin(x**2)" aria-label="Mathematical expression to differentiate" required>
+                            <small style="color: var(--text-tertiary); font-size: 0.8125rem; margin-top: 0.5rem; display: block;">
+                                💡 <strong>Syntax:</strong> Use <code>**</code> for powers (x**2), <code>*</code> for multiply. Available: sin, cos, tan, exp, log, sqrt, sinh, asin, etc.
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-x"></i> Variable to differentiate
+                                <span style="color: var(--error); margin-left: 4px;">*</span>
+                            </label>
+                            <input type="text" id="diff-var" class="form-input" placeholder="Usually 'x' or 'y'" value="x" aria-label="Variable to differentiate with respect to" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-layer-group"></i> Verbosity
+                            </label>
+                            <select id="diff-verbosity" class="form-select" aria-label="Select verbosity level for explanation">
+                                <option value="concise">Concise</option>
+                                <option value="detailed" selected>Detailed</option>
+                                <option value="teacher">Teacher Mode</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                <input type="checkbox" id="show-graph" checked style="margin-right: 0.5rem;" aria-label="Toggle interactive graph display">
+                                <i class="fas fa-chart-line"></i> Show Interactive Graph
+                            </label>
+                        </div>
+
+                        <div class="action-bar">
+                            <button class="action-btn" onclick="computeDifferentiate()" aria-label="Differentiate">
+                                <i class="fas fa-play-circle"></i>
+                                Differentiate
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Integration Tab -->
+                    <div class="tab-content" id="integrate-content" style="display: none;" role="tabpanel" aria-labelledby="integrate">
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-lightbulb"></i> Quick Examples
+                            </label>
+                            <div class="examples">
+                                <span class="example-chip" onclick="setIntegrationExample('x**2', 'x')" role="button" tabindex="0" aria-label="x²: integral of x squared">x²</span>
+                                <span class="example-chip" onclick="setIntegrationExample('sin(x)', 'x')" role="button" tabindex="0" aria-label="sin(x): integral of sine of x">sin(x)</span>
+                                <span class="example-chip" onclick="setIntegrationExample('cos(x)**2', 'x')" role="button" tabindex="0" aria-label="cos²(x): integral of cosine squared">cos²(x)</span>
+                                <span class="example-chip" onclick="setIntegrationExample('exp(x)', 'x')" role="button" tabindex="0" aria-label="e^x: integral of exponential">e^x</span>
+                                <span class="example-chip" onclick="setIntegrationExample('1/x', 'x')" role="button" tabindex="0" aria-label="1/x: integral of one over x">1/x</span>
+                                <span class="example-chip" onclick="setIntegrationExample('x * exp(x)', 'x')" role="button" tabindex="0" aria-label="x·e^x: integration by parts">x·e^x</span>
+                                <span class="example-chip" onclick="setIntegrationExample('sqrt(x)', 'x')" role="button" tabindex="0" aria-label="√x: integral of square root of x">√x</span>
+                                <span class="example-chip" onclick="setIntegrationExample('1/(x**2 + 1)', 'x')" role="button" tabindex="0" aria-label="1/(x²+1): integral arctangent">1/(x²+1)</span>
+                                <span class="example-chip" onclick="setIntegrationExample('sinh(x)', 'x')" role="button" tabindex="0" aria-label="sinh(x): integral of hyperbolic sine">sinh(x)</span>
+                                <span class="example-chip" onclick="setIntegrationExample('x * sin(x)', 'x')" role="button" tabindex="0" aria-label="x·sin(x): integration by parts">x·sin(x)</span>
+                                <span class="example-chip" onclick="setIntegrationExample('log(x)', 'x')" role="button" tabindex="0" aria-label="ln(x): integral of natural log">ln(x)</span>
+                                <span class="example-chip" onclick="setIntegrationExample('1/sqrt(1 - x**2)', 'x')" role="button" tabindex="0" aria-label="1/√(1-x²): integral arcsine">1/√(1-x²)</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group"
+                            <label class="form-label">
+                                <i class="fas fa-function"></i> Expression to integrate
+                                <span style="color: var(--error); margin-left: 4px;" id="int-expr-required">*</span>
+                            </label>
+                            <input type="text" id="int-expr" class="form-input" placeholder="Try: x**2 or sin(x)" value="x**2" aria-label="Mathematical expression to integrate" required>
+                            <small style="color: var(--text-tertiary); font-size: 0.8125rem; margin-top: 0.5rem; display: block;">
+                                💡 <strong>Syntax:</strong> Use <code>**</code> for powers (x**2), <code>*</code> for multiply. Available: sin, cos, tan, exp, log, sqrt, sinh, asin, etc.
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-x"></i> Variable to integrate with respect to
+                                <span style="color: var(--error); margin-left: 4px;">*</span>
+                            </label>
+                            <input type="text" id="int-var" class="form-input" placeholder="Usually 'x' or 't'" value="x" aria-label="Variable to integrate with respect to" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                <input type="checkbox" id="definite-integral" onchange="toggleDefiniteIntegral()" style="margin-right: 0.5rem;" aria-label="Enable definite integral with bounds">
+                                <i class="fas fa-ruler-combined"></i> Definite Integral (with bounds)
+                            </label>
+                        </div>
+
+                        <div id="integral-bounds" style="display: none;">
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-arrow-down"></i> Lower Limit
+                                </label>
+                                <input type="text" id="lower-limit" class="form-input" placeholder="e.g., 0 or -1" aria-label="Lower limit for definite integral">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-arrow-up"></i> Upper Limit
+                                </label>
+                                <input type="text" id="upper-limit" class="form-input" placeholder="e.g., 1 or π" aria-label="Upper limit for definite integral">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-layer-group"></i> Verbosity
+                            </label>
+                            <select id="int-verbosity" class="form-select" aria-label="Select verbosity level for explanation">
+                                <option value="concise">Concise</option>
+                                <option value="detailed" selected>Detailed</option>
+                                <option value="teacher">Teacher Mode</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                <input type="checkbox" id="show-int-graph" checked style="margin-right: 0.5rem;" aria-label="Toggle integral area graph display">
+                                <i class="fas fa-chart-area"></i> Show Integral Graph (Area under curve)
+                            </label>
+                        </div>
+
+                        <div class="action-bar">
+                            <button class="action-btn" onclick="computeIntegration()" aria-label="Compute integration">
+                                <i class="fas fa-play-circle"></i>
+                                Integrate
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Matrix Tab -->
+                    <div class="tab-content" id="matrix-content" style="display: none;" role="tabpanel" aria-labelledby="matrix">
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-lightbulb"></i> Quick Examples
+                            </label>
+                            <div class="examples">
+                                <span class="example-chip" onclick="setMatrixExample('determinant', '[[1,2],[3,4]]')" role="button" tabindex="0" aria-label="Example: determinant of 2 by 2 matrix">Det 2×2</span>
+                                <span class="example-chip" onclick="setMatrixExample('inverse', '[[1,2],[3,4]]')" role="button" tabindex="0" aria-label="Example: matrix inverse">Inverse</span>
+                                <span class="example-chip" onclick="setMatrixExample('determinant', '[[&quot;a&quot;,&quot;b&quot;],[&quot;c&quot;,&quot;d&quot;]]')" role="button" tabindex="0" aria-label="Example: symbolic determinant">Symbolic Det</span>
+                                <span class="example-chip" onclick="setMatrixExample('multiply', '[[1,2],[3,4]]', '[[5,6],[7,8]]')" role="button" tabindex="0" aria-label="Example: matrix multiplication">Multiply</span>
+                                <span class="example-chip" onclick="setMatrixExample('eigenvalues', '[[3,1],[1,3]]')" role="button" tabindex="0" aria-label="Example: eigenvalues computation">Eigenvalues</span>
+                                <span class="example-chip" onclick="setMatrixExample('lu', '[[2,1,1],[4,-6,0],[-2,7,2]]')" role="button" tabindex="0" aria-label="Example: LU decomposition">LU Decomp</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-cogs"></i> Operation
+                            </label>
+                            <select id="matrix-operation" class="form-select" onchange="toggleMatrixB()" aria-label="Select matrix operation">
+                                <option value="matrix_determinant">Determinant</option>
+                                <option value="matrix_inverse">Inverse</option>
+                                <option value="matrix_multiply">Multiply</option>
+                                <option value="matrix_rref">RREF</option>
+                                <option value="matrix_eigenvalues">Eigenvalues</option>
+                                <option value="matrix_lu">LU Decomposition</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-table"></i> Matrix A
+                                <span style="color: var(--error); margin-left: 4px;">*</span>
+                            </label>
+                            <textarea id="matrix-a" class="form-textarea" placeholder='[[1,2],[3,4]] or [["a","b"],["c","d"]] for symbolic' aria-label="Enter matrix A in JSON format" required>[[1,2],[3,4]]</textarea>
+                            <small style="color: var(--text-tertiary); font-size: 0.8125rem; margin-top: 0.5rem; display: block;">
+                                💡 <strong>Format:</strong> [[row1_col1, row1_col2], [row2_col1, row2_col2]]. Use quotes for symbols: [["a","b"],["c","d"]]
+                            </small>
+                            <div id="matrix-a-preview" style="margin-top: 8px; padding: 8px; background: var(--bg-secondary); border-radius: 8px; display: none; font-size: 0.875rem;">
+                                <strong>Preview:</strong> <span id="matrix-a-dimensions"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="matrix-b-group" style="display: none;">
+                            <label class="form-label">
+                                <i class="fas fa-table"></i> Matrix B (for multiplication)
+                                <span style="color: var(--error); margin-left: 4px;">*</span>
+                            </label>
+                            <textarea id="matrix-b" class="form-textarea" placeholder='[[5,6],[7,8]]' aria-label="Enter matrix B in JSON format" required>[[5,6],[7,8]]</textarea>
+                            <small style="color: var(--text-tertiary); font-size: 0.8125rem; margin-top: 0.5rem; display: block;">
+                                💡 Must be compatible dimensions for multiplication
+                            </small>
+                            <div id="matrix-b-preview" style="margin-top: 8px; padding: 8px; background: var(--bg-secondary); border-radius: 8px; display: none; font-size: 0.875rem;">
+                                <strong>Preview:</strong> <span id="matrix-b-dimensions"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-layer-group"></i> Verbosity
+                            </label>
+                            <select id="matrix-verbosity" class="form-select" aria-label="Select verbosity level for explanation">
+                                <option value="concise">Concise</option>
+                                <option value="detailed" selected>Detailed</option>
+                                <option value="teacher">Teacher Mode</option>
+                            </select>
+                        </div>
+
+                        <div class="action-bar">
+                            <button class="action-btn" onclick="computeMatrix()" aria-label="Compute matrix operation">
+                                <i class="fas fa-play-circle"></i>
+                                Compute
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Output Panel -->
+            <div>
+                <!-- Loading State -->
+                <div class="loading" id="loading" role="status" aria-live="polite" aria-label="Computing">
+                    <div class="spinner"></div>
+                    <div class="loading-text">Computing...</div>
+                </div>
+
+                <!-- Error Banner -->
+                <div class="error-banner" id="error-banner" role="alert" aria-live="assertive">
+                    <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
+                    <div id="error-message"></div>
+                </div>
+
+                <!-- Results -->
+                <div class="card result-section" id="result-section" role="region" aria-label="Computation results">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-check-circle" style="color: var(--success);" aria-hidden="true"></i>
+                            Result
+                            <span class="format-badge" id="format-badge" style="margin-left: 0.5rem;">
+                                <i class="fas fa-font"></i> Typeset
+                            </span>
+                        </h3>
+                        <div class="card-header-actions">
+                            <button class="btn-icon tooltip" onclick="copyResultToClipboard(event)" title="Copy Result" aria-label="Copy result to clipboard">
+                                <i class="fas fa-copy" aria-hidden="true"></i>
+                                <span class="tooltiptext">Copy (Ctrl+C)</span>
+                            </button>
+                            <button class="btn-icon tooltip" onclick="toggleResultFormat()" title="Toggle Format" aria-label="Toggle between typeset and LaTeX format">
+                                <i class="fas fa-exchange-alt" id="format-toggle-icon" aria-hidden="true"></i>
+                                <span class="tooltiptext">Toggle Format (F)</span>
+                            </button>
+                            <div style="position: relative;">
+                                <button class="btn-icon tooltip" onclick="toggleExportMenu()" aria-label="Open export menu" aria-haspopup="menu" aria-expanded="false" id="export-menu-button">
+                                    <i class="fas fa-download" aria-hidden="true"></i>
+                                    <span class="tooltiptext">Export</span>
+                                </button>
+                                <div class="export-menu" id="export-menu" role="menu" aria-label="Export options">
+                                <div class="export-item" onclick="exportAs('json')">
+                                    <i class="fas fa-file-code"></i> Export as JSON
+                                </div>
+                                <div class="export-item" onclick="exportAs('text')">
+                                    <i class="fas fa-file-alt"></i> Export as Text
+                                </div>
+                                <div class="export-item" onclick="exportAs('latex')">
+                                    <i class="fas fa-file-medical-alt"></i> Export as LaTeX
+                                </div>
+                                <div class="export-item" onclick="copyToClipboard()">
+                                    <i class="fas fa-copy"></i> Copy to Clipboard
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="result-output" id="result-output"></div>
+
+                    <div class="result-header">
+                        <i class="fas fa-list-ol"></i>
+                        Step-by-Step Explanation
+                    </div>
+                    <div class="steps" id="steps"></div>
+                </div>
+
+                <!-- Graph Container -->
+                <div class="graph-container" id="graph-container">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-chart-line" style="color: var(--primary);"></i>
+                            Interactive Graph
+                        </h3>
+                    </div>
+                    <div class="graph-canvas-wrapper">
+                        <canvas id="graph-canvas"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </main>
+
+    <!-- History Panel -->
+    <div class="history-panel" id="history-panel">
+        <div class="history-header">
+            <h3>Computation History</h3>
+            <button class="btn-icon" onclick="toggleHistory()" aria-label="Close history panel">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div id="history-list"></div>
+    </div>
+
+    <!-- Keyboard Shortcuts Hint -->
+    <div class="shortcuts-hint" id="shortcuts-hint">
+        <strong>Keyboard Shortcuts:</strong><br>
+        Ctrl+Enter: Compute<br>
+        Ctrl+H: History<br>
+        Ctrl+/: This menu<br>
+        F: Toggle Format<br>
+        Esc: Close panels
+    </div>
+
+    <!-- Version Footer -->
+    <div id="version-footer" style="position: fixed; bottom: 0; left: 0; right: 0; padding: 0.5rem; text-align: center; font-size: 0.75rem; color: #64748b; background: rgba(255, 255, 255, 0.9); border-top: 1px solid #e2e8f0; font-family: 'JetBrains Mono', monospace; z-index: 1000; display: none;">
+        <span id="version-text"></span>
+    </div>
+
+    <script>
+        // Display version info for desktop mode
+        (function() {
+            const isLocalhost = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost';
+            if (isLocalhost) {
+                const footer = document.getElementById('version-footer');
+                const versionText = document.getElementById('version-text');
+                if (footer && versionText) {
+                    versionText.innerHTML = '🖥️ Calcora Desktop v0.3.0 — Running locally on ' + window.location.host + ' (100% private, offline)';
+                    footer.style.display = 'block';
+                    footer.style.background = 'rgba(16, 185, 129, 0.1)';
+                    footer.style.borderTopColor = '#10b981';
+                    footer.style.color = '#10b981';
+                }
+            }
+        })();
+    </script>
+    <script>
+        // API Configuration
+        const API_ENDPOINTS = [
+            'http://localhost:5000/api/compute',
+            'https://calcora.onrender.com/api/compute'
+        ];
+        
+        let API_URL = API_ENDPOINTS[0];
+        let apiAvailable = false;
+        let currentChart = null;
+        let computationHistory = [];
+
+        // Initialize
+        async function checkApiAvailability() {
+            const loadingOverlay = document.getElementById('loading-overlay');
+            const loadingText = loadingOverlay?.querySelector('.loading-text');
+            const loadingSubtext = loadingOverlay?.querySelector('.loading-subtext');
+            
+            for (let i = 0; i < API_ENDPOINTS.length; i++) {
+                const endpoint = API_ENDPOINTS[i];
+                
+                // Update loading message
+                if (loadingSubtext) {
+                    loadingSubtext.textContent = `Testing endpoint ${i + 1} of ${API_ENDPOINTS.length}...`;
+                }
+                
+                try {
+                    const response = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            operation: 'differentiate',
+                            expression: 'x',
+                            verbosity: 'concise'
+                        })
+                    });
+                    
+                    if (response.ok || response.status === 400) {
+                        API_URL = endpoint;
+                        apiAvailable = true;
+                        console.log('✓ Using API endpoint:', endpoint);
+                        
+                        // Show success message briefly
+                        if (loadingText) loadingText.textContent = 'Connected Successfully!';
+                        if (loadingSubtext) loadingSubtext.textContent = `Using ${endpoint.includes('localhost') ? 'local' : 'cloud'} server`;
+                        
+                        // Hide loading screen after brief delay
+                        setTimeout(() => {
+                            loadingOverlay?.classList.add('hidden');
+                        }, 500);
+                        
+                        return;
+                    }
+                } catch (error) {
+                    console.log('✗ Endpoint not available:', endpoint);
+                }
+            }
+            
+            // All endpoints failed
+            if (loadingText) loadingText.textContent = 'Connection Failed';
+            if (loadingSubtext) loadingSubtext.textContent = 'No servers available. Please start the backend.';
+            
+            showError('API not available. Please ensure the backend server is running.');
+            
+            // Hide loading screen after showing error
+            setTimeout(() => {
+                loadingOverlay?.classList.add('hidden');
+            }, 2000);
+        }
+
+        // Theme toggle
+        function toggleTheme() {
+            document.body.classList.toggle('dark-theme');
+            const isDark = document.body.classList.contains('dark-theme');
+            document.getElementById('theme-icon').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            
+            // Update chart if exists
+            if (currentChart) {
+                updateChartTheme();
+            }
+        }
+
+        // Load saved theme
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-theme');
+            document.getElementById('theme-icon').className = 'fas fa-sun';
+        }
+
+        // Tab switching
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
+            
+            document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+            document.getElementById(`${tab}-content`).style.display = 'block';
+        }
+
+        // Example setters
+        function setExample(expr, variable) {
+            document.getElementById('diff-expr').value = expr;
+            document.getElementById('diff-var').value = variable;
+        }
+
+        function setMatrixExample(operation, matrixA, matrixB = null) {
+            document.getElementById('matrix-operation').value = 'matrix_' + operation;
+            document.getElementById('matrix-a').value = matrixA;
+            if (matrixB) {
+                document.getElementById('matrix-b').value = matrixB;
+            }
+            toggleMatrixB();
+        }
+
+        function setIntegrationExample(expr, variable) {
+            document.getElementById('int-expr').value = expr;
+            document.getElementById('int-var').value = variable;
+        }
+
+        function toggleDefiniteIntegral() {
+            const isChecked = document.getElementById('definite-integral').checked;
+            const boundsDiv = document.getElementById('integral-bounds');
+            boundsDiv.style.display = isChecked ? 'block' : 'none';
+        }
+
+        function toggleMatrixB() {
+            const operation = document.getElementById('matrix-operation').value;
+            const matrixBGroup = document.getElementById('matrix-b-group');
+            matrixBGroup.style.display = operation === 'matrix_multiply' ? 'block' : 'none';
+        }
+
+        // Matrix preview and validation
+        function validateAndPreviewMatrix(textareaId, previewId, dimensionsId) {
+            const textarea = document.getElementById(textareaId);
+            const preview = document.getElementById(previewId);
+            const dimensions = document.getElementById(dimensionsId);
+            
+            try {
+                const value = textarea.value.trim();
+                if (!value) {
+                    preview.style.display = 'none';
+                    return;
+                }
+                
+                const matrix = JSON.parse(value);
+                if (Array.isArray(matrix) && matrix.length > 0 && Array.isArray(matrix[0])) {
+                    const rows = matrix.length;
+                    const cols = matrix[0].length;
+                    dimensions.textContent = `${rows}×${cols} matrix`;
+                    dimensions.style.color = 'var(--success)';
+                    preview.style.display = 'block';
+                    preview.style.borderLeft = '3px solid var(--success)';
+                } else {
+                    throw new Error('Invalid matrix format');
+                }
+            } catch (e) {
+                dimensions.textContent = '⚠ Invalid format - check your brackets and commas';
+                dimensions.style.color = 'var(--error)';
+                preview.style.display = 'block';
+                preview.style.borderLeft = '3px solid var(--error)';
+            }
+        }
+
+        // Add live validation listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('matrix-a')?.addEventListener('input', () => {
+                validateAndPreviewMatrix('matrix-a', 'matrix-a-preview', 'matrix-a-dimensions');
+            });
+            document.getElementById('matrix-b')?.addEventListener('input', () => {
+                validateAndPreviewMatrix('matrix-b', 'matrix-b-preview', 'matrix-b-dimensions');
+            });
+            // Trigger initial validation
+            validateAndPreviewMatrix('matrix-a', 'matrix-a-preview', 'matrix-a-dimensions');
+        });
+
+        // Show/hide functions
+        let loadingMessages = [
+            'Parsing expression...',
+            'Applying differentiation rules...',
+            'Simplifying result...',
+            'Generating step-by-step explanation...'
+        ];
+        let loadingInterval = null;
+        
+        function showLoading() {
+            document.getElementById('loading').classList.add('visible');
+            document.getElementById('result-section').classList.remove('visible');
+            document.getElementById('error-banner').classList.remove('visible');
+            document.getElementById('graph-container').classList.remove('visible');
+            
+            // Rotate loading messages
+            let messageIndex = 0;
+            const loadingText = document.querySelector('.loading-text');
+            loadingText.textContent = loadingMessages[0];
+            
+            loadingInterval = setInterval(() => {
+                messageIndex = (messageIndex + 1) % loadingMessages.length;
+                loadingText.textContent = loadingMessages[messageIndex];
+            }, 800);
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').classList.remove('visible');
+            if (loadingInterval) {
+                clearInterval(loadingInterval);
+                loadingInterval = null;
+            }
+        }
+
+        function showError(message) {
+            hideLoading();
+            document.getElementById('error-message').textContent = message;
+            document.getElementById('error-banner').classList.add('visible');
+        }
+
+        // Result display state - use window scope for global access
+        window.currentResultData = null;
+        window.isTypesetFormat = true;
+
+        function preprocessLatex(text) {
+            // Convert raw math notation to proper LaTeX
+            if (!text) return text;
+            
+            // Replace ** with ^ for powers (must come before * replacement)
+            let result = text.replace(/\*\*/g, '^');
+            
+            // Replace * with \cdot for multiplication
+            result = result.replace(/\*/g, '\\cdot ');
+            
+            return result;
+        }
+
+        function formatMatrixForDisplay(matrixStr) {
+            // Try to parse and format matrix nicely
+            try {
+                // Check if it's a matrix-like output
+                if (matrixStr.includes('[') && matrixStr.includes(']')) {
+                    // Try to parse as JSON first
+                    const matrix = JSON.parse(matrixStr);
+                    if (Array.isArray(matrix) && Array.isArray(matrix[0])) {
+                        // Create HTML table
+                        let html = '<table style="margin: 0 auto; border-collapse: collapse; font-family: \'JetBrains Mono\', monospace;">';
+                        html += '<tbody>';
+                        matrix.forEach((row, i) => {
+                            html += '<tr>';
+                            // Left bracket
+                            if (i === 0) {
+                                html += `<td rowspan="${matrix.length}" style="font-size: 3em; padding: 0 0.25rem; vertical-align: middle; line-height: 0.7;">⎡</td>`;
+                            }
+                            // Matrix values
+                            row.forEach((cell, j) => {
+                                html += `<td style="padding: 0.5rem 1rem; text-align: center; min-width: 60px; font-size: 1.2em;">${cell}</td>`;
+                            });
+                            // Right bracket
+                            if (i === 0) {
+                                html += `<td rowspan="${matrix.length}" style="font-size: 3em; padding: 0 0.25rem; vertical-align: middle; line-height: 0.7;">⎤</td>`;
+                            }
+                            html += '</tr>';
+                        });
+                        html += '</tbody></table>';
+                        return html;
+                    }
+                }
+            } catch (e) {
+                console.log('Matrix formatting failed:', e);
+            }
+            return matrixStr;
+        }
+
+        function showResult(data) {
+            hideLoading();
+            console.log('Received data:', data);
+            
+            // Normalize data structure - backend might return different format
+            if (!data.output && data.result) {
+                data.output = data.result;
+            }
+            if (!data.graph && data.steps) {
+                data.graph = { nodes: data.steps };
+            }
+            if (!data.graph && !data.steps) {
+                data.graph = { nodes: [] };
+            }
+            
+            window.currentResultData = data;
+            window.isTypesetFormat = true;
+            
+            displayResult();
+            
+            // Display steps
+            const stepsContainer = document.getElementById('steps');
+            stepsContainer.innerHTML = '';
+            
+            const steps = (data.graph && data.graph.nodes) || [];
+            steps.forEach((step, index) => {
+                const stepDiv = document.createElement('div');
+                stepDiv.className = 'step';
+                stepDiv.innerHTML = `
+                    <div class="step-rule">[${step.rule}]</div>
+                    <div class="step-explanation">${step.explanation}</div>
+                `;
+                stepsContainer.appendChild(stepDiv);
+            });
+            
+            document.getElementById('result-section').classList.add('visible');
+            
+            // Scroll to results smoothly
+            setTimeout(() => {
+                document.getElementById('result-section').scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'nearest' 
+                });
+            }, 100);
+            
+            // Show graph for differentiation
+            if (data.operation === 'differentiate' && document.getElementById('show-graph').checked) {
+                showGraph(data);
+            }
+            
+            // Show graph for integration
+            if (data.operation === 'integrate' && document.getElementById('show-int-graph').checked) {
+                showIntegrationGraph(data);
+            }
+            
+            // Add to history
+            addToHistory(data);
+        }
+
+        function displayResult() {
+            if (!window.currentResultData) return;
+            
+            const output = document.getElementById('result-output');
+            const badge = document.getElementById('format-badge');
+            
+            if (!output || !badge) return;
+            
+            if (window.isTypesetFormat) {
+                // Typeset format (rendered math like in papers)
+                output.className = 'result-output typeset';
+                badge.innerHTML = '<i class="fas fa-font"></i> Typeset';
+                
+                // Check if it's a matrix
+                const isMatrix = window.currentResultData.output && 
+                                window.currentResultData.output.includes('[') && 
+                                window.currentResultData.output.includes(']');
+                
+                if (isMatrix) {
+                    // Format as matrix
+                    const formatted = formatMatrixForDisplay(window.currentResultData.output);
+                    output.innerHTML = formatted;
+                } else {
+                    // Render as LaTeX
+                    try {
+                        const latexCode = preprocessLatex(window.currentResultData.output);
+                        katex.render(latexCode, output, {
+                            throwOnError: false,
+                            displayMode: true
+                        });
+                    } catch (e) {
+                        output.textContent = window.currentResultData.output;
+                    }
+                }
+            } else {
+                // Copyable format (raw LaTeX code)
+                output.className = 'result-output copyable';
+                badge.innerHTML = '<i class="fas fa-code"></i> LaTeX';
+                
+                // Show LaTeX code
+                if (window.currentResultData.latex) {
+                    output.textContent = window.currentResultData.latex;
+                } else {
+                    output.textContent = window.currentResultData.output;
+                }
+            }
+        }
+
+        function toggleResultFormat() {
+            if (!window.currentResultData) {
+                console.log('No result data to toggle');
+                return;
+            }
+            window.isTypesetFormat = !window.isTypesetFormat;
+            console.log('Toggling format to:', window.isTypesetFormat ? 'Typeset' : 'Copyable');
+            displayResult();
+        }
+
+        function copyResultToClipboard(event) {
+            if (!window.currentResultData || !window.currentResultData.output) {
+                console.error('No result to copy');
+                return;
+            }
+            
+            const textToCopy = window.currentResultData.output;
+            
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                // Show feedback
+                const btn = event ? event.target.closest('button') : null;
+                if (btn) {
+                    const originalHTML = btn.innerHTML;
+                    const originalWidth = btn.style.width;
+                    const originalPadding = btn.style.padding;
+                    
+                    // Expand button to fit text
+                    btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                    btn.style.width = 'auto';
+                    btn.style.padding = '0 1rem';
+                    btn.style.background = 'var(--success)';
+                    btn.style.color = 'white';
+                    
+                    setTimeout(() => {
+                        btn.innerHTML = originalHTML;
+                        btn.style.width = originalWidth;
+                        btn.style.padding = originalPadding;
+                        btn.style.background = '';
+                        btn.style.color = '';
+                    }, 1500);
+                }
+                console.log('Copied to clipboard:', textToCopy);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                alert('Failed to copy to clipboard');
+            });
+        }
+
+        // Compute functions
+        async function computeDifferentiate() {
+            const expression = document.getElementById('diff-expr').value.trim();
+            const variable = document.getElementById('diff-var').value.trim() || 'x';
+            const verbosity = document.getElementById('diff-verbosity').value;
+
+            // Input validation
+            if (!expression) {
+                showError('⚠ Please enter a mathematical expression to differentiate');
+                document.getElementById('diff-expr').focus();
+                return;
+            }
+            
+            if (!variable) {
+                showError('⚠ Please specify the variable to differentiate with respect to');
+                document.getElementById('diff-var').focus();
+                return;
+            }
+            
+            // Check for common syntax errors
+            if (expression.includes('^')) {
+                showError('⚠ Use ** for exponents, not ^. Example: x**2 instead of x^2');
+                return;
+            }
+
+            showLoading();
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        operation: 'differentiate',
+                        expression: expression,
+                        variable: variable,
+                        verbosity: verbosity
+                    })
+                });
+
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    throw new Error('API endpoint not available');
+                }
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showError(data.error || 'Computation failed');
+                    return;
+                }
+
+                showResult(data);
+            } catch (error) {
+                showError('Error: ' + error.message);
+            }
+        }
+
+        async function computeMatrix() {
+            const operation = document.getElementById('matrix-operation').value;
+            const matrixA = document.getElementById('matrix-a').value.trim();
+            const verbosity = document.getElementById('matrix-verbosity').value;
+
+            // Validate Matrix A
+            if (!matrixA) {
+                showError('⚠ Please enter Matrix A');
+                document.getElementById('matrix-a').focus();
+                return;
+            }
+            
+            try {
+                JSON.parse(matrixA);
+            } catch (e) {
+                showError('⚠ Matrix A has invalid JSON format. Check your brackets and commas.');
+                document.getElementById('matrix-a').focus();
+                return;
+            }
+
+            showLoading();
+
+            const body = {
+                operation: operation,
+                expression: matrixA,
+                verbosity: verbosity
+            };
+
+            if (operation === 'matrix_multiply') {
+                const matrixB = document.getElementById('matrix-b').value.trim();
+                if (!matrixB) {
+                    showError('Matrix multiplication requires Matrix B');
+                    hideLoading();
+                    return;
+                }
+                body.matrix_b = matrixB;
+            }
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    throw new Error('API endpoint not available');
+                }
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showError(data.error || 'Computation failed');
+                    return;
+                }
+
+                showResult(data);
+            } catch (error) {
+                showError('Error: ' + error.message);
+            }
+        }
+
+        async function computeIntegration() {
+            const expression = document.getElementById('int-expr').value.trim();
+            const variable = document.getElementById('int-var').value.trim() || 'x';
+            const verbosity = document.getElementById('int-verbosity').value;
+            const isDefinite = document.getElementById('definite-integral').checked;
+            const lowerLimit = document.getElementById('lower-limit').value.trim();
+            const upperLimit = document.getElementById('upper-limit').value.trim();
+
+            // Input validation
+            if (!expression) {
+                showError('⚠ Please enter a mathematical expression to integrate');
+                document.getElementById('int-expr').focus();
+                return;
+            }
+            
+            if (!variable) {
+                showError('⚠ Please specify the variable to integrate with respect to');
+                document.getElementById('int-var').focus();
+                return;
+            }
+
+            if (isDefinite) {
+                if (!lowerLimit) {
+                    showError('⚠ Please enter a lower limit for definite integral');
+                    document.getElementById('lower-limit').focus();
+                    return;
+                }
+                if (!upperLimit) {
+                    showError('⚠ Please enter an upper limit for definite integral');
+                    document.getElementById('upper-limit').focus();
+                    return;
+                }
+            }
+            
+            // Check for common syntax errors
+            if (expression.includes('^')) {
+                showError('⚠ Use ** for exponents, not ^. Example: x**2 instead of x^2');
+                return;
+            }
+
+            showLoading();
+
+            const body = {
+                operation: 'integrate',
+                expression: expression,
+                variable: variable,
+                verbosity: verbosity
+            };
+
+            if (isDefinite) {
+                // Replace π with pi for the backend
+                body.lower_limit = lowerLimit.replace(/π/g, 'pi').replace(/pi/g, '3.14159265359');
+                body.upper_limit = upperLimit.replace(/π/g, 'pi').replace(/pi/g, '3.14159265359');
+            }
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    throw new Error('API endpoint not available');
+                }
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showError(data.error || 'Computation failed');
+                    return;
+                }
+
+                showResult(data);
+            } catch (error) {
+                showError('Error: ' + error.message);
+            }
+        }
+
+        // Graph rendering
+        function showGraph(data) {
+            const container = document.getElementById('graph-container');
+            const canvas = document.getElementById('graph-canvas');
+            container.classList.add('visible');
+
+            // Generate x values
+            const xMin = -10;
+            const xMax = 10;
+            const points = 200;
+            const xValues = [];
+            const yOriginal = [];
+            const yDerivative = [];
+
+            for (let i = 0; i <= points; i++) {
+                const x = xMin + (i / points) * (xMax - xMin);
+                xValues.push(x);
+                
+                // Evaluate original function and derivative
+                try {
+                    const originalValue = evaluateExpression(data.input, x);
+                    const derivativeValue = evaluateExpression(data.output, x);
+                    yOriginal.push(originalValue);
+                    yDerivative.push(derivativeValue);
+                } catch (e) {
+                    yOriginal.push(null);
+                    yDerivative.push(null);
+                }
+            }
+
+            // Destroy old chart if exists
+            if (currentChart) {
+                currentChart.destroy();
+            }
+
+            // Create new chart
+            const isDark = document.body.classList.contains('dark-theme');
+            const ctx = canvas.getContext('2d');
+            
+            currentChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: xValues,
+                    datasets: [
+                        {
+                            label: `f(x) = ${data.input}`,
+                            data: yOriginal,
+                            borderColor: '#6366f1',
+                            backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                            borderWidth: 3,
+                            tension: 0.4,
+                            pointRadius: 0
+                        },
+                        {
+                            label: `f'(x) = ${data.output}`,
+                            data: yDerivative,
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            borderWidth: 3,
+                            tension: 0.4,
+                            pointRadius: 0
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            labels: {
+                                color: isDark ? '#e5e7eb' : '#0f172a',
+                                font: {
+                                    size: 14,
+                                    family: 'JetBrains Mono'
+                                }
+                            }
+                        },
+                        tooltip: {
+                            enabled: true,
+                            mode: 'index',
+                            intersect: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            grid: {
+                                color: isDark ? '#334155' : '#e2e8f0'
+                            },
+                            ticks: {
+                                color: isDark ? '#cbd5e1' : '#64748b'
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: isDark ? '#334155' : '#e2e8f0'
+                            },
+                            ticks: {
+                                color: isDark ? '#cbd5e1' : '#64748b'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Simple expression evaluator (basic implementation)
+        function evaluateExpression(expr, x) {
+            // First, convert all ** to a temporary placeholder to avoid issues with parentheses
+            let evaluated = expr.replace(/\*\*/g, '^POWER^');
+            
+            // Replace x with the actual value
+            evaluated = evaluated.replace(/x/g, `(${x})`);
+            
+            // Now convert ^POWER^ to Math.pow with proper syntax
+            // This handles cases like sin((value)^POWER^2)
+            while (evaluated.includes('^POWER^')) {
+                evaluated = evaluated.replace(/(\([^()]*\)|[\d.]+)\^POWER\^(\([^()]*\)|[\d.]+)/g, 'Math.pow($1,$2)');
+            }
+            
+            // Replace trigonometric functions
+            evaluated = evaluated.replace(/\bsin\b/g, 'Math.sin');
+            evaluated = evaluated.replace(/\bcos\b/g, 'Math.cos');
+            evaluated = evaluated.replace(/\btan\b/g, 'Math.tan');
+            
+            // Replace inverse trig functions
+            evaluated = evaluated.replace(/\basin\b/g, 'Math.asin');
+            evaluated = evaluated.replace(/\bacos\b/g, 'Math.acos');
+            evaluated = evaluated.replace(/\batan\b/g, 'Math.atan');
+            
+            // Replace hyperbolic functions
+            evaluated = evaluated.replace(/\bsinh\b/g, 'Math.sinh');
+            evaluated = evaluated.replace(/\bcosh\b/g, 'Math.cosh');
+            evaluated = evaluated.replace(/\btanh\b/g, 'Math.tanh');
+            evaluated = evaluated.replace(/\basinh\b/g, 'Math.asinh');
+            evaluated = evaluated.replace(/\bacosh\b/g, 'Math.acosh');
+            evaluated = evaluated.replace(/\batanh\b/g, 'Math.atanh');
+            
+            // Replace other functions
+            evaluated = evaluated.replace(/\bexp\b/g, 'Math.exp');
+            evaluated = evaluated.replace(/\blog\b/g, 'Math.log');
+            evaluated = evaluated.replace(/\bsqrt\b/g, 'Math.sqrt');
+            evaluated = evaluated.replace(/\bAbs\b/g, 'Math.abs');
+            evaluated = evaluated.replace(/\babs\b/g, 'Math.abs');
+            
+            // Error function approximation
+            evaluated = evaluated.replace(/\berf\b/g, '__erf');
+            
+            // Replace constants
+            evaluated = evaluated.replace(/\bpi\b/g, 'Math.PI');
+            evaluated = evaluated.replace(/\be\b(?!\d)/g, 'Math.E');
+            
+            try {
+                // Define erf function for evaluation
+                const __erf = (x) => {
+                    // Abramowitz and Stegun approximation
+                    const sign = x >= 0 ? 1 : -1;
+                    x = Math.abs(x);
+                    const a1 = 0.254829592;
+                    const a2 = -0.284496736;
+                    const a3 = 1.421413741;
+                    const a4 = -1.453152027;
+                    const a5 = 1.061405429;
+                    const p = 0.3275911;
+                    const t = 1.0 / (1.0 + p * x);
+                    const y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
+                    return sign * y;
+                };
+                
+                return eval(evaluated);
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function updateChartTheme() {
+            if (!currentChart) return;
+            
+            const isDark = document.body.classList.contains('dark-theme');
+            currentChart.options.plugins.legend.labels.color = isDark ? '#e5e7eb' : '#0f172a';
+            currentChart.options.scales.x.grid.color = isDark ? '#334155' : '#e2e8f0';
+            currentChart.options.scales.x.ticks.color = isDark ? '#cbd5e1' : '#64748b';
+            currentChart.options.scales.y.grid.color = isDark ? '#334155' : '#e2e8f0';
+            currentChart.options.scales.y.ticks.color = isDark ? '#cbd5e1' : '#64748b';
+            currentChart.update();
+        }
+
+        // Integration graph showing area under curve
+        function showIntegrationGraph(data) {
+            const container = document.getElementById('graph-container');
+            const canvas = document.getElementById('graph-canvas');
+            container.classList.add('visible');
+
+            // Destroy old chart if exists
+            if (currentChart) {
+                currentChart.destroy();
+            }
+
+            const isDark = document.body.classList.contains('dark-theme');
+            const ctx = canvas.getContext('2d');
+            
+            // Check if we have graph data from backend
+            if (data.graph && data.graph.integrand) {
+                // Use backend-generated graph data
+                const graphData = data.graph;
+                const datasets = [];
+                
+                // Add integrand (original function)
+                if (graphData.integrand) {
+                    const integrandData = graphData.integrand.x.map((x, i) => ({
+                        x: x,
+                        y: graphData.integrand.y[i]
+                    }));
+                    
+                    datasets.push({
+                        label: `f(x) = ${data.input} (integrand)`,
+                        data: integrandData,
+                        borderColor: '#6366f1',
+                        backgroundColor: graphData.area ? 'rgba(99, 102, 241, 0.15)' : 'transparent',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        pointRadius: 0,
+                        fill: graphData.area ? {
+                            target: 'origin',
+                            above: 'rgba(99, 102, 241, 0.3)',
+                            below: 'rgba(239, 68, 68, 0.3)'
+                        } : false
+                    });
+                }
+                
+                // Add antiderivative (integrated function) if available
+                if (graphData.antiderivative && graphData.antiderivative.y.length > 0) {
+                    const antiderivativeData = graphData.antiderivative.x.map((x, i) => ({
+                        x: x,
+                        y: graphData.antiderivative.y[i]
+                    }));
+                    
+                    datasets.push({
+                        label: `F(x) = ∫ f(x) dx (antiderivative)`,
+                        data: antiderivativeData,
+                        borderColor: '#8b5cf6',
+                        backgroundColor: 'transparent',
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        tension: 0.4,
+                        pointRadius: 0,
+                        fill: false
+                    });
+                }
+                
+                // Add annotation for area value
+                const annotations = {};
+                if (graphData.area && graphData.limits.lower !== null && graphData.limits.upper !== null) {
+                    annotations.areaBox = {
+                        type: 'box',
+                        xMin: graphData.limits.lower,
+                        xMax: graphData.limits.upper,
+                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        borderColor: 'rgba(99, 102, 241, 0.5)',
+                        borderWidth: 2,
+                        borderDash: [3, 3]
+                    };
+                    
+                    // Add vertical lines at limits
+                    annotations.lowerLine = {
+                        type: 'line',
+                        xMin: graphData.limits.lower,
+                        xMax: graphData.limits.lower,
+                        borderColor: '#10b981',
+                        borderWidth: 2,
+                        label: {
+                            content: `x = ${graphData.limits.lower}`,
+                            enabled: true,
+                            position: 'start'
+                        }
+                    };
+                    
+                    annotations.upperLine = {
+                        type: 'line',
+                        xMin: graphData.limits.upper,
+                        xMax: graphData.limits.upper,
+                        borderColor: '#ef4444',
+                        borderWidth: 2,
+                        label: {
+                            content: `x = ${graphData.limits.upper}`,
+                            enabled: true,
+                            position: 'end'
+                        }
+                    };
+                }
+                
+                currentChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        datasets: datasets
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top',
+                                labels: {
+                                    color: isDark ? '#e5e7eb' : '#0f172a',
+                                    font: {
+                                        size: 12,
+                                        family: 'JetBrains Mono'
+                                    },
+                                    usePointStyle: true,
+                                    padding: 15
+                                }
+                            },
+                            tooltip: {
+                                enabled: true,
+                                mode: 'index',
+                                intersect: false,
+                                backgroundColor: isDark ? 'rgba(30, 41, 59, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+                                titleColor: isDark ? '#f1f5f9' : '#0f172a',
+                                bodyColor: isDark ? '#cbd5e1' : '#64748b',
+                                borderColor: isDark ? '#475569' : '#e2e8f0',
+                                borderWidth: 1,
+                                callbacks: {
+                                    label: function(context) {
+                                        const label = context.dataset.label || '';
+                                        return `${label}: ${context.parsed.y.toFixed(4)}`;
+                                    }
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: graphData.area ? 
+                                    `Area from ${graphData.limits.lower} to ${graphData.limits.upper} = ${graphData.area.value.toFixed(6)}` : 
+                                    `Integration: ∫ ${data.input} dx = ${data.output}`,
+                                color: isDark ? '#f1f5f9' : '#0f172a',
+                                font: {
+                                    size: 14,
+                                    family: 'JetBrains Mono',
+                                    weight: 'bold'
+                                },
+                                padding: {
+                                    top: 10,
+                                    bottom: 20
+                                }
+                            },
+                            annotation: {
+                                annotations: annotations
+                            }
+                        },
+                        scales: {
+                            x: {
+                                type: 'linear',
+                                title: {
+                                    display: true,
+                                    text: data.variable || 'x',
+                                    color: isDark ? '#cbd5e1' : '#64748b',
+                                    font: {
+                                        size: 14,
+                                        family: 'JetBrains Mono',
+                                        weight: 'bold'
+                                    }
+                                },
+                                grid: {
+                                    color: isDark ? '#334155' : '#e2e8f0',
+                                    drawBorder: false
+                                },
+                                ticks: {
+                                    color: isDark ? '#cbd5e1' : '#64748b',
+                                    font: {
+                                        family: 'JetBrains Mono',
+                                        size: 11
+                                    }
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'f(x)',
+                                    color: isDark ? '#cbd5e1' : '#64748b',
+                                    font: {
+                                        size: 14,
+                                        family: 'JetBrains Mono',
+                                        weight: 'bold'
+                                    }
+                                },
+                                grid: {
+                                    color: isDark ? '#334155' : '#e2e8f0',
+                                    drawBorder: false
+                                },
+                                ticks: {
+                                    color: isDark ? '#cbd5e1' : '#64748b',
+                                    font: {
+                                        family: 'JetBrains Mono',
+                                        size: 11
+                                    }
+                                }
+                            }
+                        },
+                        interaction: {
+                            mode: 'nearest',
+                            intersect: false
+                        }
+                    }
+                });
+            } else {
+                // Fallback: Generate graph data client-side (legacy)
+                const xMin = data.limits && data.limits[0] !== null ? data.limits[0] - 2 : -5;
+                const xMax = data.limits && data.limits[1] !== null ? data.limits[1] + 2 : 5;
+                const points = 200;
+                const xValues = [];
+                const yFunction = [];
+
+                for (let i = 0; i <= points; i++) {
+                    const x = xMin + (i / points) * (xMax - xMin);
+                    xValues.push(x);
+                    
+                    try {
+                        const functionValue = evaluateExpression(data.input, x);
+                        yFunction.push(functionValue);
+                    } catch (e) {
+                        yFunction.push(null);
+                    }
+                }
+
+                currentChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: xValues,
+                        datasets: [
+                            {
+                                label: `f(x) = ${data.input}`,
+                                data: yFunction,
+                                borderColor: '#6366f1',
+                                backgroundColor: 'rgba(99, 102, 241, 0.3)',
+                                borderWidth: 3,
+                                tension: 0.4,
+                                pointRadius: 0,
+                                fill: data.definite
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                labels: {
+                                    color: isDark ? '#e5e7eb' : '#0f172a',
+                                    font: {
+                                        size: 14,
+                                        family: 'JetBrains Mono'
+                                    }
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: data.definite ? 
+                                    `Area = ${data.output}` : 
+                                    `∫ ${data.input} dx = ${data.output}`,
+                                color: isDark ? '#f1f5f9' : '#0f172a',
+                                font: {
+                                    size: 14,
+                                    family: 'JetBrains Mono',
+                                    weight: 'bold'
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                type: 'linear',
+                                grid: {
+                                    color: isDark ? '#334155' : '#e2e8f0',
+                                    drawBorder: false
+                                },
+                                ticks: {
+                                    color: isDark ? '#cbd5e1' : '#64748b',
+                                    font: {
+                                        family: 'JetBrains Mono'
+                                    }
+                                }
+                            },
+                            y: {
+                                grid: {
+                                    color: isDark ? '#334155' : '#e2e8f0',
+                                    drawBorder: false
+                                },
+                                ticks: {
+                                    color: isDark ? '#cbd5e1' : '#64748b',
+                                    font: {
+                                        family: 'JetBrains Mono'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // History functions
+        function addToHistory(data) {
+            computationHistory.unshift({
+                timestamp: new Date(),
+                data: data
+            });
+            
+            if (computationHistory.length > 50) {
+                computationHistory = computationHistory.slice(0, 50);
+            }
+            
+            updateHistoryPanel();
+        }
+
+        function updateHistoryPanel() {
+            const historyList = document.getElementById('history-list');
+            historyList.innerHTML = '';
+            
+            computationHistory.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'history-item';
+                div.innerHTML = `
+                    <div style="font-weight: 600; margin-bottom: 0.5rem;">${item.data.input}</div>
+                    <div style="color: var(--text-secondary); font-size: 0.875rem;">
+                        ${item.timestamp.toLocaleString()}
+                    </div>
+                `;
+                div.onclick = () => loadFromHistory(item.data);
+                historyList.appendChild(div);
+            });
+        }
+
+        function loadFromHistory(data) {
+            if (data.operation === 'differentiate') {
+                document.getElementById('diff-expr').value = data.input;
+                switchTab('differentiate');
+            }
+            toggleHistory();
+        }
+
+        function toggleHistory() {
+            document.getElementById('history-panel').classList.toggle('visible');
+        }
+
+        // Export functions
+        function toggleExportMenu() {
+            document.getElementById('export-menu').classList.toggle('visible');
+        }
+
+        function exportAs(format) {
+            // Get current result data
+            const output = document.getElementById('result-output').textContent;
+            const steps = Array.from(document.querySelectorAll('.step')).map(step => ({
+                rule: step.querySelector('.step-rule').textContent,
+                explanation: step.querySelector('.step-explanation').textContent
+            }));
+            
+            let content = '';
+            let filename = '';
+            let mimeType = '';
+            
+            if (format === 'json') {
+                content = JSON.stringify({ output, steps }, null, 2);
+                filename = 'calcora-result.json';
+                mimeType = 'application/json';
+            } else if (format === 'text') {
+                content = `Result: ${output}\n\nSteps:\n${steps.map((s, i) => `${i + 1}. ${s.rule}\n   ${s.explanation}`).join('\n')}`;
+                filename = 'calcora-result.txt';
+                mimeType = 'text/plain';
+            } else if (format === 'latex') {
+                content = `\\documentclass{article}\n\\begin{document}\n\\section*{Result}\n$${output}$\n\\end{document}`;
+                filename = 'calcora-result.tex';
+                mimeType = 'text/x-latex';
+            }
+            
+            const blob = new Blob([content], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            toggleExportMenu();
+        }
+
+        function copyToClipboard() {
+            const output = document.getElementById('result-output').textContent;
+            navigator.clipboard.writeText(output);
+            
+            // Show feedback
+            const btn = event.target.closest('.export-item');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                toggleExportMenu();
+            }, 1000);
+        }
+
+        // Keyboard shortcuts
+        function showShortcuts() {
+            const hint = document.getElementById('shortcuts-hint');
+            hint.classList.add('visible');
+            setTimeout(() => {
+                hint.classList.remove('visible');
+            }, 5000);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'Enter') {
+                e.preventDefault();
+                const activeTab = document.querySelector('.tab.active').dataset.tab;
+                if (activeTab === 'differentiate') {
+                    computeDifferentiate();
+                } else {
+                    computeMatrix();
+                }
+            } else if (e.ctrlKey && e.key === 'h') {
+                e.preventDefault();
+                toggleHistory();
+            } else if (e.ctrlKey && e.key === '/') {
+                e.preventDefault();
+                showShortcuts();
+            } else if (e.key === 'Escape') {
+                document.getElementById('history-panel').classList.remove('visible');
+                document.getElementById('export-menu').classList.remove('visible');
+            } else if (e.key === 'f' && !e.ctrlKey && !e.altKey && !e.metaKey) {
+                // F key toggles format (only if not in an input)
+                if (!['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
+                    e.preventDefault();
+                    toggleResultFormat();
+                }
+            }
+        });
+
+        // Initialize
+        checkApiAvailability();
+        toggleMatrixB();
+    </script>
+</body>
+</html>

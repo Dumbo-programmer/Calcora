@@ -1,0 +1,27 @@
+---
+const { currentPage } = Astro.props;
+---
+
+<header>
+    <div class="header-content">
+        <div class="logo">
+            <i class="fas fa-calculator"></i> Calcora
+        </div>
+        <div class="nav-group">
+            <nav>
+                <a href="/" class={currentPage === 'home' ? 'active' : ''}>Home</a>
+                <a href="/demo" class={currentPage === 'demo' ? 'active' : ''}>Demo</a>
+                <a href="/docs-api" class={currentPage === 'docs-api' ? 'active' : ''}>API Docs</a>
+                <a href="/docs-user-guide" class={currentPage === 'docs-user-guide' ? 'active' : ''}>User Guide</a>
+                <a href="/docs-self-hosting" class={currentPage === 'docs-self-hosting' ? 'active' : ''}>Self-Hosting</a>
+                <a href="/docs-building" class={currentPage === 'docs-building' ? 'active' : ''}>Build Guide</a>
+            </nav>
+            <a href="https://github.com/Dumbo-programmer/Calcora" target="_blank" rel="noopener" style="color: var(--text-secondary); text-decoration: none;">
+                <i class="fab fa-github"></i>
+            </a>
+            <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </div>
+</header>

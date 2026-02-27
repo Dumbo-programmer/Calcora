@@ -1,5 +1,7 @@
 [build]
-  publish = "site"
+  base = "site"
+  command = "npm install && npm run build"
+  publish = "dist"
   functions = "netlify/functions"
 
 [functions]

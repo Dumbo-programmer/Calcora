@@ -1,0 +1,100 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout 
+    title="Build Calcora from Source | Developer Guide"
+    description="Learn how to build Calcora from source code for development or customization."
+    currentPage="docs-building"
+>
+    <main style="padding: 2rem; max-width: 1200px; margin: 0 auto;">
+        <h1><i class="fas fa-hammer"></i> Build From Source</h1>
+        <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+            Instructions for building Calcora from source code.
+        </p>
+
+        <section>
+            <h2>Prerequisites</h2>
+            <ul>
+                <li>Python 3.8 or higher</li>
+                <li>Git</li>
+                <li>pip and virtualenv</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Clone the Repository</h2>
+            <pre><code>git clone https://github.com/Dumbo-programmer/Calcora.git
+cd Calcora</code></pre>
+        </section>
+
+        <section>
+            <h2>Setup Development Environment</h2>
+            <h3>Create Virtual Environment</h3>
+            <pre><code>python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate</code></pre>
+            
+            <h3>Install Dependencies</h3>
+            <pre><code>pip install -e ".[dev]"</code></pre>
+        </section>
+
+        <section>
+            <h2>Run Development Server</h2>
+            <pre><code>calcora serve --debug</code></pre>
+        </section>
+
+        <section>
+            <h2>Building Desktop App</h2>
+            <p>To build the standalone Windows executable:</p>
+            <pre><code>pip install pyinstaller
+pyinstaller Calcora.spec</code></pre>
+            
+            <p>The executable will be in the <code>dist/</code> directory.</p>
+        </section>
+
+        <section>
+            <h2>Running Tests</h2>
+            <pre><code>pytest tests/</code></pre>
+        </section>
+
+        <section>
+            <h2>Contributing</h2>
+            <p>We welcome contributions! Please see our <a href="https://github.com/Dumbo-programmer/Calcora/blob/main/CONTRIBUTING.md">Contributing Guide</a> for details.</p>
+        </section>
+    </main>
+</Layout>
+
+<style>
+    section {
+        margin: 3rem 0;
+    }
+
+    h2 {
+        font-size: 2rem;
+        margin: 2rem 0 1rem;
+       color: var(--primary);
+    }
+
+    h3 {
+        font-size: 1.5rem;
+        margin: 1.5rem 0 0.75rem;
+    }
+
+    ul {
+        margin: 1rem 0;
+        padding-left: 2rem;
+    }
+
+    li {
+        margin: 0.5rem 0;
+    }
+
+    a {
+        color: var(--primary);
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+</style>

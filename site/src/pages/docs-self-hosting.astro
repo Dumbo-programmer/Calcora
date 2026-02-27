@@ -1,0 +1,89 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout 
+    title="Self-Hosting Calcora | Deploy Your Own Instance"
+    description="Learn how to deploy and self-host your own Calcora instance."
+    currentPage="docs-self-hosting"
+>
+    <main style="padding: 2rem; max-width: 1200px; margin: 0 auto;">
+        <h1><i class="fas fa-server"></i> Self-Hosting Guide</h1>
+        <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+            Deploy your own Calcora instance for private use or internal networks.
+        </p>
+
+        <section>
+            <h2>Quick Start</h2>
+            <div class="tip">
+                <strong>For the simplest setup</strong>, use the Python package method with pip install calcora && calcora serve
+            </div>
+        </section>
+
+        <section>
+            <h2>Docker Deployment</h2>
+            <p>The easiest way to self-host Calcora is using Docker:</p>
+            
+            <h3>Pull and Run</h3>
+            <pre><code>docker pull ghcr.io/dumbo-programmer/calcora:latest
+docker run -p 5000:5000 ghcr.io/dumbo-programmer/calcora:latest</code></pre>
+            
+            <p>Access Calcora at <code>http://localhost:5000</code></p>
+        </section>
+
+        <section>
+            <h2>Python Package Method</h2>
+            <p>Install and run Calcora using pip:</p>
+            
+            <pre><code>pip install calcora
+calcora serve --host 0.0.0.0 --port 5000</code></pre>
+        </section>
+
+        <section>
+            <h2>Configuration</h2>
+            <p>Customize your Calcora instance through environment variables or config file:</p>
+            
+            <h3>Environment Variables</h3>
+            <ul>
+                <li><code>CALCORA_PORT</code> — Server port (default: 5000)</li>
+                <li><code>CALCORA_HOST</code> — Bind address (default: 127.0.0.1)</li>
+                <li><code>CALCORA_LOG_LEVEL</code> — Logging level (default: INFO)</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Security Considerations</h2>
+            <ul>
+                <li>Use HTTPS in production (reverse proxy with nginx/Caddy recommended)</li>
+                <li>Configure rate limiting to prevent abuse</li>
+                <li>Restrict access using firewall rules or authentication</li>
+            </ul>
+        </section>
+    </main>
+</Layout>
+
+<style>
+    section {
+        margin: 3rem 0;
+    }
+
+    h2 {
+        font-size: 2rem;
+        margin: 2rem 0 1rem;
+        color: var(--primary);
+    }
+
+    h3 {
+        font-size: 1.5rem;
+        margin: 1.5rem 0 0.75rem;
+    }
+
+    ul {
+        margin: 1rem 0;
+        padding-left: 2rem;
+    }
+
+    li {
+        margin: 0.5rem 0;
+    }
+</style>

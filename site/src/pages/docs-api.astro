@@ -1,0 +1,247 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout 
+    title="Calcora API Documentation | REST API Reference" 
+    description="Complete REST API reference for developers integrating Calcora into their applications."
+    currentPage="docs-api"
+>
+    <main style="padding: 2rem; max-width: 1200px; margin: 0 auto;">
+        <h1 style="margin-bottom: 0.5rem;">
+            <i class="fas fa-code"></i> API Documentation
+        </h1>
+        <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+            Complete REST API reference for developers integrating Calcora into their applications.
+        </p>
+
+        <!-- Getting Started -->
+        <section>
+            <h2><i class="fas fa-rocket"></i> Getting Started</h2>
+            <p>Calcora provides a REST API for all mathematical operations. The API is available at:</p>
+            <pre><code>https://calcoralive.netlify.app/api/v1/</code></pre>
+            
+            <p>For local development or self-hosting:</p>
+            <pre><code>http://localhost:5000/api/v1/</code></pre>
+
+            <h3>Installation (Python Package)</h3>
+            <pre><code>pip install calcora</code></pre>
+
+            <h3>Quick Start (Desktop App)</h3>
+            <p>Download the <a href="https://github.com/Dumbo-programmer/Calcora/releases/latest/download/Calcora.exe">Windows Desktop App</a> which includes a built-in API server.</p>
+        </section>
+
+        <!-- Differentiation Endpoint -->
+        <section>
+            <h2><i class="fas fa-function"></i> Differentiation</h2>
+            
+            <div class="endpoint">
+                <h3>
+                    <span class="http-method method-post">POST</span>
+                    <code>/api/v1/differentiate</code>
+                </h3>
+                <p>Compute the derivative of a mathematical expression with step-by-step explanation.</p>
+
+                <h4>Request Body</h4>
+                <table class="param-table">
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Type</th>
+                            <th>Required</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>expression</code></td>
+                            <td>string</td>
+                            <td><span class="required">REQUIRED</span></td>
+                            <td>Mathematical expression (e.g., <code>"x**2 + 3*x"</code>)</td>
+                        </tr>
+                        <tr>
+                            <td><code>variable</code></td>
+                            <td>string</td>
+                            <td>optional</td>
+                            <td>Variable to differentiate with respect to (default: <code>"x"</code>)</td>
+                        </tr>
+                        <tr>
+                            <td><code>verbosity</code></td>
+                            <td>string</td>
+                            <td>optional</td>
+                            <td>Detail level: <code>"concise"</code>, <code>"detailed"</code>, or <code>"teacher"</code>)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>Example Request</h4>
+                <pre><code>curl -X POST https://calcoralive.netlify.app/api/v1/differentiate \
+  -H "Content-Type: application/json" \
+  -d '&#123;
+    "expression": "sin(x)*x**2",
+    "variable": "x",
+    "verbosity": "detailed"
+  &#125;'</code></pre>
+
+                <h4>Example Response</h4>
+                <pre><code>&#123;
+  "result": "x**2*cos(x) + 2*x*sin(x)",
+  "steps": [
+    &#123;
+      "step": 1,
+      "rule": "product_rule",
+      "input": "sin(x)*x**2",
+      "output": "sin(x)*Derivative(x**2, x) + x**2*Derivative(sin(x), x)",
+      "explanation": "Apply product rule: d/dx[f·g] = f·g' + g·f'"
+    &#125;
+  ],
+  "metadata": &#123;
+    "operation": "differentiate",
+    "input_expression": "sin(x)*x**2",
+    "variable": "x"
+  &#125;
+&#125;</code></pre>
+            </div>
+        </section>
+
+        <!-- More sections... -->
+        <section>
+            <h2><i class="fas fa-th"></i> Matrix Operations</h2>
+            
+            <div class="endpoint">
+                <h3>
+                    <span class="http-method method-post">POST</span>
+                    <code>/api/v1/matrix/&#123;operation&#125;</code>
+                </h3>
+                <p>Perform various matrix operations.</p>
+
+                <h4>Available Operations</h4>
+                <ul>
+                    <li><code>determinant</code> — Compute matrix determinant</li>
+                    <li><code>inverse</code> — Compute matrix inverse</li>
+                    <li><code>eigenvalues</code> — Compute eigenvalues</li>
+                    <li><code>rref</code> — Reduced row echelon form</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Python SDK -->
+        <section>
+            <h2><i class="fab fa-python"></i> Python SDK</h2>
+            <p>For Python developers, use the official SDK for easier integration:</p>
+            
+            <h4>Installation</h4>
+            <pre><code>pip install calcora</code></pre>
+
+            <h4>Usage Example</h4>
+            <pre><code>from calcora import differentiate, integrate
+
+# Differentiation
+result = differentiate("x**2 + 3*x", verbosity="detailed")
+print(result.output)  # "2*x + 3"
+
+# Integration
+result = integrate("x**2", lower=0, upper=2, definite=True)
+print(result.output)  # "8/3"</code></pre>
+
+            <p>Full Python API documentation: <a href="https://github.com/Dumbo-programmer/Calcora/blob/main/README.md">GitHub README</a></p>
+        </section>
+    </main>
+</Layout>
+
+<style>
+    section {
+        margin: 3rem 0;
+    }
+
+    h2 {
+        font-size: 2rem;
+        margin: 2rem 0 1rem;
+        color: var(--primary);
+    }
+
+    h3 {
+        font-size: 1.5rem;
+        margin: 1.5rem 0 0.75rem;
+    }
+
+    h4 {
+        font-size: 1.125rem;
+        margin: 1.25rem 0 0.5rem;
+        color: var(--text-primary);
+    }
+
+    .endpoint {
+        background: var(--bg-primary);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 2rem;
+        margin: 2rem 0;
+    }
+
+    .http-method {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 6px;
+        font-weight: 700;
+        font-size: 0.875rem;
+        margin-right: 0.5rem;
+    }
+
+    .method-post {
+        background: #10b981;
+        color: white;
+    }
+
+    .required {
+        color: var(--error);
+        font-weight: 700;
+        font-size: 0.75rem;
+    }
+
+    .param-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0;
+        background: var(--bg-primary);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .param-table th {
+        background: var(--bg-tertiary);
+        padding: 0.75rem;
+        text-align: left;
+        font-weight: 600;
+        border-bottom: 2px solid var(--border);
+    }
+
+    .param-table td {
+        padding: 0.75rem;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .param-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    ul, ol {
+        margin: 1rem 0;
+        padding-left: 2rem;
+    }
+
+    li {
+        margin: 0.5rem 0;
+    }
+
+    a {
+        color: var(--primary);
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    a:hover {
+        color: var(--primary-dark);
+        text-decoration: underline;
+    }
+</style>
