@@ -104,23 +104,277 @@ import Layout from '../layouts/Layout.astro';
             </div>
         </section>
 
-        <!-- More sections... -->
+        <!-- Integration Endpoint -->
+        <section>
+            <h2><i class="fas fa-integral"></i> Integration</h2>
+            
+            <div class="endpoint">
+                <h3>
+                    <span class="http-method method-post">POST</span>
+                    <code>/api/v1/integrate</code>
+                </h3>
+                <p>Compute indefinite or definite integrals with step-by-step explanation and graphical visualization.</p>
+
+                <h4>Request Body</h4>
+                <table class="param-table">
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Type</th>
+                            <th>Required</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>expression</code></td>
+                            <td>string</td>
+                            <td><span class="required">REQUIRED</span></td>
+                            <td>Mathematical expression to integrate (e.g., <code>"x**2"</code>, <code>"sin(x)"</code>)</td>
+                        </tr>
+                        <tr>
+                            <td><code>variable</code></td>
+                            <td>string</td>
+                            <td>optional</td>
+                            <td>Variable to integrate with respect to (default: <code>"x"</code>)</td>
+                        </tr>
+                        <tr>
+                            <td><code>lower_limit</code></td>
+                            <td>number</td>
+                            <td>optional</td>
+                            <td>Lower bound for definite integral</td>
+                        </tr>
+                        <tr>
+                            <td><code>upper_limit</code></td>
+                            <td>number</td>
+                            <td>optional</td>
+                            <td>Upper bound for definite integral</td>
+                        </tr>
+                        <tr>
+                            <td><code>verbosity</code></td>
+                            <td>string</td>
+                            <td>optional</td>
+                            <td>Detail level: <code>"concise"</code>, <code>"detailed"</code>, or <code>"teacher"</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>generate_graph</code></td>
+                            <td>boolean</td>
+                            <td>optional</td>
+                            <td>Include graph data for visualization (default: <code>true</code>)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>Example: Indefinite Integral</h4>
+                <pre><code>curl -X POST https://calcoralive.netlify.app/api/v1/integrate \
+  -H "Content-Type: application/json" \
+  -d '&#123;
+    "expression": "x**2",
+    "variable": "x",
+    "verbosity": "detailed"
+  &#125;'</code></pre>
+
+                <h4>Response</h4>
+                <pre><code>&#123;
+  "result": "x**3/3 + C",
+  "definite": false,
+  "steps": [
+    &#123;
+      "rule": "power_rule",
+      "explanation": "Apply power rule: ∫x^n dx = x^(n+1)/(n+1) + C",
+      "before": "x**2",
+      "after": "x**3/3"
+    &#125;
+  ],
+  "technique": "power_rule",
+  "can_integrate": true
+&#125;</code></pre>
+
+                <h4>Example: Definite Integral</h4>
+                <pre><code>curl -X POST https://calcoralive.netlify.app/api/v1/integrate \
+  -H "Content-Type: application/json" \
+  -d '&#123;
+    "expression": "x**2",
+    "variable": "x",
+    "lower_limit": 0,
+    "upper_limit": 2,
+    "generate_graph": true
+  &#125;'</code></pre>
+
+                <h4>Response</h4>
+                <pre><code>&#123;
+  "result": "8/3",
+  "definite": true,
+  "limits": [0, 2],
+  "steps": [...],
+  "graph": &#123;
+    "data": &#123;
+      "x_values": [-2, -1.99, ..., 3.99, 4],
+      "integrand_curve": [4, 3.96, ..., 15.92, 16],
+      "antiderivative_curve": [0, 0.027, ..., 18.67, 21.33],
+      "area": &#123;
+        "x": [0, 0.01, ..., 1.99, 2],
+        "y": [0, 0.0001, ..., 3.96, 4],
+        "value": 2.666666666666667
+      &#125;
+    &#125;,
+    "labels": &#123;
+      "integrand": "f(x) = x**2",
+      "antiderivative": "F(x) = ∫ f(x) dx"
+    &#125;,
+    "limits": &#123;"lower": 0, "upper": 2&#125;
+  &#125;
+&#125;</code></pre>
+
+                <div class="info-box">
+                    <strong>Supported Techniques:</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li>Power rule for polynomials</li>
+                        <li>Trigonometric integrals (sin, cos, tan, sec, csc, cot)</li>
+                        <li>Exponential and logarithmic functions</li>
+                        <li>Integration by parts</li>
+                        <li>U-substitution (chain rule)</li>
+                        <li>Partial fractions for rational functions</li>
+                        <li>Trigonometric substitution</li>
+                        <li>Hyperbolic functions</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Matrix Operations -->
         <section>
             <h2><i class="fas fa-th"></i> Matrix Operations</h2>
             
             <div class="endpoint">
                 <h3>
                     <span class="http-method method-post">POST</span>
-                    <code>/api/v1/matrix/&#123;operation&#125;</code>
+                    <code>/api/v1/matrix/determinant</code>
                 </h3>
-                <p>Perform various matrix operations.</p>
+                <p>Compute the determinant of a square matrix with step-by-step explanation.</p>
 
-                <h4>Available Operations</h4>
+                <h4>Request Body</h4>
+                <table class="param-table">
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Type</th>
+                            <th>Required</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>matrix</code></td>
+                            <td>array[][]</td>
+                            <td><span class="required">REQUIRED</span></td>
+                            <td>2D array representing the matrix</td>
+                        </tr>
+                        <tr>
+                            <td><code>verbosity</code></td>
+                            <td>string</td>
+                            <td>optional</td>
+                            <td>Detail level for steps</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>Example Request</h4>
+                <pre><code>curl -X POST https://calcoralive.netlify.app/api/v1/matrix/determinant \
+  -H "Content-Type: application/json" \
+  -d '&#123;
+    "matrix": [[3, 8], [4, 6]],
+    "verbosity": "detailed"
+  &#125;'</code></pre>
+
+                <h4>Example Response</h4>
+                <pre><code>&#123;
+  "operation": "determinant",
+  "result": -14,
+  "input_matrix": [[3, 8], [4, 6]],
+  "steps": [
+    &#123;
+      "explanation": "For 2×2 matrix: det = (a*d) - (b*c)",
+      "calculation": "(3*6) - (8*4) = 18 - 32 = -14"
+    &#125;
+  ]
+&#125;</code></pre>
+            </div>
+
+            <div class="endpoint">
+                <h3>
+                    <span class="http-method method-post">POST</span>
+                    <code>/api/v1/matrix/inverse</code>
+                </h3>
+                <p>Compute the inverse of a square matrix (if it exists).</p>
+
+                <h4>Example Request</h4>
+                <pre><code>curl -X POST https://calcoralive.netlify.app/api/v1/matrix/inverse \
+  -H "Content-Type: application/json" \
+  -d '&#123;
+    "matrix": [[1, 2], [3, 4]]
+  &#125;'</code></pre>
+
+                <h4>Response</h4>
+                <pre><code>&#123;
+  "operation": "inverse",
+  "result": [[-2, 1], [1.5, -0.5]],
+  "determinant": -2,
+  "steps": [
+    &#123;
+      "explanation": "Calculate determinant: det(A) = -2",
+      "calculation": "(1*4) - (2*3) = -2"
+    &#125;,
+    &#123;
+      "explanation": "Compute adjugate matrix and divide by determinant",
+      "result": "A^(-1) = (1/det) * adj(A)"
+    &#125;
+  ]
+&#125;</code></pre>
+            </div>
+
+            <div class="endpoint">
+                <h3>
+                    <span class="http-method method-post">POST</span>
+                    <code>/api/v1/matrix/eigenvalues</code>
+                </h3>
+                <p>Compute eigenvalues and eigenvectors of a square matrix.</p>
+
+                <h4>Example Response</h4>
+                <pre><code>&#123;
+  "operation": "eigenvalues",
+  "eigenvalues": [5.372, -0.372],
+  "eigenvectors": [
+    [0.824, 0.566],
+    [-0.416, 0.909]
+  ],
+  "characteristic_polynomial": "λ² - 5λ - 2"
+&#125;</code></pre>
+            </div>
+
+            <div class="endpoint">
+                <h3>
+                    <span class="http-method method-post">POST</span>
+                    <code>/api/v1/matrix/rref</code>
+                </h3>
+                <p>Compute the Reduced Row Echelon Form of a matrix.</p>
+
+                <h4>Use Cases</h4>
                 <ul>
-                    <li><code>determinant</code> — Compute matrix determinant</li>
-                    <li><code>inverse</code> — Compute matrix inverse</li>
-                    <li><code>eigenvalues</code> — Compute eigenvalues</li>
-                    <li><code>rref</code> — Reduced row echelon form</li>
+                    <li>Solving systems of linear equations</li>
+                    <li>Finding matrix rank</li>
+                    <li>Identifying pivot columns</li>
+                    <li>Testing linear independence</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <strong>All Matrix Operations Include:</strong>
+                <ul style="margin-top: 0.5rem;">
+                    <li>Step-by-step explanations</li>
+                    <li>Input validation and error handling</li>
+                    <li>Support for symbolic arithmetic</li>
+                    <li>Numerical precision to 10 decimal places</li>
                 </ul>
             </div>
         </section>
@@ -134,15 +388,25 @@ import Layout from '../layouts/Layout.astro';
             <pre><code>pip install calcora</code></pre>
 
             <h4>Usage Example</h4>
-            <pre><code>from calcora import differentiate, integrate
+            <pre><code>from calcora import differentiate, integrate, matrix_determinant
 
 # Differentiation
-result = differentiate("x**2 + 3*x", verbosity="detailed")
-print(result.output)  # "2*x + 3"
+result = differentiate("x**2 + 3*x", variable="x", verbosity="detailed")
+print(result['output'])  # "2*x + 3"
 
-# Integration
-result = integrate("x**2", lower=0, upper=2, definite=True)
-print(result.output)  # "8/3"</code></pre>
+# Indefinite Integration
+result = integrate("x**2", variable="x")
+print(result['output'])  # "x**3/3 + C"
+
+# Definite Integration
+result = integrate("x**2", variable="x", lower_limit=0, upper_limit=2)
+print(result['output'])  # "8/3"
+print(result['graph']['area']['value'])  # 2.666666666666667
+
+# Matrix Determinant
+matrix = [[3, 8], [4, 6]]
+result = matrix_determinant(matrix)
+print(result['result'])  # -14</code></pre>
 
             <p>Full Python API documentation: <a href="https://github.com/Dumbo-programmer/Calcora/blob/main/README.md">GitHub README</a></p>
         </section>
@@ -243,5 +507,28 @@ print(result.output)  # "8/3"</code></pre>
     a:hover {
         color: var(--primary-dark);
         text-decoration: underline;
+    }
+
+    .info-box {
+        background: var(--bg-secondary);
+        border-left: 4px solid var(--primary);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+    }
+
+    .info-box strong {
+        color: var(--primary);
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    .info-box ul {
+        margin: 0;
+        padding-left: 1.5rem;
+    }
+
+    .info-box li {
+        margin: 0.25rem 0;
     }
 </style>

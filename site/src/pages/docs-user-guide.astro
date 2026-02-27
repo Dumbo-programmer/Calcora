@@ -27,24 +27,126 @@ import Layout from '../layouts/Layout.astro';
             <h2>Differentiation</h2>
             <p>Compute derivatives with step-by-step explanations.</p>
             
-            <h3>Example</h3>
+            <h3>Basic Example</h3>
             <pre><code>differentiate("x**2 + 3*x", "x")</code></pre>
             
             <div class="tip">
                 <strong>Tip:</strong> Use <code>verbosity="detailed"</code> for educational explanations showing each rule applied.
             </div>
+
+            <h3>Supported Functions</h3>
+            <ul>
+                <li>Polynomials: <code>x**n</code></li>
+                <li>Trigonometric: <code>sin(x)</code>, <code>cos(x)</code>, <code>tan(x)</code></li>
+                <li>Exponential: <code>exp(x)</code>, <code>e**x</code></li>
+                <li>Logarithmic: <code>log(x)</code>, <code>ln(x)</code></li>
+                <li>Inverse trig: <code>asin(x)</code>, <code>acos(x)</code>, <code>atan(x)</code></li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Integration</h2>
+            <p>Compute indefinite and definite integrals with visual representations and step-by-step solutions.</p>
+            
+            <h3>Indefinite Integral (Antiderivative)</h3>
+            <pre><code># Find ∫x² dx
+from calcora import integrate
+
+result = integrate("x**2", "x")
+print(result['output'])  # "x**3/3 + C"</code></pre>
+
+            <h3>Definite Integral (Area Under Curve)</h3>
+            <pre><code># Calculate ∫₀² x² dx
+result = integrate(
+    expression="x**2",
+    variable="x",
+    lower_limit=0,
+    upper_limit=2
+)
+print(result['output'])  # "8/3" (approximately 2.667)</code></pre>
+
+            <h3>Integration Techniques Supported</h3>
+            <ul>
+                <li><strong>Power Rule:</strong> <code>∫xⁿ dx = x^(n+1)/(n+1) + C</code></li>
+                <li><strong>Trigonometric:</strong> sin, cos, tan, sec, csc, cot</li>
+                <li><strong>Exponential:</strong> <code>∫eˣ dx = eˣ + C</code></li>
+                <li><strong>Logarithmic:</strong> <code>∫1/x dx = ln|x| + C</code></li>
+                <li><strong>Integration by Parts:</strong> <code>∫u dv = uv - ∫v du</code></li>
+                <li><strong>U-Substitution:</strong> Chain rule in reverse</li>
+                <li><strong>Partial Fractions:</strong> For rational functions</li>
+                <li><strong>Trig Substitution:</strong> For expressions with √(a² - x²)</li>
+            </ul>
+
+            <div class="tip">
+                <strong>💡 Pro Tip:</strong> Set <code>generate_graph=true</code> to get visualization data showing the integrand curve, antiderivative, and shaded area (for definite integrals).
+            </div>
+
+            <h3>Common Integrals</h3>
+            <pre><code># Trigonometric
+integrate("sin(x)", "x")  # -cos(x) + C
+
+# Exponential
+integrate("exp(x)", "x")  # exp(x) + C
+
+# Rational
+integrate("1/x", "x")  # ln|x| + C
+
+# Product requiring integration by parts
+integrate("x*exp(x)", "x")  # x*exp(x) - exp(x) + C
+
+# Area calculation
+integrate("sin(x)", "x", 0, 3.14159)  # Area = 2</code></pre>
         </section>
 
         <section>
             <h2>Matrix Operations</h2>
-            <p>Perform matrix calculations including determinants, inverses, and eigenvalues.</p>
+            <p>Perform matrix calculations including determinants, inverses, eigenvalues, and RREF with detailed step-by-step explanations.</p>
             
-            <h3>Supported Operations</h3>
+            <h3>Determinant</h3>
+            <p>Calculate the determinant of a square matrix:</p>
+            <pre><code>from calcora import matrix_determinant
+
+matrix = [[3, 8], [4, 6]]
+result = matrix_determinant(matrix)
+print(result['result'])  # -14</code></pre>
+
+            <h3>Matrix Inverse</h3>
+            <p>Find the inverse of a matrix (if it exists):</p>
+            <pre><code>from calcora import matrix_inverse
+
+matrix = [[1, 2], [3, 4]]
+result = matrix_inverse(matrix)
+print(result['result'])  # [[-2, 1], [1.5, -0.5]]</code></pre>
+
+            <div class="tip">
+                <strong>Note:</strong> If the determinant is 0, the matrix is singular and has no inverse.
+            </div>
+
+            <h3>Eigenvalues and Eigenvectors</h3>
+            <p>Compute eigenvalues and eigenvectors:</p>
+            <pre><code>from calcora import matrix_eigenvalues
+
+matrix = [[2, 1], [1, 2]]
+result = matrix_eigenvalues(matrix)
+print(result['eigenvalues'])  # [3, 1]
+print(result['eigenvectors'])  # [[0.707, 0.707], [-0.707, 0.707]]</code></pre>
+
+            <h3>Row Reduction (RREF)</h3>
+            <p>Reduce a matrix to row echelon form:</p>
+            <pre><code>from calcora import matrix_rref
+
+# Solve system: 2x + y = 5, x - y = 1
+augmented = [[2, 1, 5], [1, -1, 1]]
+result = matrix_rref(augmented)
+print(result['result'])  # [[1, 0, 2], [0, 1, 1]]
+# Solution: x = 2, y = 1</code></pre>
+
+            <h3>Use Cases</h3>
             <ul>
-                <li>Determinant calculation</li>
-                <li>Matrix inverse</li>
-                <li>Eigenvalues and eigenvectors</li>
-                <li>Row operations and RREF</li>
+                <li><strong>Determinants:</strong> Check if matrix is invertible, compute volumes</li>
+                <li><strong>Inverses:</strong> Solve matrix equations Ax = b</li>
+                <li><strong>Eigenvalues:</strong> Find principal components, analyze stability</li>
+                <li><strong>RREF:</strong> Solve linear systems, test linear independence</li>
             </ul>
         </section>
 
@@ -91,5 +193,38 @@ import Layout from '../layouts/Layout.astro';
 
     a:hover {
         text-decoration: underline;
+    }
+
+    .tip {
+        background: var(--bg-secondary);
+        border-left: 4px solid var(--primary);
+        border-radius: 8px;
+        padding: 1rem 1.5rem;
+        margin: 1.5rem 0;
+    }
+
+    .tip strong {
+        color: var(--primary);
+    }
+
+    pre {
+        background: var(--bg-tertiary);
+        border-radius: 8px;
+        padding: 1.5rem;
+        overflow-x: auto;
+        margin: 1rem 0;
+    }
+
+    code {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
+
+    :not(pre) > code {
+        background: var(--bg-tertiary);
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.875rem;
     }
 </style>
