@@ -368,6 +368,58 @@ import Layout from '../layouts/Layout.astro';
                 </ul>
             </div>
 
+            <div class="endpoint">
+                <h3>
+                    <span class="http-method method-post">POST</span>
+                    <code>/api/v1/matrix/lu</code>
+                </h3>
+                <p>Perform LU decomposition with partial pivoting: <strong>PA = LU</strong></p>
+                <p style="margin-top: 0.75rem;">Factors a matrix into three components:</p>
+                <ul style="margin: 0.5rem 0;">
+                    <li><strong>P</strong>: Permutation matrix (records row swaps for numerical stability)</li>
+                    <li><strong>L</strong>: Lower triangular matrix (with 1s on diagonal)</li>
+                    <li><strong>U</strong>: Upper triangular matrix</li>
+                </ul>
+
+                <h4>Example Request</h4>
+                <pre><code>curl -X POST https://calcoralive.netlify.app/api/v1/matrix/lu \\
+  -H "Content-Type: application/json" \\
+  -d '&#123;
+    "matrix": [[2, 1, 1], [4, -6, 0], [-2, 7, 2]],
+    "verbosity": "detailed"
+  &#125;'</code></pre>
+
+                <h4>Example Response</h4>
+                <pre><code>&#123;
+  "operation": "matrix_lu",
+  "P": [[0, 1, 0], [1, 0, 0], [0, 0, 1]],
+  "L": [[1, 0, 0], [0.5, 1, 0], [-0.5, -0.923, 1]],
+  "U": [[4, -6, 0], [0, 4, 1], [0, 0, 1.615]],
+  "steps": [
+    &#123;
+      "explanation": "Apply partial pivoting for numerical stability",
+      "computation": "Swap rows to place largest pivot first"
+    &#125;,
+    &#123;
+      "explanation": "L stores elimination multipliers",
+      "computation": "Lower triangular with 1s on diagonal"
+    &#125;,
+    &#123;
+      "explanation": "U is result of Gaussian elimination",
+      "computation": "Upper triangular form"
+    &#125;
+  ]
+&#125;</code></pre>
+
+                <h4>Applications</h4>
+                <ul>
+                    <li><strong>Solve Ax = b efficiently:</strong> Once computed, reuse LU for multiple right-hand sides</li>
+                    <li><strong>Compute determinant:</strong> det(A) = det(P) × det(L) × det(U)</li>
+                    <li><strong>Matrix inversion:</strong> Solve AX = I using LU factorization</li>
+                    <li><strong>Numerical stability:</strong> Partial pivoting prevents division by small numbers</li>
+                </ul>
+            </div>
+
             <div class="info-box">
                 <strong>All Matrix Operations Include:</strong>
                 <ul style="margin-top: 0.5rem;">
@@ -406,7 +458,13 @@ print(result['graph']['area']['value'])  # 2.666666666666667
 # Matrix Determinant
 matrix = [[3, 8], [4, 6]]
 result = matrix_determinant(matrix)
-print(result['result'])  # -14</code></pre>
+print(result['result'])  # -14
+
+# LU Decomposition
+matrix = [[2, 1, 1], [4, -6, 0], [-2, 7, 2]]
+result = matrix_lu(matrix)
+print(result['L'])  # Lower triangular
+print(result['U'])  # Upper triangular</code></pre>
 
             <p>Full Python API documentation: <a href="https://github.com/Dumbo-programmer/Calcora/blob/main/README.md">GitHub README</a></p>
         </section>

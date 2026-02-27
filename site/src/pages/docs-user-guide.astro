@@ -141,12 +141,36 @@ result = matrix_rref(augmented)
 print(result['result'])  # [[1, 0, 2], [0, 1, 1]]
 # Solution: x = 2, y = 1</code></pre>
 
+            <h3>LU Decomposition</h3>
+            <p>Factor a matrix into lower and upper triangular forms with partial pivoting: <strong>PA = LU</strong></p>
+            <pre><code>from calcora import matrix_lu
+
+matrix = [[2, 1, 1], [4, -6, 0], [-2, 7, 2]]
+result = matrix_lu(matrix)
+
+print(result['P'])  # Permutation matrix
+print(result['L'])  # Lower triangular (1s on diagonal)
+print(result['U'])  # Upper triangular</code></pre>
+
+            <div class="tip">
+                <strong>💡 Why LU Decomposition?</strong> Once computed, you can reuse LU to solve Ax = b for multiple different b vectors efficiently. Also useful for computing determinants and matrix inverses.
+            </div>
+
+            <h4>Verification</h4>
+            <p>The decomposition satisfies: <strong>PA = LU</strong></p>
+            <ul>
+                <li><strong>P</strong> records row swaps for numerical stability</li>
+                <li><strong>L</strong> stores the elimination multipliers</li>
+                <li><strong>U</strong> is the result of Gaussian elimination</li>
+            </ul>
+
             <h3>Use Cases</h3>
             <ul>
                 <li><strong>Determinants:</strong> Check if matrix is invertible, compute volumes</li>
                 <li><strong>Inverses:</strong> Solve matrix equations Ax = b</li>
                 <li><strong>Eigenvalues:</strong> Find principal components, analyze stability</li>
                 <li><strong>RREF:</strong> Solve linear systems, test linear independence</li>
+                <li><strong>LU Decomposition:</strong> Efficiently solve systems with multiple right-hand sides, compute determinants</li>
             </ul>
         </section>
 
