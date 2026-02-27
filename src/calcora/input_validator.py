@@ -147,6 +147,16 @@ def validate_expression(expression: str, max_length: int = MAX_EXPRESSION_LENGTH
             'code': 'INVALID_CHARACTERS'
         }
     
+    # Check 4.5: Invalid operator sequences
+    invalid_sequences = ['++', '--', '**/', '/*', '+*', '-*', '*+', '*-', '/+', '/-', '//', '**+', '**-']
+    for seq in invalid_sequences:
+        if seq in expression:
+            return {
+                'valid': False,
+                'error': f'Invalid operator sequence: {seq}',
+                'code': 'INVALID_OPERATOR_SEQUENCE'
+            }
+    
     # Check 5: Balanced parentheses
     paren_count = 0
     for char in expression:

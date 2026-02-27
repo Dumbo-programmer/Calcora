@@ -308,9 +308,20 @@ class IntegrationEngine:
         # Generate graph data
         graph_data = None
         if generate_graph and result is not None:
-            graph_data = self._generate_graph_data(
+            graph_result = self._generate_graph_data(
                 expr, result, x, lower_limit, upper_limit, definite_value
             )
+            # Check if graph generation returned an error
+            if isinstance(graph_result, dict) and 'error' in graph_result:
+                # Return error from graph generation (discontinuity, complex result, etc.)
+                return {
+                    'success': False,
+                    'error': graph_result['error'],
+                    'warning': graph_result.get('warning'),
+                    'input': expression,
+                    'variable': variable
+                }
+            graph_data = graph_result
         
         # Format output with proper log/ln notation
         output_str = str(definite_value if is_definite else result)
@@ -735,6 +746,18 @@ class IntegrationEngine:
             x_min = -10
             x_max = 10
         
+        # Check for infinite limits - can't graph infinite ranges
+        if np.isinf(x_min) or np.isinf(x_max):
+            # Use bounded approximation for graphing
+            if np.isinf(x_min) and not np.isinf(x_max):
+                x_min = x_max - 20  # Graph 20 units before upper limit
+            elif np.isinf(x_max) and not np.isinf(x_min):
+                x_max = x_min + 20  # Graph 20 units after lower limit
+            else:
+                # Both infinite - use default range
+                x_min = -10
+                x_max = 10
+        
         # Generate points
         num_points = 300
         x_values = np.linspace(x_min, x_max, num_points)
@@ -796,10 +819,40 @@ class IntegrationEngine:
                     if integrand_values[i] is not None:
                         area_x.append(float(xi))
                         area_y.append(integrand_values[i])
+            
+            # Safe float conversion with fallback
+            value_float = 0
+            if definite_value is not None:
+                try:
+                    # Try to convert to float
+                    value_float = float(definite_value)
+                except (TypeError, ValueError):
+                    # Can't convert to float - might be complex
+                    # Check if it's actually complex or just needs simplification
+                    import sympy as sp
+                    try:
+                        # Try to simplify and convert to complex, then check if imaginary part is significant
+                        complex_val = complex(definite_value)
+                        if abs(complex_val.imag) > 1e-10:  # Significant imaginary component
+                            return {
+                                'data': None,
+                                'error': 'Integration crosses discontinuity or domain boundary',
+                                'warning': 'discontinuous'
+                            }
+                        # Imaginary part is negligible (numerical error), use real part
+                        value_float = complex_val.real
+                    except:
+                        # Can't convert at all - return error
+                        return {
+                            'data': None,
+                            'error': 'Integration result cannot be converted to real number',
+                            'warning': 'discontinuous'
+                        }
+            
             area_data = {
                 'x': area_x,
                 'y': area_y,
-                'value': float(definite_value) if definite_value is not None else 0
+                'value': value_float
             }
         
         return {
