@@ -2,16 +2,16 @@
 
 **Calcora** is an open-source educational platform that provides step-by-step explanations for symbolic differentiation, integration, and linear algebra. Built on SymPy and designed for **transparency over power**, Calcora helps students understand *why* solutions work, not just *what* the answer is.
 
-**Status**: v0.2.0 (Security & Robustness Release)  
-**Maturity**: Early-stage educational tool — suitable for Calculus I/II coursework, not research computing
+**Status**: v0.3.0 (Production-Ready Release)  
+**Maturity**: Production-ready educational tool — suitable for Calculus I/II coursework and linear algebra
 
-📚 **[Getting Started](CLONE_AND_RUN.md)** | 🚀 **[Release Notes](RELEASE_NOTES_v0.2.0.md)** | 📋 **[Changelog](CHANGELOG.md)** | 🧪 **[Benchmarks](benchmarks/)**
+📚 **[Full Documentation](https://calcoralive.netlify.app/docs-user-guide)** | 🔧 **[API Reference](https://calcoralive.netlify.app/docs-api)** | 🚀 **[Live Demo](https://calcoralive.netlify.app/demo)** | 📋 **[Changelog](CHANGELOG.md)**
 
-![Tests](https://img.shields.io/badge/tests-69%2F73%20passing-brightgreen)
-![Coverage](https://img.shields.io/badge/coverage-51%25-yellow)
-![Accuracy](https://img.shields.io/badge/benchmark%20accuracy-100%25%20(26%2F26)-brightgreen)
-![Engine Coverage](https://img.shields.io/badge/integration%20engine-71%25%20coverage-green)
-![Security](https://img.shields.io/badge/security-hardened-blue)
+![Tests](https://img.shields.io/badge/tests-73%2F73%20passing-brightgreen)
+![Coverage](https://img.shields.io/badge/coverage-52%25-yellow)
+![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue)
+![PyPI](https://img.shields.io/badge/PyPI-coming%20soon-orange)
+![License](https://img.shields.io/badge/license-MIT-blue)
 
 ## Core Philosophy
 
@@ -20,11 +20,19 @@
 3. **Self-Hosted Option**: Privacy-conscious educators can run locally (no data collection)
 4. **Honest Limitations**: We document what we *can't* do (see Current Limitations below)
 
-## 🖥️ Desktop App (Available Now - v0.3)
+## 🖥️ Desktop App (Available Now - v0.3.0)
 
 **Download → Double-click → Compute — No installation required!**
 
 **[📥 Download Calcora.exe (37 MB)](https://github.com/Dumbo-programmer/Calcora/releases/latest/download/Calcora.exe)**
+
+## 📦 PyPI Package (Coming Soon)
+
+```bash
+pip install calcora
+```
+
+**Status:** PyPI publishing workflow configured, awaiting v0.3.0 release.
 
 ### Features:
 - ✅ Single-file executable (Windows 10/11)
@@ -66,10 +74,10 @@
 - **Three Verbosity Modes**: Concise / Detailed / Teacher Mode
 
 ### ⚠️ Current Limitations
-- ❌ **Advanced Integration**: Trig substitution, Weierstrass, reduction formulas (v0.3 planned)
-- ❌ **Series & Limits**: Not yet implemented (v0.3-0.4 roadmap)
+- ❌ **Advanced Integration**: Trig substitution, Weierstrass, reduction formulas (v0.4 planned)
+- ❌ **Series & Limits**: Not yet implemented (v0.4-0.5 roadmap)
 - ❌ **Equation Solving**: Symbolic equation solving postponed to v0.4
-- ❌ **LaTeX Export**: Planned for v0.3
+- ❌ **LaTeX Export**: Planned for v0.4
 - ⚠️ **Performance**: Not optimized for >50 term expressions or symbolic matrices >5×5
 - ⚠️ **Accessibility**: WCAG 2.1 progress at ~85% (keyboard nav done, screen reader improvements ongoing)
 
@@ -82,13 +90,15 @@ https://github.com/user-attachments/assets/bdb41766-a890-436f-9cc3-a4ffd5e603d4
 
 
 
-**[Interactive Demo →](https://calcoralive.netlify.app/demo.html)**
+**[Interactive Demo →](https://calcoralive.netlify.app/demo)**
 
 Test Calcora directly in your browser - no installation required. Try:
 - **Differentiation** with step-by-step explanations
-- **Integration** (NEW!) with multiple techniques
+- **Integration** with 8+ techniques and graph visualization
 - **Matrix operations** (determinant, inverse, RREF, eigenvalues, LU decomposition)
-- **Interactive graphs** for visualizing functions
+- **Interactive graphs** for visualizing functions and definite integrals
+
+**[📖 Complete Documentation →](https://calcoralive.netlify.app/docs-user-guide)**
 
 ## Target Audience
 
@@ -206,7 +216,7 @@ result = engine.integrate("x * exp(x)")
 
 **New to the project? Follow the step-by-step guide: [CLONE_AND_RUN.md](CLONE_AND_RUN.md)**
 
-**Prerequisites**: Python 3.11+ and Git
+**Prerequisites**: Python 3.10+ and Git
 
 ```bash
 # 1. Clone the repository
@@ -312,14 +322,17 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for the formal model.
 
 **Linear Algebra**:
 - Matrix multiplication
-- Determinants (2×2, 3×3, general)
-- Matrix inverse
+- Determinants (2×2, 3×3, general n×n)
+- Matrix inverse (with step-by-step Gauss-Jordan)
 - Row Reduced Echelon Form (RREF)
-- Eigenvalues and eigenvectors
-- LU decomposition
+- Eigenvalues and eigenvectors (with characteristic polynomial)
+- **LU decomposition** with partial pivoting (PA = LU)
+- Matrix rank
 - **Symbolic matrices**: Variables as entries (e.g., [["a","b"],["c","d"]])
 
 All operations include step-by-step explanations with multiple verbosity levels.
+
+**[📖 Full API Documentation →](https://calcoralive.netlify.app/docs-api)**
 
 ## Plugins
 
@@ -334,9 +347,11 @@ See [docs/PLUGINS.md](docs/PLUGINS.md).
 ## Documentation
 
 ### For Users
-- 📚 **[Getting Started](CLONE_AND_RUN.md)** - Complete setup guide from clone to running
-- 🚀 **[Deployment Guide](DEPLOYMENT_GUIDE.md)** - Deploy to Netlify, Render, or self-host
-- 📖 **[SEO Guide](SEO_GUIDE.md)** - Optimize discoverability and marketing
+- 📚 **[User Guide](https://calcoralive.netlify.app/docs-user-guide)** - Complete guide with examples
+- 🔧 **[API Documentation](https://calcoralive.netlify.app/docs-api)** - REST API reference and Python SDK
+- 🏠 **[Self-Hosting](https://calcoralive.netlify.app/docs-self-hosting)** - Deploy your own instance
+- 🔨 **[Building from Source](https://calcoralive.netlify.app/docs-building)** - Desktop app and custom builds
+- 📖 **[Getting Started](CLONE_AND_RUN.md)** - Quick setup guide
 
 ### For Developers
 - 🏗️ **[Architecture](ARCHITECTURE.md)** - Technical design and DAG model
@@ -386,11 +401,11 @@ Based on standard calculus curriculum (Calculus II level):
 
 ### Test Coverage & Accuracy
 
-**Current Status (v0.2-alpha):**
-- ✅ **38/38 automated tests passing** (differentiation: 9, integration: 29)
-- ✅ **~60% overall code coverage** (differentiation: 89%, integration: 67%, matrices: 45%)
-- ✅ **Benchmark validation**: 25/26 standard problems match SymPy (96% accuracy)
-- ✅ **CI/CD**: GitHub Actions runs tests on every push (Windows, Linux, macOS)
+**Current Status (v0.3.0):**
+- ✅ **73/73 automated tests passing** (100% pass rate across all features)
+- ✅ **52% overall code coverage** (differentiation: 89%, integration: 73%, matrices: 69%)
+- ✅ **CI/CD**: GitHub Actions runs tests on 9 platform combinations (3 OS × 3 Python versions)
+- ✅ **Edge case handling**: Complex numbers, infinite limits, domain errors
 
 **Validation Methods:**
 - Cross-verification with SymPy symbolic results
