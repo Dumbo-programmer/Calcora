@@ -6,6 +6,7 @@ from .engine.linalg_rules import BUILTIN_LINALG_RULES
 from .engine.sympy_rules import SympyDifferentiateRule
 from .plugins.registry import PluginRegistry
 from .renderers.json_renderer import JsonRenderer
+from .renderers.latex_renderer import LatexRenderer
 from .renderers.text import TextRenderer
 
 
@@ -15,6 +16,7 @@ def default_registry(*, load_entry_points: bool = True) -> PluginRegistry:
     # Built-in renderers
     registry.register_renderer(TextRenderer())
     registry.register_renderer(JsonRenderer())
+    registry.register_renderer(LatexRenderer())
 
     # Built-in / bundled rules (prefer explicit rules; keep SymPy as fallback)
     for r in BUILTIN_DIFFERENTIATION_RULES:

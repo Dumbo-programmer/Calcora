@@ -234,7 +234,15 @@ def differentiate(expr: str, variable: str = "x", order: int = 1, format: str = 
         format = "json"
 
     rendered = renderer.render(result=result, format=format, verbosity=verbosity)
-    media_type = "application/json" if format == "json" else "text/plain"
+    
+    # Determine media type based on format
+    if format == "json":
+        media_type = "application/json"
+    elif format in ("latex", "tex"):
+        media_type = "text/plain; charset=utf-8"
+    else:
+        media_type = "text/plain"
+    
     return Response(content=rendered, media_type=media_type)
 
 
