@@ -90,6 +90,52 @@ import Layout from '../layouts/Layout.astro';
         </div>
     </section>
 
+    <!-- Quick Examples -->
+    <section class="quick-examples">
+        <h2 class="section-title">See It In Action</h2>
+        <p style="text-align: center; margin-bottom: 3rem; color: var(--text-secondary);">Common problems solved with step-by-step explanations</p>
+        
+        <div class="examples-grid">
+            <div class="example-card">
+                <h3>🧮 Differentiation</h3>
+                <pre><code>differentiate("sin(x)*x**2", "x")
+
+# Result: x²·cos(x) + 2x·sin(x)
+# Steps: Product rule applied</code></pre>
+            </div>
+
+            <div class="example-card">
+                <h3>∫ Integration</h3>
+                <pre><code>integrate("x**2", "x", 0, 2)
+
+# Result: 8/3 ≈ 2.667
+# Area under curve from 0 to 2</code></pre>
+            </div>
+
+            <div class="example-card">
+                <h3>📐 Matrix Operations</h3>
+                <pre><code>matrix_determinant([[3, 8], [4, 6]])
+
+# Result: -14
+# 2×2 determinant calculation</code></pre>
+            </div>
+
+            <div class="example-card">
+                <h3>⚡ Physics Problem</h3>
+                <pre><code># Velocity from position s(t) = 3t² + 2t
+differentiate("3*t**2 + 2*t", "t")
+
+# v(t) = 6t + 2</code></pre>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 2.5rem;">
+            <a href="/demo" class="btn btn-primary">
+                <i class="fas fa-play-circle"></i> Try Interactive Demo
+            </a>
+        </div>
+    </section>
+
     <!-- Installation -->
     <section class="installation">
         <h2 class="section-title">Quick Start</h2>
@@ -256,6 +302,53 @@ docker run -p 5000:5000 ghcr.io/dumbo-programmer/calcora:latest</code>
         color: var(--text-secondary);
         line-height: 1.7;
     }
+
+    .quick-examples {
+        max-width: 1200px;
+        margin: 5rem auto;
+        padding: 0 2rem;
+    }
+
+    .examples-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .example-card {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .example-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2);
+        border-color: rgba(99, 102, 241, 0.4);
+    }
+
+    .example-card h3 {
+        font-size: 1.125rem;
+        margin-bottom: 1rem;
+        color: var(--primary);
+    }
+
+    .example-card pre {
+        background: var(--bg-tertiary);
+        border-radius: 8px;
+        padding: 1rem;
+        overflow-x: auto;
+        margin: 0;
+    }
+
+    .example-card code {
+        font-family: 'JetBrains Mono', 'Consolas', monospace;
+        font-size: 0.875rem;
+        line-height: 1.6;
+        color: var(--text-primary);
+    }
     
     .installation {
         max-width: 900px;
@@ -269,6 +362,10 @@ docker run -p 5000:5000 ghcr.io/dumbo-programmer/calcora:latest</code>
     }
     
     @media (max-width: 768px) {
+        .hero {
+            padding: 3rem 1.5rem;
+        }
+
         .hero h1 {
             font-size: 2.25rem;
         }
@@ -276,9 +373,65 @@ docker run -p 5000:5000 ghcr.io/dumbo-programmer/calcora:latest</code>
         .hero .subtitle {
             font-size: 1.125rem;
         }
+
+        .hero-buttons {
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .hero-buttons .btn {
+            width: 100%;
+        }
+
+        .video-container {
+            margin-top: 2rem !important;
+        }
         
         .features-grid {
             grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+        }
+
+        .examples-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .example-card pre {
+            font-size: 0.8rem;
+        }
+
+        .installation {
+            padding: 0 1.5rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .hero {
+            padding: 2rem 1rem;
+        }
+
+        .hero h1 {
+            font-size: 1.875rem;
+        }
+
+        .hero .subtitle {
+            font-size: 1rem;
+        }
+
+        .section-title {
+            font-size: 1.75rem;
+        }
+
+        .feature-card, .example-card {
+            padding: 1.25rem;
+        }
+
+        .features, .quick-examples, .installation {
+            margin: 3rem auto;
         }
     }
 </style>

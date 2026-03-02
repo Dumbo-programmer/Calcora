@@ -175,11 +175,124 @@ print(result['U'])  # Upper triangular</code></pre>
         </section>
 
         <section>
+            <h2>Common Examples Library</h2>
+            <p>Real-world problems you can solve with Calcora:</p>
+
+            <h3>Physics & Engineering</h3>
+            <pre><code># Velocity from position function s(t) = 3t² + 2t
+differentiate("3*t**2 + 2*t", "t")  # v(t) = 6t + 2
+
+# Work done by force F = x² over distance 0 to 5
+integrate("x**2", "x", 0, 5)  # W = 41.67 J
+
+# Area under normal distribution curve (standard)
+integrate("exp(-x**2/2)", "x", -1, 1)  # ≈ 0.683 (68.3%)</code></pre>
+
+            <h3>Economics & Finance</h3>
+            <pre><code># Marginal cost from total cost C(x) = 100 + 50x + 0.5x²
+differentiate("100 + 50*x + 0.5*x**2", "x")  # MC = 50 + x
+
+# Consumer surplus with demand function p = 100 - 2q
+integrate("100 - 2*q", "q", 0, 25)  # Surplus = 1875
+
+# Present value of continuous income stream
+integrate("1000*exp(-0.05*t)", "t", 0, 10)  # PV ≈ $7,869</code></pre>
+
+            <h3>Calculus Practice Problems</h3>
+            <pre><code># Chain rule: d/dx[sin(x²)]
+differentiate("sin(x**2)", "x")  # 2x·cos(x²)
+
+# Product rule: d/dx[x·ln(x)]
+differentiate("x*log(x)", "x")  # ln(x) + 1
+
+# Integration by parts: ∫x·eˣ dx
+integrate("x*exp(x)", "x")  # x·eˣ - eˣ + C
+
+# Partial fractions: ∫(3x+1)/(x²-1) dx
+integrate("(3*x+1)/(x**2-1)", "x")  # 2·ln|x-1| + ln|x+1| + C</code></pre>
+
+            <h3>Advanced Techniques</h3>
+            <pre><code># Trig substitution: ∫√(1-x²) dx
+integrate("sqrt(1-x**2)", "x")  # (x·√(1-x²) + arcsin(x))/2 + C
+
+# Rational function with u-substitution
+integrate("x/(x**2+1)", "x")  # (1/2)·ln(x²+1) + C
+
+# Logarithmic integration
+integrate("log(x)", "x")  # x·ln(x) - x + C</code></pre>
+        </section>
+
+        <section>
+            <h2>Error Messages & Troubleshooting</h2>
+            <p>Understanding common errors and how to fix them:</p>
+
+            <div class="tip" style="border-left-color: #ef4444;">
+                <strong>❌ "Invalid expression syntax"</strong><br>
+                <em>Problem:</em> Using <code>^</code> instead of <code>**</code> for exponentiation<br>
+                <em>Fix:</em> <code>x^2</code> → <code>x**2</code>
+            </div>
+
+            <div class="tip" style="border-left-color: #ef4444;">
+                <strong>❌ "Integration technique not yet supported"</strong><br>
+                <em>Problem:</em> Expression requires advanced methods (e.g., trig substitution for complex radicals)<br>
+                <em>Fix:</em> Try simplifying, or check if SymPy can handle it directly
+            </div>
+
+            <div class="tip" style="border-left-color: #ef4444;">
+                <strong>❌ "Matrix is singular (determinant = 0)"</strong><br>
+                <em>Problem:</em> Cannot compute inverse because matrix is not invertible<br>
+                <em>Fix:</em> Verify matrix entries; singular matrices have linearly dependent rows
+            </div>
+
+            <div class="tip" style="border-left-color: #f59e0b;">
+                <strong>⚠️ "Result simplified by SymPy (no step-by-step available)"</strong><br>
+                <em>Meaning:</em> Expression was too complex for step explanations, but result is correct<br>
+                <em>Context:</em> Happens with highly nested compositions or transcendental combinations
+            </div>
+        </section>
+
+        <section>
             <h2>Tips & Tricks</h2>
+            
+            <h3>Input Syntax</h3>
             <ul>
-                <li>Use <code>**</code> for exponentiation (not <code>^</code>)</li>
-                <li>Wrap function arguments in parentheses: <code>sin(x)</code></li>
-                <li>Use symbolic variables: <code>Matrix([[a, b], [c, d]])</code></li>
+                <li>Use <code>**</code> for exponentiation (not <code>^</code>): <code>x**3</code></li>
+                <li>Wrap function arguments in parentheses: <code>sin(x)</code>, not <code>sinx</code></li>
+                <li>Multiplication is explicit: <code>2*x</code>, not <code>2x</code></li>
+                <li>Natural log: Use <code>log(x)</code> or <code>ln(x)</code></li>
+                <li>Square root: <code>sqrt(x)</code> or <code>x**0.5</code></li>
+            </ul>
+
+            <h3>Verbosity Modes</h3>
+            <ul>
+                <li><code>verbosity="concise"</code> — Quick answer only (exams, homework checks)</li>
+                <li><code>verbosity="detailed"</code> — Step-by-step (learning, studying)</li>
+                <li><code>verbosity="teacher"</code> — Ultra-detailed with rule names (teaching)</li>
+            </ul>
+
+            <h3>Performance Tips</h3>
+            <ul>
+                <li>Simplify before computing: <code>(x**2 - 1)/(x-1)</code> → <code>x+1</code> (if x≠1)</li>
+                <li>Keep matrix size under 5×5 for fast symbolic operations</li>
+                <li>Use numeric limits when possible: <code>integrate(f, x, 0, 1)</code> is faster than indefinite</li>
+            </ul>
+
+            <h3>Symbolic Variables</h3>
+            <ul>
+                <li>Matrices with symbols: <code>[["a", "b"], ["c", "d"]]</code></li>
+                <li>Parametric expressions: <code>"a*x**2 + b*x + c"</code></li>
+                <li>Constants: <code>pi</code>, <code>e</code>, <code>I</code> (imaginary unit)</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Next Steps</h2>
+            <ul>
+                <li><a href="/docs-api">📘 API Reference</a> — Complete endpoint documentation</li>
+                <li><a href="/demo">🎮 Try Live Demo</a> — Interactive browser playground</li>
+                <li><a href="https://github.com/Dumbo-programmer/Calcora/blob/main/CHANGELOG.md" target="_blank">📝 Changelog</a> — Version history and updates</li>
+                <li><a href="/docs-building">🔨 Build from Source</a> — Compile desktop app yourself</li>
+                <li><a href="https://github.com/Dumbo-programmer/Calcora" target="_blank">💻 GitHub Repository</a> — Source code and issue tracker</li>
             </ul>
         </section>
     </main>
@@ -201,6 +314,12 @@ print(result['U'])  # Upper triangular</code></pre>
         margin: 1.5rem 0 0.75rem;
     }
 
+    h4 {
+        font-size: 1.2rem;
+        margin: 1rem 0 0.5rem;
+        color: var(--text-primary);
+    }
+
     ul, ol {
         margin: 1rem 0;
         padding-left: 2rem;
@@ -208,15 +327,18 @@ print(result['U'])  # Upper triangular</code></pre>
 
     li {
         margin: 0.5rem 0;
+        line-height: 1.6;
     }
 
     a {
         color: var(--primary);
         text-decoration: none;
+        transition: color 0.2s ease;
     }
 
     a:hover {
         text-decoration: underline;
+        color: var(--primary-hover, #4f46e5);
     }
 
     .tip {
@@ -225,10 +347,22 @@ print(result['U'])  # Upper triangular</code></pre>
         border-radius: 8px;
         padding: 1rem 1.5rem;
         margin: 1.5rem 0;
+        transition: transform 0.2s ease;
+    }
+
+    .tip:hover {
+        transform: translateX(4px);
     }
 
     .tip strong {
         color: var(--primary);
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    .tip em {
+        display: block;
+        margin: 0.25rem 0;
     }
 
     pre {
@@ -237,10 +371,11 @@ print(result['U'])  # Upper triangular</code></pre>
         padding: 1.5rem;
         overflow-x: auto;
         margin: 1rem 0;
+        border: 1px solid var(--border);
     }
 
     code {
-        font-family: 'JetBrains Mono', monospace;
+        font-family: 'JetBrains Mono', 'Consolas', 'Monaco', monospace;
         font-size: 0.9rem;
         line-height: 1.6;
     }
@@ -250,5 +385,57 @@ print(result['U'])  # Upper triangular</code></pre>
         padding: 0.2rem 0.5rem;
         border-radius: 4px;
         font-size: 0.875rem;
+        border: 1px solid var(--border);
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+        main {
+            padding: 1rem !important;
+        }
+
+        h1 {
+            font-size: 2rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+        }
+
+        pre {
+            padding: 1rem;
+            font-size: 0.8rem;
+        }
+
+        code {
+            font-size: 0.8rem;
+        }
+
+        .tip {
+            padding: 0.75rem 1rem;
+        }
+
+        ul, ol {
+            padding-left: 1.25rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        main {
+            padding: 0.75rem !important;
+        }
+
+        h1 {
+            font-size: 1.75rem;
+        }
+
+        pre {
+            padding: 0.75rem;
+            border-radius: 6px;
+        }
     }
 </style>
