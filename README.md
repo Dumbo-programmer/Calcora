@@ -10,7 +10,7 @@
 ![Tests](https://img.shields.io/badge/tests-73%2F73%20passing-brightgreen)
 ![Coverage](https://img.shields.io/badge/coverage-52%25-yellow)
 ![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue)
-![PyPI](https://img.shields.io/badge/PyPI-coming%20soon-orange)
+[![PyPI version](https://img.shields.io/pypi/v/calcora.svg)](https://pypi.org/project/calcora/)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
 ## Core Philosophy
@@ -26,13 +26,13 @@
 
 **[📥 Download Calcora.exe (37 MB)](https://github.com/Dumbo-programmer/Calcora/releases/latest/download/Calcora.exe)**
 
-## 📦 PyPI Package (Coming Soon)
+## 📦 PyPI Package (Available Now)
 
 ```bash
 pip install calcora
 ```
 
-**Status:** PyPI publishing workflow configured, awaiting v0.3.0 release.
+**[View on PyPI →](https://pypi.org/project/calcora/)**
 
 ### Features:
 - ✅ Single-file executable (Windows 10/11)
@@ -72,12 +72,12 @@ pip install calcora
 - **Linear Algebra**: Matrix operations (determinant, inverse, eigenvalues, LU, RREF)
 - **Interactive Graphs**: Chart.js visualizations for functions and definite integral areas
 - **Three Verbosity Modes**: Concise / Detailed / Teacher Mode
+- **LaTeX Export**: Export step-by-step solutions as LaTeX markup (NEW in v0.3.0)
 
 ### ⚠️ Current Limitations
 - ❌ **Advanced Integration**: Trig substitution, Weierstrass, reduction formulas (v0.4 planned)
 - ❌ **Series & Limits**: Not yet implemented (v0.4-0.5 roadmap)
 - ❌ **Equation Solving**: Symbolic equation solving postponed to v0.4
-- ❌ **LaTeX Export**: Planned for v0.4
 - ⚠️ **Performance**: Not optimized for >50 term expressions or symbolic matrices >5×5
 - ⚠️ **Accessibility**: WCAG 2.1 progress at ~85% (keyboard nav done, screen reader improvements ongoing)
 
@@ -195,11 +195,35 @@ result = engine.integrate("x * exp(x)")
 # Graph: Both functions plotted with clear relationship
 ```
 
+#### LaTeX Export (NEW in v0.3.0):
+```python
+# Export solutions as LaTeX for homework assignments
+from calcora.bootstrap import default_engine
+
+engine = default_engine()
+result = engine.run(operation="differentiate", expression="x**2", variable="x")
+
+# Get LaTeX renderer
+latex_renderer = engine.registry.get_renderer(format="latex")
+latex_output = latex_renderer.render(result=result, format="latex", verbosity="detailed")
+
+# Output: 
+# % Calcora Differentiate Result
+# \section*{Result}
+# \[2 x\]
+# ... (full step-by-step in LaTeX)
+```
+
+Or via API:
+```bash
+curl 'http://localhost:5000/differentiate?expr=x**2&format=latex'
+```
+
 ### Coming Soon
 - **Series Expansion**: Taylor and Maclaurin series
 - **Limits**: Symbolic limit computation
-- **LaTeX Export**: Export results as publication-ready LaTeX
 - **Equation Solving**: Solve algebraic and transcendental equations
+- **PyWebView GUI**: Native window wrapper (v0.4)
 
 ## What Calcora is
 
