@@ -54,22 +54,22 @@ import Layout from '../layouts/Layout.astro';
                     </thead>
                     <tbody>
                         <tr>
-                            <td><code>expression</code></td>
-                            <td>string</td>
-                            <td><span class="required">REQUIRED</span></td>
-                            <td>Mathematical expression (e.g., <code>"x**2 + 3*x"</code>)</td>
+                            <td data-label="Parameter"><code>expression</code></td>
+                            <td data-label="Type">string</td>
+                            <td data-label="Required"><span class="required">REQUIRED</span></td>
+                            <td data-label="Description">Mathematical expression (e.g., <code>"x**2 + 3*x"</code>)</td>
                         </tr>
                         <tr>
-                            <td><code>variable</code></td>
-                            <td>string</td>
-                            <td>optional</td>
-                            <td>Variable to differentiate with respect to (default: <code>"x"</code>)</td>
+                            <td data-label="Parameter"><code>variable</code></td>
+                            <td data-label="Type">string</td>
+                            <td data-label="Required">optional</td>
+                            <td data-label="Description">Variable to differentiate with respect to (default: <code>"x"</code>)</td>
                         </tr>
                         <tr>
-                            <td><code>verbosity</code></td>
-                            <td>string</td>
-                            <td>optional</td>
-                            <td>Detail level: <code>"concise"</code>, <code>"detailed"</code>, or <code>"teacher"</code>)</td>
+                            <td data-label="Parameter"><code>verbosity</code></td>
+                            <td data-label="Type">string</td>
+                            <td data-label="Required">optional</td>
+                            <td data-label="Description">Detail level: <code>"concise"</code>, <code>"detailed"</code>, or <code>"teacher"</code>)</td>
                         </tr>
                     </tbody>
                 </table>
@@ -127,40 +127,40 @@ import Layout from '../layouts/Layout.astro';
                     </thead>
                     <tbody>
                         <tr>
-                            <td><code>expression</code></td>
-                            <td>string</td>
-                            <td><span class="required">REQUIRED</span></td>
-                            <td>Mathematical expression to integrate (e.g., <code>"x**2"</code>, <code>"sin(x)"</code>)</td>
+                            <td data-label="Parameter"><code>expression</code></td>
+                            <td data-label="Type">string</td>
+                            <td data-label="Required"><span class="required">REQUIRED</span></td>
+                            <td data-label="Description">Mathematical expression to integrate (e.g., <code>"x**2"</code>, <code>"sin(x)"</code>)</td>
                         </tr>
                         <tr>
-                            <td><code>variable</code></td>
-                            <td>string</td>
-                            <td>optional</td>
-                            <td>Variable to integrate with respect to (default: <code>"x"</code>)</td>
+                            <td data-label="Parameter"><code>variable</code></td>
+                            <td data-label="Type">string</td>
+                            <td data-label="Required">optional</td>
+                            <td data-label="Description">Variable to integrate with respect to (default: <code>"x"</code>)</td>
                         </tr>
                         <tr>
-                            <td><code>lower_limit</code></td>
-                            <td>number</td>
-                            <td>optional</td>
-                            <td>Lower bound for definite integral</td>
+                            <td data-label="Parameter"><code>lower_limit</code></td>
+                            <td data-label="Type">number</td>
+                            <td data-label="Required">optional</td>
+                            <td data-label="Description">Lower bound for definite integral</td>
                         </tr>
                         <tr>
-                            <td><code>upper_limit</code></td>
-                            <td>number</td>
-                            <td>optional</td>
-                            <td>Upper bound for definite integral</td>
+                            <td data-label="Parameter"><code>upper_limit</code></td>
+                            <td data-label="Type">number</td>
+                            <td data-label="Required">optional</td>
+                            <td data-label="Description">Upper bound for definite integral</td>
                         </tr>
                         <tr>
-                            <td><code>verbosity</code></td>
-                            <td>string</td>
-                            <td>optional</td>
-                            <td>Detail level: <code>"concise"</code>, <code>"detailed"</code>, or <code>"teacher"</code></td>
+                            <td data-label="Parameter"><code>verbosity</code></td>
+                            <td data-label="Type">string</td>
+                            <td data-label="Required">optional</td>
+                            <td data-label="Description">Detail level: <code>"concise"</code>, <code>"detailed"</code>, or <code>"teacher"</code></td>
                         </tr>
                         <tr>
-                            <td><code>generate_graph</code></td>
-                            <td>boolean</td>
-                            <td>optional</td>
-                            <td>Include graph data for visualization (default: <code>true</code>)</td>
+                            <td data-label="Parameter"><code>generate_graph</code></td>
+                            <td data-label="Type">boolean</td>
+                            <td data-label="Required">optional</td>
+                            <td data-label="Description">Include graph data for visualization (default: <code>true</code>)</td>
                         </tr>
                     </tbody>
                 </table>
@@ -265,16 +265,16 @@ import Layout from '../layouts/Layout.astro';
                     </thead>
                     <tbody>
                         <tr>
-                            <td><code>matrix</code></td>
-                            <td>array[][]</td>
-                            <td><span class="required">REQUIRED</span></td>
-                            <td>2D array representing the matrix</td>
+                            <td data-label="Parameter"><code>matrix</code></td>
+                            <td data-label="Type">array[][]</td>
+                            <td data-label="Required"><span class="required">REQUIRED</span></td>
+                            <td data-label="Description">2D array representing the matrix</td>
                         </tr>
                         <tr>
-                            <td><code>verbosity</code></td>
-                            <td>string</td>
-                            <td>optional</td>
-                            <td>Detail level for steps</td>
+                            <td data-label="Parameter"><code>verbosity</code></td>
+                            <td data-label="Type">string</td>
+                            <td data-label="Required">optional</td>
+                            <td data-label="Description">Detail level for steps</td>
                         </tr>
                     </tbody>
                 </table>
@@ -588,5 +588,117 @@ print(result['U'])  # Upper triangular</code></pre>
 
     .info-box li {
         margin: 0.25rem 0;
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+        main {
+            padding: 1rem !important;
+        }
+
+        h1 {
+            font-size: 2rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+        }
+
+        h4 {
+            font-size: 1rem;
+        }
+
+        .endpoint {
+            padding: 1.25rem;
+        }
+
+        pre {
+            padding: 1rem;
+            font-size: 0.8rem;
+            overflow-x: auto;
+        }
+
+        code {
+            font-size: 0.8rem;
+            word-break: break-word;
+        }
+
+        .param-table {
+            display: block;
+            overflow-x: auto;
+            border-radius: 0;
+        }
+
+        .param-table thead {
+            display: none;
+        }
+
+        .param-table, .param-table tbody, .param-table tr, .param-table td {
+            display: block;
+        }
+
+        .param-table tr {
+            margin-bottom: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.75rem;
+            background: var(--bg-primary);
+        }
+
+        .param-table td {
+            padding: 0.5rem 0;
+            border: none !important;
+            text-align: left;
+        }
+
+        .param-table td:before {
+            content: attr(data-label);
+            font-weight: 600;
+            display: block;
+            margin-bottom: 0.25rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .info-box {
+            padding: 1rem;
+        }
+
+        ul, ol {
+            padding-left: 1.25rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        main {
+            padding: 0.75rem !important;
+        }
+
+        h1 {
+            font-size: 1.75rem;
+        }
+
+        h2 {
+            font-size: 1.25rem;
+        }
+
+        .endpoint {
+            padding: 1rem;
+        }
+
+        pre {
+            padding: 0.75rem;
+            font-size: 0.75rem;
+        }
+
+        .http-method {
+            display: block;
+            margin-bottom: 0.5rem;
+            width: fit-content;
+        }
     }
 </style>

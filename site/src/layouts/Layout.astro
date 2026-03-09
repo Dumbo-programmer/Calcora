@@ -76,8 +76,33 @@ import Footer from '../components/Footer.astro';
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
         }
         
-        // Make toggleTheme globally available
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const navGroup = document.querySelector('.nav-group');
+            const menuIcon = document.querySelector('.mobile-menu-toggle i');
+            const isActive = navGroup.classList.toggle('active');
+            
+            menuIcon.className = isActive ? 'fas fa-times' : 'fas fa-bars';
+        }
+
+        // Close mobile menu when clicking a link
+        document.addEventListener('DOMContentLoaded', () => {
+            const navLinks = document.querySelectorAll('nav a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    const navGroup = document.querySelector('.nav-group');
+                    const menuIcon = document.querySelector('.mobile-menu-toggle i');
+                    if (navGroup.classList.contains('active')) {
+                        navGroup.classList.remove('active');
+                        if (menuIcon) menuIcon.className = 'fas fa-bars';
+                    }
+                });
+            });
+        });
+        
+        // Make functions globally available
         window.toggleTheme = toggleTheme;
+        window.toggleMobileMenu = toggleMobileMenu;
         
         // Load saved theme on page load
         document.addEventListener('DOMContentLoaded', () => {
@@ -455,19 +480,122 @@ import Footer from '../components/Footer.astro';
         border-left-color: var(--error);
     }
 
+    /* Mobile menu toggle button */
+    .mobile-menu-toggle {
+        display: none;
+        width: 2.5rem;
+        height: 2.5rem;
+        padding: 0;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0.75rem;
+        background: var(--bg-tertiary);
+        color: var(--text-primary);
+        font-size: 1.25rem;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .mobile-menu-toggle:hover {
+        background: var(--primary);
+        color: white;
+    }
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .github-link {
+        color: var(--text-secondary);
+        text-decoration: none;
+        font-size: 1.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 0.75rem;
+        transition: all 0.3s ease;
+    }
+
+    .github-link:hover {
+        color: var(--text-primary);
+        background: var(--bg-tertiary);
+    }
+
     @media (max-width: 768px) {
         .header-content {
             padding: 1rem;
+            position: relative;
+        }
+
+        .mobile-menu-toggle {
+            display: flex;
+        }
+
+        .nav-group {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            right: 0;
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border);
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark-theme .nav-group {
+            background: var(--bg-secondary);
+        }
+
+        .nav-group.active {
+            max-height: 500px;
+            padding: 1rem 0;
         }
         
         nav {
             flex-direction: column;
             width: 100%;
+            gap: 0;
         }
         
         nav a {
             width: 100%;
-            text-align: center;
+            text-align: left;
+            padding: 0.875rem 1.5rem;
+            border-radius: 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        nav a:last-child {
+            border-bottom: none;
+        }
+
+        .header-actions {
+            width: 100%;
+            justify-content: center;
+            padding: 0.75rem 0;
+            border-top: 1px solid var(--border);
+            margin-top: 0.5rem;
+        }
+
+        .github-link, .theme-toggle {
+            width: 44px;
+            height: 44px;
+        }
+    }
+
+    @media (min-width: 769px) {
+        .nav-group {
+            display: flex !important;
         }
     }
 </style>

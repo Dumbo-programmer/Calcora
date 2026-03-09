@@ -162,6 +162,44 @@ docker run -p 5000:5000 ghcr.io/dumbo-programmer/calcora:latest</code>
     </section>
 </Layout>
 
+<script>
+    // Wake up the API server in background to reduce demo page load time
+    // This is needed because free-tier hosting services (like Render) sleep after inactivity
+    (function() {
+        // Only ping if not on localhost
+        const isLocalhost = window.location.hostname === '127.0.0.1' || 
+                          window.location.hostname === 'localhost';
+        
+        if (!isLocalhost) {
+            // Wait a bit for the page to load first, then ping the server
+            setTimeout(() => {
+                const apiUrl = 'https://calcora.onrender.com/api/compute';
+                
+                // Send a lightweight request to wake up the Render instance
+                fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        operation: 'differentiate',
+                        expression: 'x',
+                        verbosity: 'concise'
+                    })
+                })
+                .then(() => {
+                    console.log('✓ API server warmed up and ready');
+                })
+                .catch(() => {
+                    // Fail silently - this is just an optimization
+                    // The server is likely waking up and will be ready soon
+                    console.log('⏳ API server wake-up initiated');
+                });
+            }, 1000); // Wait 1 second to not interfere with page load
+        }
+    })();
+</script>
+
 <style>
     .hero {
         max-width: 1200px;

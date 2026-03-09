@@ -86,4 +86,65 @@ calcora serve --host 0.0.0.0 --port 5000</code></pre>
     li {
         margin: 0.5rem 0;
     }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+        main {
+            padding: 1rem !important;
+        }
+
+        h1 {
+            font-size: 2rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+        }
+
+        pre {
+            padding: 1rem;
+            font-size: 0.8rem;
+            overflow-x: auto;
+        }
+
+        code {
+            font-size: 0.8rem;
+            word-break: break-word;
+        }
+
+        .tip {
+            padding: 0.75rem 1rem;
+        }
+
+        ul {
+            padding-left: 1.25rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        main {
+            padding: 0.75rem !important;
+        }
+
+        h1 {
+            font-size: 1.75rem;
+        }
+
+        h2 {
+            font-size: 1.25rem;
+        }
+
+        pre {
+            padding: 0.75rem;
+            font-size: 0.75rem;
+        }
+
+        section {
+            margin: 2rem 0;
+        }
+    }
 </style>
