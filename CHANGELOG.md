@@ -5,6 +5,47 @@ All notable changes to Calcora will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- **Background Server Wake-Up** - Homepage now pings API server on load to reduce demo page wait time
+  - Free-tier hosting (Render) sleeps after inactivity, causing 30-60s initial load
+  - Lightweight background request sent 1s after homepage loads
+  - Server warms up while users browse features, demo loads instantly
+  - Only runs on production, skips localhost
+- **Video Loading Screen** - Smooth loading experience while demo video buffers
+  - Prevents layout shift during video load
+  - Fade-in animation when video is ready
+  - Graceful fallback if video fails to load
+
+### Changed
+- **Full Mobile Responsiveness** - Comprehensive improvements across all pages
+  - **Homepage & Docs**: Already responsive, minor touch target improvements
+  - **Documentation Pages**: Added responsive tables, mobile-optimized text sizing
+    - docs-api.astro: Card-based table layouts on mobile, touch-friendly data labels
+    - docs-building.astro: Responsive code blocks with horizontal scroll
+    - docs-self-hosting.astro: Mobile-friendly padding and text sizing
+  - **Demo Page**: Major mobile overhaul for phone/tablet usability
+    - Hamburger menu for navigation (≤768px screens)
+    - Vertical tab layout on mobile (was cramped horizontal)
+    - Touch-friendly 44x44px minimum button sizes
+    - 16px input font size to prevent iOS auto-zoom
+    - Full-width action buttons on mobile
+    - Responsive graph sizing (300px tablet, 250px phone)
+    - Grid-based header actions (4-column on mobile)
+  - **Global Navigation**: Collapsible hamburger menu with smooth animations
+    - Slide-down menu from top on mobile
+    - Auto-closes when navigation links clicked
+    - Touch-optimized spacing and targets
+  - **Breakpoints**: 768px (tablets), 480px (phones)
+
+### Fixed
+- **Mobile Usability Issues**
+  - Tables overflow gracefully with horizontal scroll on mobile
+  - Example chips now have proper touch targets (44px height minimum)
+  - No more horizontal page scrolling on narrow screens
+  - Input fields prevent iOS zoom with appropriate font sizes
+
 ## [0.2.1] - 2026-02-24
 
 ### Fixed

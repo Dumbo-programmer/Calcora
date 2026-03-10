@@ -20,8 +20,12 @@ import Layout from '../layouts/Layout.astro';
         </div>
 
         <!-- Video Demo -->
-        <div class="video-container" style="margin-top: 3rem;">
-            <video autoplay loop muted playsinline>
+        <div class="video-container" style="margin-top: 3rem;" id="video-container">
+            <div class="video-loading" id="video-loading">
+                <div class="video-spinner"></div>
+                <p>Loading demo video...</p>
+            </div>
+            <video id="demo-video" autoplay loop muted playsinline>
                 <source src="/media/demo.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
@@ -163,6 +167,32 @@ docker run -p 5000:5000 ghcr.io/dumbo-programmer/calcora:latest</code>
 </Layout>
 
 <script>
+    // Handle video loading state
+    (function() {
+        const video = document.getElementById('demo-video');
+        const loadingOverlay = document.getElementById('video-loading');
+        
+        if (video && loadingOverlay) {
+            // Hide loading overlay when video is ready
+            video.addEventListener('loadeddata', () => {
+                loadingOverlay.style.opacity = '0';
+                setTimeout(() => {
+                    loadingOverlay.style.display = 'none';
+                }, 300);
+            });
+
+            // Handle video load error
+            video.addEventListener('error', () => {
+                loadingOverlay.innerHTML = '<p style="color: var(--text-secondary);">Video unavailable</p>';
+            });
+
+            // If video is already loaded (cached), hide overlay immediately
+            if (video.readyState >= 3) {
+                loadingOverlay.style.display = 'none';
+            }
+        }
+    })();
+
     // Wake up the API server in background to reduce demo page load time
     // This is needed because free-tier hosting services (like Render) sleep after inactivity
     (function() {
@@ -261,6 +291,46 @@ docker run -p 5000:5000 ghcr.io/dumbo-programmer/calcora:latest</code>
     .video-container video {
         width: 100%;
         display: block;
+    }
+
+    .video-loading {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        z-index: 10;
+        transition: opacity 0.3s ease;
+    }
+
+    body.dark-theme .video-loading {
+        background: rgba(30, 41, 59, 0.95);
+    }
+
+    .video-loading p {
+        margin-top: 1rem;
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+
+    .video-spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid var(--border);
+        border-top-color: var(--primary);
+        border-radius: 50%;
+        animation: videoSpin 0.8s linear infinite;
+    }
+
+    @keyframes videoSpin {
+        to { transform: rotate(360deg); }
     }
     
     @keyframes fadeInUp {
