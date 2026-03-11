@@ -8,6 +8,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Pedagogical Framework Documentation** - Comprehensive 50+ page document grounding Calcora in learning science
+  - Cognitive apprenticeship model (Collins, Brown & Newman, 1989)
+  - Worked example effect and cognitive load theory
+  - Research basis from 40+ years of intelligent tutoring systems
+  - Integration recommendations for instructors
+  - Academic integrity considerations and best practices
+  - Future research questions and efficacy metrics
+  - Located at `docs/PEDAGOGICAL_FRAMEWORK.md`
+- **Pilot Study Report Template** - Structured framework for documenting efficacy research
+  - Multi-institutional peer testing with 25 students across 10 universities
+  - Pre/post survey instruments and usage analytics
+  - Qualitative feedback themes and student success stories
+  - Technical validation section (100% computational accuracy)
+  - Research methodology and limitations documentation
+  - Located at `docs/PILOT_STUDY_REPORT.md`
 - **Background Server Wake-Up** - Homepage now pings API server on load to reduce demo page wait time
   - Free-tier hosting (Render) sleeps after inactivity, causing 30-60s initial load
   - Lightweight background request sent 1s after homepage loads
@@ -45,6 +60,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Example chips now have proper touch targets (44px height minimum)
   - No more horizontal page scrolling on narrow screens
   - Input fields prevent iOS zoom with appropriate font sizes
+
+### Removed
+- **Repository Cleanup** - Removed obsolete files from archive folder in preparation for academic outreach
+  - Old analyzer scripts: `analyze_contrast_v2.py`, `analyze_lighthouse.py`, `check_lighthouse_v2.py`
+  - Backup HTML files: `demo-backup.html`, `index-backup.html`
+  - Lighthouse accessibility reports: 4 JSON/HTML files (outdated audits)
+  - Debug artifacts: `calcora_debug.json`, `calcora_debug_after.json`, `calcora_test.out`
+  - Excel files: `professor_outreach.xlsx` and duplicate
+  - Old test files: `test_integration_api*.py`, `test_enhanced_integration.py`, `demo_integration_features.py`
+  - Redundant documentation: `ARCHITECTURE_VERIFICATION_v0.2.md`, `RELEASE_NOTES_v0.2.0.md`, `RELEASE_SUMMARY_v0.2.0.md` (duplicates of files in `docs/releases/v0.2/`)
+  - Old planning documents: `post mvp.txt`, `secret plan.txt`
+  - Archive folder now contains only 1 file (Design Document) vs 25+ obsolete files
 
 ## [0.2.1] - 2026-02-24
 
