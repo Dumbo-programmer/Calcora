@@ -1211,9 +1211,552 @@
             0%, 100% { opacity: 1; }
             50% { opacity: 0.5; }
         }
+
+        /* Toast Notification System */
+        .toast-container {
+            position: fixed;
+            top: 6rem;
+            right: 2rem;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-width: 400px;
+        }
+
+        .toast {
+            background: var(--bg-primary);
+            border-radius: 1rem;
+            padding: 1.25rem 1.5rem;
+            box-shadow: var(--shadow-xl);
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            animation: slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            min-width: 300px;
+        }
+
+        .toast:hover {
+            transform: translateX(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .toast.removing {
+            animation: slideOutRight 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .toast-success {
+            border-left: 4px solid var(--success);
+        }
+
+        .toast-error {
+            border-left: 4px solid var(--error);
+        }
+
+        .toast-info {
+            border-left: 4px solid var(--primary);
+        }
+
+        .toast-warning {
+            border-left: 4px solid var(--warning);
+        }
+
+        .toast-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .toast-success .toast-icon { color: var(--success); }
+        .toast-error .toast-icon { color: var(--error); }
+        .toast-info .toast-icon { color: var(--primary); }
+        .toast-warning .toast-icon { color: var(--warning); }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-weight: 700;
+            font-size: 0.9375rem;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .toast-message {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            color: var(--text-tertiary);
+            cursor: pointer;
+            padding: 0.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .toast-close:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .toast-container {
+                top: auto;
+                bottom: 2rem;
+                left: 1rem;
+                right: 1rem;
+                max-width: none;
+            }
+
+            .toast {
+                min-width: 0;
+                width: 100%;
+            }
+        }
+
+        /* Copy Button Styles */
+        .copy-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border);
+            color: var(--text-primary);
+            padding: 0.625rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 10;
+        }
+
+        .copy-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .copy-btn:active {
+            transform: translateY(0);
+        }
+
+        .copy-btn.copied {
+            background: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+
+        .copy-btn.copied i {
+            animation: checkBounce 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes checkBounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+
+        /* Enhanced Floating Action Labels */
+        .floating-action {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .fab {
+            width: 56px;
+            height: 56px;
+            background: var(--gradient-1);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            border: none;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .fab:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .fab:active {
+            transform: translateY(-2px) scale(1);
+        }
+
+        @media (max-width: 768px) {
+            .floating-action {
+                bottom: 1rem;
+                right: 1rem;
+            }
+
+            .fab {
+                width: 48px;
+                height: 48px;
+                font-size: 1.25rem;
+            }
+        }
+
+        /* ===== EMPTY STATE ===== */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 3.5rem 2rem;
+            min-height: 480px;
+            gap: 1.25rem;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .empty-state-illustration {
+            position: relative;
+            width: 110px;
+            height: 110px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .empty-orbit {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 2px dashed rgba(99, 102, 241, 0.25);
+            animation: orbitSpin 10s linear infinite;
+        }
+
+        .empty-orbit::before {
+            content: '';
+            position: absolute;
+            top: -7px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            background: var(--primary);
+            box-shadow: 0 0 12px var(--primary), 0 0 24px rgba(99, 102, 241, 0.4);
+        }
+
+        @keyframes orbitSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .empty-main-icon {
+            font-size: 2.75rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        .empty-state-title {
+            font-size: 1.375rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+        }
+
+        .empty-state-desc {
+            font-size: 0.9375rem;
+            color: var(--text-secondary);
+            max-width: 340px;
+            line-height: 1.75;
+        }
+
+        .empty-state-desc kbd {
+            display: inline-block;
+            padding: 0.125rem 0.45rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-bottom-width: 2px;
+            border-radius: 0.375rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        .empty-example-row {
+            display: flex;
+            gap: 0.875rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 0.25rem;
+        }
+
+        .empty-example-card {
+            background: var(--bg-primary);
+            border: 2px solid var(--border);
+            border-radius: 1rem;
+            padding: 1.125rem 1.25rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            min-width: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            user-select: none;
+        }
+
+        .empty-example-card:hover {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.04);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .empty-example-card:active {
+            transform: translateY(-2px);
+        }
+
+        .empty-card-math {
+            font-size: 1.625rem;
+            font-weight: 800;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-family: 'JetBrains Mono', monospace;
+            line-height: 1;
+        }
+
+        .empty-card-label {
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 600px) {
+            .empty-state {
+                padding: 2rem 1rem;
+                min-height: 360px;
+            }
+            .empty-state-illustration {
+                width: 80px;
+                height: 80px;
+            }
+            .empty-main-icon {
+                font-size: 2rem;
+            }
+        }
+
+        /* ===== VERBOSITY SEGMENTED CONTROL ===== */
+        .verbosity-toggle {
+            display: flex;
+            background: var(--bg-tertiary);
+            padding: 0.375rem;
+            border-radius: 0.75rem;
+            gap: 0.375rem;
+        }
+
+        .verb-btn {
+            flex: 1;
+            padding: 0.6rem 0.875rem;
+            background: transparent;
+            border: none;
+            border-radius: 0.5rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.8125rem;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.375rem;
+            white-space: nowrap;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .verb-btn:hover {
+            color: var(--text-primary);
+            background: rgba(99, 102, 241, 0.08);
+        }
+
+        .verb-btn.active {
+            background: var(--bg-primary);
+            color: var(--primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .verb-btn i {
+            font-size: 0.6875rem;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 480px) {
+            .verb-btn span {
+                display: none;
+            }
+            .verb-btn {
+                padding: 0.625rem;
+            }
+            .verb-btn i {
+                font-size: 0.875rem;
+            }
+        }
+
+        /* ===== LIVE EXPRESSION PREVIEW ===== */
+        .expr-preview-wrap {
+            margin-top: 0.625rem;
+        }
+
+        .expr-preview-title {
+            font-size: 0.6875rem;
+            font-weight: 700;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 0.375rem;
+        }
+
+        .expr-preview {
+            padding: 0.875rem 1.25rem;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.04) 0%, rgba(139, 92, 246, 0.04) 100%);
+            border: 1px solid rgba(99, 102, 241, 0.15);
+            border-radius: 0.75rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 52px;
+            overflow-x: auto;
+            transition: border-color 0.2s ease;
+        }
+
+        .expr-preview:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .expr-preview .katex {
+            font-size: 1.15rem;
+        }
+
+        .expr-preview-error {
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+            font-style: italic;
+        }
+
+        /* ===== RESULT META (expression + time + step count) ===== */
+        .result-meta-row {
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+            margin-top: 0.375rem;
+            flex-wrap: wrap;
+            min-height: 1.75rem;
+        }
+
+        .result-expr-chip {
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--bg-tertiary);
+            padding: 0.2rem 0.625rem;
+            border-radius: 0.375rem;
+            max-width: 220px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .time-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.2rem 0.6rem;
+            background: rgba(16, 185, 129, 0.12);
+            color: var(--success);
+            border-radius: 2rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            animation: fadeInScale 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .time-badge i {
+            font-size: 0.6rem;
+        }
+
+        /* ===== STEP COUNT BADGE ===== */
+        .step-count-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.2rem 0.7rem;
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            border-radius: 2rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-left: auto;
+            font-family: 'JetBrains Mono', monospace;
+            animation: fadeInScale 0.4s 0.1s cubic-bezier(0.4, 0, 0.2, 1) both;
+        }
+
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.7); }
+            to { opacity: 1; transform: scale(1); }
+        }
     </style>
 </head>
 <body>
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="toast-container"></div>
+    
     <!-- Loading Screen -->
     <div id="loading-overlay" class="loading-overlay">
         <i class="fas fa-calculator loading-logo"></i>
@@ -1303,8 +1846,12 @@
                             </label>
                             <input type="text" id="diff-expr" class="form-input" placeholder="Try: sin(x**2) or x**3*cos(x)" value="sin(x**2)" aria-label="Mathematical expression to differentiate" required>
                             <small style="color: var(--text-tertiary); font-size: 0.8125rem; margin-top: 0.5rem; display: block;">
-                                💡 <strong>Syntax:</strong> Use <code>**</code> for powers (x**2), <code>*</code> for multiply. Available: sin, cos, tan, exp, log, sqrt, sinh, asin, etc.
+                                💡 Use <code>**</code> for powers &middot; <code>*</code> to multiply &middot; functions: sin, cos, tan, exp, log, sqrt, asin&hellip;
                             </small>
+                            <div class="expr-preview-wrap" id="diff-preview-wrap" style="display:none;">
+                                <div class="expr-preview-title">Preview</div>
+                                <div class="expr-preview" id="diff-preview"></div>
+                            </div>
                         </div>
 
                         <div class="form-group">
@@ -1316,14 +1863,13 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">
-                                <i class="fas fa-layer-group"></i> Verbosity
-                            </label>
-                            <select id="diff-verbosity" class="form-select" aria-label="Select verbosity level for explanation">
-                                <option value="concise">Concise</option>
-                                <option value="detailed" selected>Detailed</option>
-                                <option value="teacher">Teacher Mode</option>
-                            </select>
+                            <label class="form-label"><i class="fas fa-layer-group"></i> Verbosity</label>
+                            <input type="hidden" id="diff-verbosity" value="detailed">
+                            <div class="verbosity-toggle" role="radiogroup" aria-label="Verbosity level">
+                                <button class="verb-btn" data-for="diff-verbosity" data-value="concise" onclick="setVerbosity(this)" aria-pressed="false"><i class="fas fa-bolt"></i><span>Concise</span></button>
+                                <button class="verb-btn active" data-for="diff-verbosity" data-value="detailed" onclick="setVerbosity(this)" aria-pressed="true"><i class="fas fa-list"></i><span>Detailed</span></button>
+                                <button class="verb-btn" data-for="diff-verbosity" data-value="teacher" onclick="setVerbosity(this)" aria-pressed="false"><i class="fas fa-graduation-cap"></i><span>Teacher</span></button>
+                            </div>
                         </div>
 
                         <div class="form-group">
@@ -1363,15 +1909,19 @@
                             </div>
                         </div>
 
-                        <div class="form-group"
+                        <div class="form-group">
                             <label class="form-label">
                                 <i class="fas fa-function"></i> Expression to integrate
                                 <span style="color: var(--error); margin-left: 4px;" id="int-expr-required">*</span>
                             </label>
                             <input type="text" id="int-expr" class="form-input" placeholder="Try: x**2 or sin(x)" value="x**2" aria-label="Mathematical expression to integrate" required>
                             <small style="color: var(--text-tertiary); font-size: 0.8125rem; margin-top: 0.5rem; display: block;">
-                                💡 <strong>Syntax:</strong> Use <code>**</code> for powers (x**2), <code>*</code> for multiply. Available: sin, cos, tan, exp, log, sqrt, sinh, asin, etc.
+                                💡 Use <code>**</code> for powers &middot; <code>*</code> to multiply &middot; functions: sin, cos, tan, exp, log, sqrt, asin&hellip;
                             </small>
+                            <div class="expr-preview-wrap" id="int-preview-wrap" style="display:none;">
+                                <div class="expr-preview-title">Preview</div>
+                                <div class="expr-preview" id="int-preview"></div>
+                            </div>
                         </div>
 
                         <div class="form-group">
@@ -1405,14 +1955,13 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">
-                                <i class="fas fa-layer-group"></i> Verbosity
-                            </label>
-                            <select id="int-verbosity" class="form-select" aria-label="Select verbosity level for explanation">
-                                <option value="concise">Concise</option>
-                                <option value="detailed" selected>Detailed</option>
-                                <option value="teacher">Teacher Mode</option>
-                            </select>
+                            <label class="form-label"><i class="fas fa-layer-group"></i> Verbosity</label>
+                            <input type="hidden" id="int-verbosity" value="detailed">
+                            <div class="verbosity-toggle" role="radiogroup" aria-label="Verbosity level">
+                                <button class="verb-btn" data-for="int-verbosity" data-value="concise" onclick="setVerbosity(this)" aria-pressed="false"><i class="fas fa-bolt"></i><span>Concise</span></button>
+                                <button class="verb-btn active" data-for="int-verbosity" data-value="detailed" onclick="setVerbosity(this)" aria-pressed="true"><i class="fas fa-list"></i><span>Detailed</span></button>
+                                <button class="verb-btn" data-for="int-verbosity" data-value="teacher" onclick="setVerbosity(this)" aria-pressed="false"><i class="fas fa-graduation-cap"></i><span>Teacher</span></button>
+                            </div>
                         </div>
 
                         <div class="form-group">
@@ -1489,14 +2038,13 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">
-                                <i class="fas fa-layer-group"></i> Verbosity
-                            </label>
-                            <select id="matrix-verbosity" class="form-select" aria-label="Select verbosity level for explanation">
-                                <option value="concise">Concise</option>
-                                <option value="detailed" selected>Detailed</option>
-                                <option value="teacher">Teacher Mode</option>
-                            </select>
+                            <label class="form-label"><i class="fas fa-layer-group"></i> Verbosity</label>
+                            <input type="hidden" id="matrix-verbosity" value="detailed">
+                            <div class="verbosity-toggle" role="radiogroup" aria-label="Verbosity level">
+                                <button class="verb-btn" data-for="matrix-verbosity" data-value="concise" onclick="setVerbosity(this)" aria-pressed="false"><i class="fas fa-bolt"></i><span>Concise</span></button>
+                                <button class="verb-btn active" data-for="matrix-verbosity" data-value="detailed" onclick="setVerbosity(this)" aria-pressed="true"><i class="fas fa-list"></i><span>Detailed</span></button>
+                                <button class="verb-btn" data-for="matrix-verbosity" data-value="teacher" onclick="setVerbosity(this)" aria-pressed="false"><i class="fas fa-graduation-cap"></i><span>Teacher</span></button>
+                            </div>
                         </div>
 
                         <div class="action-bar">
@@ -1511,6 +2059,30 @@
 
             <!-- Right: Output Panel -->
             <div>
+                <!-- Empty State -->
+                <div class="empty-state" id="empty-state">
+                    <div class="empty-state-illustration">
+                        <div class="empty-orbit"></div>
+                        <i class="fas fa-function empty-main-icon"></i>
+                    </div>
+                    <h3 class="empty-state-title">Ready to Compute</h3>
+                    <p class="empty-state-desc">Pick an example below or enter any expression on the left. Press <kbd>Ctrl</kbd>&nbsp;<kbd>Enter</kbd> to compute.</p>
+                    <div class="empty-example-row">
+                        <div class="empty-example-card" onclick="setExample('sin(x**2)', 'x'); switchTab('differentiate'); computeDifferentiate();" role="button" tabindex="0" aria-label="Try: differentiate sin(x squared)">
+                            <div class="empty-card-math">d/dx</div>
+                            <div class="empty-card-label">Differentiate</div>
+                        </div>
+                        <div class="empty-example-card" onclick="setIntegrationExample('x**2 + 1', 'x'); switchTab('integrate'); computeIntegration();" role="button" tabindex="0" aria-label="Try: integrate x squared plus 1">
+                            <div class="empty-card-math">&#x222B;</div>
+                            <div class="empty-card-label">Integrate</div>
+                        </div>
+                        <div class="empty-example-card" onclick="setMatrixExample('determinant', '[[1,2],[3,4]]'); switchTab('matrix'); computeMatrix();" role="button" tabindex="0" aria-label="Try: matrix determinant">
+                            <div class="empty-card-math">[M]</div>
+                            <div class="empty-card-label">Matrix</div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Loading State -->
                 <div class="loading" id="loading" role="status" aria-live="polite" aria-label="Computing">
                     <div class="spinner"></div>
@@ -1526,13 +2098,19 @@
                 <!-- Results -->
                 <div class="card result-section" id="result-section" role="region" aria-label="Computation results">
                     <div class="card-header">
-                        <h3 class="card-title">
-                            <i class="fas fa-check-circle" style="color: var(--success);" aria-hidden="true"></i>
-                            Result
-                            <span class="format-badge" id="format-badge" style="margin-left: 0.5rem;">
-                                <i class="fas fa-font"></i> Typeset
-                            </span>
-                        </h3>
+                        <div>
+                            <h3 class="card-title">
+                                <i class="fas fa-check-circle" style="color: var(--success);" aria-hidden="true"></i>
+                                Result
+                                <span class="format-badge" id="format-badge" style="margin-left: 0.5rem;">
+                                    <i class="fas fa-font"></i> Typeset
+                                </span>
+                            </h3>
+                            <div class="result-meta-row">
+                                <span class="result-expr-chip" id="result-expr-chip" style="display:none;"></span>
+                                <span class="time-badge" id="time-badge" style="display:none;"><i class="fas fa-bolt"></i><span id="time-badge-text"></span></span>
+                            </div>
+                        </div>
                         <div class="card-header-actions">
                             <button class="btn-icon tooltip" onclick="copyResultToClipboard(event)" title="Copy Result" aria-label="Copy result to clipboard">
                                 <i class="fas fa-copy" aria-hidden="true"></i>
@@ -1564,11 +2142,18 @@
                         </div>
                     </div>
 
-                    <div class="result-output" id="result-output"></div>
+                    <div style="position: relative;">
+                        <button class="copy-btn" id="copy-result-btn" onclick="copyResultToClipboard()" title="Copy result to clipboard" style="display: none;">
+                            <i class="fas fa-copy"></i>
+                            <span class="copy-text">Copy</span>
+                        </button>
+                        <div class="result-output" id="result-output"></div>
+                    </div>
 
                     <div class="result-header">
                         <i class="fas fa-list-ol"></i>
                         Step-by-Step Explanation
+                        <span class="step-count-badge" id="step-count-badge" style="display:none;"></span>
                     </div>
                     <div class="steps" id="steps"></div>
                 </div>
@@ -1644,6 +2229,7 @@
         let apiAvailable = false;
         let currentChart = null;
         let computationHistory = [];
+        let computeStartTime = 0;
 
         // Initialize
         async function checkApiAvailability() {
@@ -1805,18 +2391,153 @@
             });
             // Trigger initial validation
             validateAndPreviewMatrix('matrix-a', 'matrix-a-preview', 'matrix-a-dimensions');
+
+            // Live expression previews
+            document.getElementById('diff-expr')?.addEventListener('input', () =>
+                updateExprPreview('diff-expr', 'diff-preview', 'diff-preview-wrap'));
+            document.getElementById('int-expr')?.addEventListener('input', () =>
+                updateExprPreview('int-expr', 'int-preview', 'int-preview-wrap'));
+            // Initial preview render after KaTeX loads
+            setTimeout(() => {
+                updateExprPreview('diff-expr', 'diff-preview', 'diff-preview-wrap');
+                updateExprPreview('int-expr', 'int-preview', 'int-preview-wrap');
+            }, 300);
         });
 
         // Show/hide functions
         let loadingMessages = [
-            'Parsing expression...',
-            'Applying differentiation rules...',
-            'Simplifying result...',
-            'Generating step-by-step explanation...'
+            '🧮 Parsing mathematical expression...',
+            '⚡ Applying computational rules...',
+            '🔍 Analyzing function structure...',
+            '✨ Simplifying symbolic result...',
+            '📝 Generating step-by-step explanation...',
+            '🎯 Optimizing output format...',
+            '🚀 Almost there...',
+            '💡 Building reasoning trace...'
         ];
         let loadingInterval = null;
+
+        // Verbosity segmented control handler
+        function setVerbosity(btn) {
+            const targetId = btn.dataset.for;
+            const value = btn.dataset.value;
+            const hidden = document.getElementById(targetId);
+            if (hidden) hidden.value = value;
+            const group = btn.closest('.verbosity-toggle');
+            if (group) {
+                group.querySelectorAll('.verb-btn').forEach(b => {
+                    b.classList.remove('active');
+                    b.setAttribute('aria-pressed', 'false');
+                });
+            }
+            btn.classList.add('active');
+            btn.setAttribute('aria-pressed', 'true');
+        }
+
+        // Live expression preview: convert Python/SymPy notation to LaTeX for KaTeX
+        function toLatexPreview(expr) {
+            if (!expr || !expr.trim()) return '';
+            let r = expr.trim();
+            r = r.replace(/\bsqrt\(([^)]+)\)/g, '\\sqrt{$1}');
+            r = r.replace(/\bexp\(([^)]+)\)/g, 'e^{$1}');
+            r = r.replace(/\bsin\b/g, '\\sin');
+            r = r.replace(/\bcos\b/g, '\\cos');
+            r = r.replace(/\btan\b/g, '\\tan');
+            r = r.replace(/\b(asin|arcsin)\b/g, '\\arcsin');
+            r = r.replace(/\b(acos|arccos)\b/g, '\\arccos');
+            r = r.replace(/\b(atan|arctan)\b/g, '\\arctan');
+            r = r.replace(/\bsinh\b/g, '\\sinh');
+            r = r.replace(/\bcosh\b/g, '\\cosh');
+            r = r.replace(/\btanh\b/g, '\\tanh');
+            r = r.replace(/\blog\b/g, '\\ln');
+            r = r.replace(/\bexp\b/g, '\\exp');
+            r = r.replace(/\*\*/g, '^');
+            r = r.replace(/\*/g, '\\cdot ');
+            return r;
+        }
+
+        function updateExprPreview(inputId, previewId, wrapId) {
+            const input = document.getElementById(inputId);
+            const preview = document.getElementById(previewId);
+            const wrap = document.getElementById(wrapId);
+            if (!input || !preview) return;
+            const expr = input.value.trim();
+            if (!expr) {
+                if (wrap) wrap.style.display = 'none';
+                return;
+            }
+            if (wrap) wrap.style.display = '';
+            try {
+                katex.render(toLatexPreview(expr), preview, { throwOnError: false, displayMode: false });
+            } catch (e) {
+                preview.innerHTML = `<span class="expr-preview-error">${expr}</span>`;
+            }
+        }
+
+        // Toast Notification System
+        function showToast(message, type = 'info', title = null, duration = 5000) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            
+            const icons = {
+                success: 'fa-check-circle',
+                error: 'fa-exclamation-circle',
+                warning: 'fa-exclamation-triangle',
+                info: 'fa-info-circle'
+            };
+            
+            const titles = {
+                success: title || 'Success',
+                error: title || 'Error',
+                warning: title || 'Warning',
+                info: title || 'Info'
+            };
+            
+            toast.innerHTML = `
+                <i class="fas ${icons[type]} toast-icon"></i>
+                <div class="toast-content">
+                    <div class="toast-title">${titles[type]}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+                <button class="toast-close" aria-label="Close notification">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            
+            container.appendChild(toast);
+            
+            // Auto-remove after duration
+            const timeoutId = setTimeout(() => removeToast(toast), duration);
+            
+            // Click to dismiss
+            toast.addEventListener('click', () => {
+                clearTimeout(timeoutId);
+                removeToast(toast);
+            });
+            
+            // Close button
+            const closeBtn = toast.querySelector('.toast-close');
+            closeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                clearTimeout(timeoutId);
+                removeToast(toast);
+            });
+            
+            return toast;
+        }
         
+        function removeToast(toast) {
+            toast.classList.add('removing');
+            setTimeout(() => {
+                toast.remove();
+            }, 300);
+        }
+
         function showLoading() {
+            computeStartTime = Date.now();
+            const emptyState = document.getElementById('empty-state');
+            if (emptyState) emptyState.style.display = 'none';
             document.getElementById('loading').classList.add('visible');
             document.getElementById('result-section').classList.remove('visible');
             document.getElementById('error-banner').classList.remove('visible');
@@ -1843,6 +2564,7 @@
 
         function showError(message) {
             hideLoading();
+            showToast(message, 'error', 'Error', 6000);
             document.getElementById('error-message').textContent = message;
             document.getElementById('error-banner').classList.add('visible');
         }
@@ -1920,11 +2642,32 @@
             window.isTypesetFormat = true;
             
             displayResult();
-            
+
+            // Update result meta: expression chip + time badge
+            const elapsed = Date.now() - computeStartTime;
+            const timeText = elapsed < 1000 ? `${elapsed}ms` : `${(elapsed / 1000).toFixed(1)}s`;
+            const exprChip = document.getElementById('result-expr-chip');
+            if (exprChip && data.input) {
+                exprChip.textContent = data.input;
+                exprChip.style.display = '';
+            }
+            const timeBadge = document.getElementById('time-badge');
+            const timeBadgeText = document.getElementById('time-badge-text');
+            if (timeBadge && timeBadgeText) {
+                timeBadgeText.textContent = timeText;
+                timeBadge.style.display = '';
+            }
+
+            // Show copy button
+            const copyBtn = document.getElementById('copy-result-btn');
+            if (copyBtn) {
+                copyBtn.style.display = 'flex';
+            }
+
             // Display steps
             const stepsContainer = document.getElementById('steps');
             stepsContainer.innerHTML = '';
-            
+
             const steps = (data.graph && data.graph.nodes) || [];
             steps.forEach((step, index) => {
                 const stepDiv = document.createElement('div');
@@ -1935,8 +2678,31 @@
                 `;
                 stepsContainer.appendChild(stepDiv);
             });
-            
+
+            // Update step count badge
+            const stepBadge = document.getElementById('step-count-badge');
+            if (stepBadge) {
+                if (steps.length > 0) {
+                    stepBadge.textContent = `${steps.length} step${steps.length === 1 ? '' : 's'}`;
+                    stepBadge.style.display = 'inline-flex';
+                } else {
+                    stepBadge.style.display = 'none';
+                }
+            }
+
             document.getElementById('result-section').classList.add('visible');
+            
+            // Show success toast
+            const operationNames = {
+                'differentiate': 'Differentiation',
+                'integrate': 'Integration',
+                'matrix_determinant': 'Matrix Determinant',
+                'matrix_inverse': 'Matrix Inverse',
+                'matrix_transpose': 'Matrix Transpose',
+                'matrix_multiply': 'Matrix Multiplication'
+            };
+            const opName = operationNames[data.operation] || 'Computation';
+            showToast(`${opName} completed successfully!`, 'success', 'Success', 3000);
             
             // Scroll to results smoothly
             setTimeout(() => {
@@ -2845,43 +3611,156 @@
 
         function copyToClipboard() {
             const output = document.getElementById('result-output').textContent;
-            navigator.clipboard.writeText(output);
-            
-            // Show feedback
-            const btn = event.target.closest('.export-item');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
-            setTimeout(() => {
-                btn.innerHTML = originalText;
-                toggleExportMenu();
-            }, 1000);
+            navigator.clipboard.writeText(output).then(() => {
+                showToast('Result copied to clipboard!', 'success', 'Copied');
+                
+                // Show feedback on export button
+                const btn = event.target.closest('.export-item');
+                if (btn) {
+                    const originalText = btn.innerHTML;
+                    btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                    setTimeout(() => {
+                        btn.innerHTML = originalText;
+                        toggleExportMenu();
+                    }, 1000);
+                }
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                showToast('Failed to copy to clipboard', 'error');
+            });
         }
 
-        // Keyboard shortcuts
+        function copyResultToClipboard() {
+            const output = document.getElementById('result-output');
+            let textToCopy = '';
+            
+            if (output.classList.contains('typeset')) {
+                // For typeset content, get the LaTeX representation if available
+                textToCopy = window.currentResultData?.output || output.textContent;
+            } else {
+                // For plain text content
+                textToCopy = output.textContent;
+            }
+            
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                showToast('Result copied to clipboard!', 'success', 'Copied');
+                
+                // Visual feedback on copy button
+                const btn = document.getElementById('copy-result-btn');
+                const icon = btn.querySelector('i');
+                const text = btn.querySelector('.copy-text');
+                
+                icon.className = 'fas fa-check';
+                text.textContent = 'Copied!';
+                btn.classList.add('copied');
+                
+                setTimeout(() => {
+                    icon.className = 'fas fa-copy';
+                    text.textContent = 'Copy';
+                    btn.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                showToast('Failed to copy to clipboard', 'error');
+            });
+        }
+
+        // Enhanced keyboard shortcuts
         function showShortcuts() {
-            const hint = document.getElementById('shortcuts-hint');
-            hint.classList.add('visible');
-            setTimeout(() => {
-                hint.classList.remove('visible');
-            }, 5000);
+            const shortcuts = {
+                'Ctrl + Enter': 'Compute current operation',
+                'Ctrl + H': 'Toggle computation history',
+                'Ctrl + /': 'Show keyboard shortcuts',
+                'Ctrl + C': 'Copy result (when result is visible)',
+                'Ctrl + K': 'Clear input fields',
+                'F': 'Toggle result format (LaTeX/Plain)',
+                'Esc': 'Close panels and dialogs',
+                '1-3': 'Switch to tab (when not in input field)'
+            };
+            
+            let message = '<div style="text-align: left;">';
+            for (const [key, desc] of Object.entries(shortcuts)) {
+                message += `<strong>${key}:</strong> ${desc}<br>`;
+            }
+            message += '</div>';
+            
+            showToast(message, 'info', 'Keyboard Shortcuts', 10000);
         }
 
         document.addEventListener('keydown', (e) => {
+            // Check if user is typing in an input field
+            const activeElement = document.activeElement;
+            const isInputField = activeElement && (
+                activeElement.tagName === 'INPUT' ||
+                activeElement.tagName === 'TEXTAREA' ||
+                activeElement.tagName === 'SELECT'
+            );
+            
+            // Ctrl + Enter: Compute
             if (e.ctrlKey && e.key === 'Enter') {
                 e.preventDefault();
                 const activeTab = document.querySelector('.tab.active').dataset.tab;
                 if (activeTab === 'differentiate') {
                     computeDifferentiate();
+                } else if (activeTab === 'integrate') {
+                    computeIntegration();
                 } else {
                     computeMatrix();
                 }
-            } else if (e.ctrlKey && e.key === 'h') {
+            } 
+            // Ctrl + H: Toggle history
+            else if (e.ctrlKey && e.key === 'h') {
                 e.preventDefault();
                 toggleHistory();
-            } else if (e.ctrlKey && e.key === '/') {
+            } 
+            // Ctrl + /: Show shortcuts
+            else if (e.ctrlKey && e.key === '/') {
                 e.preventDefault();
                 showShortcuts();
-            } else if (e.key === 'Escape') {
+            } 
+            // Ctrl + C: Copy result (when result is visible)
+            else if (e.ctrlKey && e.key === 'c' && !isInputField) {
+                const resultSection = document.getElementById('result-section');
+                if (resultSection.classList.contains('visible')) {
+                    e.preventDefault();
+                    copyResultToClipboard();
+                }
+            }
+            // Ctrl + K: Clear inputs
+            else if (e.ctrlKey && e.key === 'k') {
+                e.preventDefault();
+                const activeTab = document.querySelector('.tab.active').dataset.tab;
+                if (activeTab === 'differentiate') {
+                    document.getElementById('diff-expr').value = '';
+                    document.getElementById('diff-var').value = 'x';
+                    document.getElementById('diff-expr').focus();
+                } else if (activeTab === 'integrate') {
+                    document.getElementById('int-expr').value = '';
+                    document.getElementById('int-var').value = 'x';
+                    document.getElementById('int-expr').focus();
+                } else {
+                    document.getElementById('matrix-a').value = '';
+                    document.getElementById('matrix-b').value = '';
+                    document.getElementById('matrix-a').focus();
+                }
+                showToast('Input fields cleared', 'info');
+            }
+            // F: Toggle format
+            else if (e.key === 'f' && !isInputField) {
+                e.preventDefault();
+                toggleFormatType();
+            }
+            // Number keys: Switch tabs (when not in input field)
+            else if (!isInputField && ['1', '2', '3'].includes(e.key)) {
+                e.preventDefault();
+                const tabs = ['differentiate', 'integrate', 'matrix'];
+                const tabIndex = parseInt(e.key) - 1;
+                if (tabIndex < tabs.length) {
+                    switchTab(tabs[tabIndex]);
+                }
+            }
+            // Esc: Close panels
+            else if (e.key === 'Escape') {
                 document.getElementById('history-panel').classList.remove('visible');
                 document.getElementById('export-menu').classList.remove('visible');
             } else if (e.key === 'f' && !e.ctrlKey && !e.altKey && !e.metaKey) {
