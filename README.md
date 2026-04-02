@@ -2,8 +2,25 @@
 
 **Calcora** is an open-source educational platform that provides step-by-step explanations for symbolic differentiation, integration, and linear algebra. Built on SymPy and designed for **transparency over power**, Calcora helps students understand *why* solutions work, not just *what* the answer is.
 
+
 **Status**: v0.3.0 (Production-Ready Release)  
 **Maturity**: Production-ready educational tool — suitable for Calculus I/II coursework and linear algebra
+
+---
+
+## 🚀 What's New in v0.3.0
+
+- **Modernized Demo UI**: The interactive demo page now features:
+  - **Segmented verbosity toggles** (Concise / Detailed / Teacher) for all operations
+  - **Live KaTeX preview** as you type expressions (differentiation/integration)
+  - **Result meta row**: input expression chip and computation time badge
+  - **Animated step count badge** in step-by-step explanations
+  - **Animated empty state** with clickable example cards for instant demo
+  - **Accessibility & UX improvements**: larger touch targets, keyboard navigation, improved mobile layout
+- **Teacher Mode**: Enhanced explanations for educators and deep learning
+- **Performance**: Faster initial load, background server wake-up
+
+---
 
 📚 **[Full Documentation](https://calcoralive.netlify.app/docs-user-guide)** | 🔧 **[API Reference](https://calcoralive.netlify.app/docs-api)** | 🚀 **[Live Demo](https://calcoralive.netlify.app/demo)** | 📋 **[Changelog](CHANGELOG.md)**
 
@@ -34,6 +51,7 @@ pip install calcora
 
 **[View on PyPI →](https://pypi.org/project/calcora/)**
 
+
 ### Features:
 - ✅ Single-file executable (Windows 10/11)
 - ✅ Completely offline — no internet connection needed
@@ -41,6 +59,7 @@ pip install calcora
 - ✅ All your data stays on your computer (100% private)
 - ✅ Custom application icon with professional branding
 - ✅ Graceful shutdown system (no zombie processes)
+- ✅ **Modern demo page**: segmented verbosity toggles, live math preview, result meta, step count badge, animated empty state
 
 ### ⚠️ First-Run Security Warning
 
@@ -62,6 +81,7 @@ pip install calcora
 
 ## What Works Well (v0.2)
 
+
 ### ✅ Current Capabilities
 - **Symbolic Differentiation**: Product rule, chain rule, quotient rule, trigonometric functions
 - **Integration**: 10 core techniques covering ~80% of Calculus II curriculum
@@ -71,7 +91,10 @@ pip install calcora
   - Definite integrals with area visualization
 - **Linear Algebra**: Matrix operations (determinant, inverse, eigenvalues, LU, RREF)
 - **Interactive Graphs**: Chart.js visualizations for functions and definite integral areas
-- **Three Verbosity Modes**: Concise / Detailed / Teacher Mode
+- **Three Verbosity Modes**: Concise / Detailed / Teacher Mode (now with segmented toggle controls)
+- **Live Expression Preview**: See your math rendered in real time as you type
+- **Result Meta**: Input expression and computation time shown with each result
+- **Animated Step Count**: See how many steps were used in the explanation
 - **LaTeX Export**: Export step-by-step solutions as LaTeX markup (NEW in v0.3.0)
 
 ### ⚠️ Current Limitations
@@ -90,9 +113,16 @@ https://github.com/user-attachments/assets/bdb41766-a890-436f-9cc3-a4ffd5e603d4
 
 
 
+
 **[Interactive Demo →](https://calcoralive.netlify.app/demo)**
 
-Test Calcora directly in your browser - no installation required. Try:
+Test Calcora directly in your browser — no installation required. The demo page now features:
+- **Segmented verbosity toggles** for instant switching between concise, detailed, and teacher explanations
+- **Live KaTeX preview** as you type expressions
+- **Clickable example cards** to try differentiation, integration, and matrix operations instantly
+- **Result meta row** (input + time), **animated step count badge**, and improved accessibility
+
+Try:
 - **Differentiation** with step-by-step explanations
 - **Integration** with 8+ techniques and graph visualization
 - **Matrix operations** (determinant, inverse, RREF, eigenvalues, LU decomposition)
