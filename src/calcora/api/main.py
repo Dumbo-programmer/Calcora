@@ -4,6 +4,7 @@ import importlib.resources
 import os
 import sys
 from pathlib import Path
+import json
 
 try:
     from fastapi import FastAPI
@@ -19,6 +20,13 @@ except Exception as e:  # noqa: BLE001
 from ..bootstrap import default_engine
 from ..renderers.json_renderer import JsonRenderer
 
+try:
+    import sympy as sp
+except Exception as e:  # noqa: BLE001
+    raise RuntimeError(
+        "SymPy is required for multivariable endpoints. Install with: pip install sympy"
+    ) from e
+
 
 class MatrixRequest(BaseModel):
     matrix: str
@@ -29,6 +37,25 @@ class MatrixRequest(BaseModel):
 class MatrixMultiplyRequest(BaseModel):
     matrix_a: str
     matrix_b: str
+    format: str = "json"
+    verbosity: str = "detailed"
+
+
+class MultivariableRequest(BaseModel):
+    expression: str
+    variables: list[str]
+    point: dict[str, float] | None = None
+    direction: list[float] | None = None
+    format: str = "json"
+    verbosity: str = "detailed"
+
+
+class SymbolicRequest(BaseModel):
+    operation: str
+    expression: str
+    variable: str = "x"
+    point: float | None = None
+    order: int = 5
     format: str = "json"
     verbosity: str = "detailed"
 
@@ -87,6 +114,48 @@ def health():
     return {"status": "ok"}
 
 
+def _validate_verbosity(verbosity: str) -> str | None:
+    if verbosity not in ("concise", "detailed", "teacher"):
+        return f"Invalid verbosity '{verbosity}'. Valid options: concise, detailed, teacher"
+    return None
+
+
+def _parse_multivariable_expression(expression: str, variables: list[str]):
+    if not expression or not expression.strip():
+        raise ValueError("Missing required field 'expression'")
+    if not variables:
+        raise ValueError("Missing required field 'variables' (example: ['x','y'])")
+
+    symbols = [sp.Symbol(v.strip()) for v in variables if v and v.strip()]
+    if not symbols:
+        raise ValueError("Variables list cannot be empty")
+
+    local_symbols = {str(sym): sym for sym in symbols}
+    expr = sp.sympify(expression, locals=local_symbols)
+    return expr, symbols
+
+
+def _evaluation_subs(point: dict[str, float] | None, symbols: list[sp.Symbol]):
+    if not point:
+        return None
+    subs = {}
+    for sym in symbols:
+        name = str(sym)
+        if name not in point:
+            raise ValueError(f"Point missing coordinate '{name}'")
+        subs[sym] = point[name]
+    return subs
+
+
+def _parse_equation_or_expression(expression: str, symbol: sp.Symbol):
+    if "=" in expression:
+        left, right = expression.split("=", 1)
+        left_expr = sp.sympify(left.strip())
+        right_expr = sp.sympify(right.strip())
+        return sp.Eq(left_expr, right_expr)
+    return sp.sympify(expression)
+
+
 # Unified compute endpoint for frontend
 @app.post("/api/compute")
 def compute(request: dict):
@@ -142,6 +211,247 @@ def compute(request: dict):
     renderer = JsonRenderer()
     rendered = renderer.render(result=result, format="json", verbosity=verbosity)
     return Response(content=rendered, media_type="application/json")
+
+
+@app.post("/multivariable/partial")
+def multivariable_partial(req: MultivariableRequest):
+    err = _validate_verbosity(req.verbosity)
+    if err:
+        return {"error": err}
+    try:
+        expr, symbols = _parse_multivariable_expression(req.expression, req.variables)
+        target = symbols[0]
+        derivative = sp.diff(expr, target)
+        subs = _evaluation_subs(req.point, symbols)
+        payload = {
+            "operation": "partial_derivative",
+            "input": req.expression,
+            "variable": str(target),
+            "variables": [str(s) for s in symbols],
+            "output": str(derivative),
+            "steps": [
+                {
+                    "rule": "Partial differentiation",
+                    "before": str(expr),
+                    "after": str(derivative),
+                    "explanation": f"Differentiate with respect to {target} while treating other variables as constants."
+                }
+            ]
+        }
+        if subs:
+            payload["evaluated_at_point"] = str(sp.N(derivative.subs(subs)))
+            payload["point"] = req.point
+        return Response(content=json.dumps(payload), media_type="application/json")
+    except Exception as e:  # noqa: BLE001
+        return {"error": str(e)}
+
+
+@app.post("/multivariable/gradient")
+def multivariable_gradient(req: MultivariableRequest):
+    err = _validate_verbosity(req.verbosity)
+    if err:
+        return {"error": err}
+    try:
+        expr, symbols = _parse_multivariable_expression(req.expression, req.variables)
+        grad = [sp.diff(expr, s) for s in symbols]
+        subs = _evaluation_subs(req.point, symbols)
+
+        payload = {
+            "operation": "gradient",
+            "input": req.expression,
+            "variables": [str(s) for s in symbols],
+            "output": json.dumps([str(g) for g in grad]),
+            "gradient": [str(g) for g in grad],
+            "steps": [
+                {
+                    "rule": "Gradient operator",
+                    "before": str(expr),
+                    "after": "[" + ", ".join(str(g) for g in grad) + "]",
+                    "explanation": "Compute all first-order partial derivatives to form the gradient vector."
+                }
+            ]
+        }
+        if subs:
+            numeric = [str(sp.N(g.subs(subs))) for g in grad]
+            payload["gradient_at_point"] = numeric
+            payload["point"] = req.point
+        return Response(content=json.dumps(payload), media_type="application/json")
+    except Exception as e:  # noqa: BLE001
+        return {"error": str(e)}
+
+
+@app.post("/multivariable/directional")
+def multivariable_directional(req: MultivariableRequest):
+    err = _validate_verbosity(req.verbosity)
+    if err:
+        return {"error": err}
+    try:
+        expr, symbols = _parse_multivariable_expression(req.expression, req.variables)
+        if not req.point:
+            return {"error": "Directional derivative requires 'point' with values for all variables"}
+        if not req.direction:
+            return {"error": "Directional derivative requires 'direction' vector"}
+        if len(req.direction) != len(symbols):
+            return {"error": "Direction vector length must match number of variables"}
+
+        subs = _evaluation_subs(req.point, symbols)
+        grad = [sp.diff(expr, s) for s in symbols]
+        grad_at_point = [sp.N(g.subs(subs)) for g in grad]
+
+        direction_vec = sp.Matrix(req.direction)
+        norm = sp.sqrt(sum(c**2 for c in direction_vec))
+        if norm == 0:
+            return {"error": "Direction vector cannot be zero"}
+        unit_direction = direction_vec / norm
+        directional_value = sp.N(sp.Matrix(grad_at_point).dot(unit_direction))
+
+        payload = {
+            "operation": "directional_derivative",
+            "input": req.expression,
+            "variables": [str(s) for s in symbols],
+            "point": req.point,
+            "direction": req.direction,
+            "output": str(directional_value),
+            "gradient_at_point": [str(v) for v in grad_at_point],
+            "unit_direction": [str(sp.N(v)) for v in unit_direction],
+            "steps": [
+                {
+                    "rule": "Directional derivative",
+                    "before": "grad(f) dot u",
+                    "after": str(directional_value),
+                    "explanation": "Evaluate gradient at the point and dot it with the normalized direction vector."
+                }
+            ]
+        }
+        return Response(content=json.dumps(payload), media_type="application/json")
+    except Exception as e:  # noqa: BLE001
+        return {"error": str(e)}
+
+
+@app.post("/multivariable/jacobian")
+def multivariable_jacobian(req: dict):
+    verbosity = req.get("verbosity", "detailed")
+    err = _validate_verbosity(verbosity)
+    if err:
+        return {"error": err}
+    expressions = req.get("expressions")
+    variables = req.get("variables")
+    point = req.get("point")
+    if not expressions or not isinstance(expressions, list):
+        return {"error": "Missing required field 'expressions' as a list"}
+    if not variables or not isinstance(variables, list):
+        return {"error": "Missing required field 'variables' as a list"}
+
+    try:
+        symbols = [sp.Symbol(v.strip()) for v in variables if v and v.strip()]
+        local_symbols = {str(sym): sym for sym in symbols}
+        funcs = [sp.sympify(e, locals=local_symbols) for e in expressions]
+        jac = sp.Matrix(funcs).jacobian(symbols)
+
+        payload = {
+            "operation": "jacobian",
+            "inputs": expressions,
+            "variables": [str(s) for s in symbols],
+            "output": json.dumps([[str(cell) for cell in row] for row in jac.tolist()]),
+            "jacobian": [[str(cell) for cell in row] for row in jac.tolist()],
+            "steps": [
+                {
+                    "rule": "Jacobian matrix",
+                    "before": "Vector function",
+                    "after": "Matrix of first-order partial derivatives",
+                    "explanation": "Differentiate each component function with respect to each variable."
+                }
+            ]
+        }
+
+        if point:
+            subs = {}
+            for sym in symbols:
+                name = str(sym)
+                if name not in point:
+                    return {"error": f"Point missing coordinate '{name}'"}
+                subs[sym] = point[name]
+            jac_num = jac.subs(subs)
+            payload["point"] = point
+            payload["jacobian_at_point"] = [[str(sp.N(cell)) for cell in row] for row in jac_num.tolist()]
+
+        return Response(content=json.dumps(payload), media_type="application/json")
+    except Exception as e:  # noqa: BLE001
+        return {"error": str(e)}
+
+
+@app.post("/symbolic/compute")
+def symbolic_compute(req: SymbolicRequest):
+    err = _validate_verbosity(req.verbosity)
+    if err:
+        return {"error": err}
+
+    operation = (req.operation or "").strip().lower()
+    expression = (req.expression or "").strip()
+    if not operation:
+        return {"error": "Missing required field 'operation'"}
+    if not expression:
+        return {"error": "Missing required field 'expression'"}
+
+    x = sp.Symbol((req.variable or "x").strip())
+
+    try:
+        parsed = _parse_equation_or_expression(expression, x)
+
+        if operation == "algebra_simplify":
+            output = sp.simplify(parsed)
+            explanation = "Applied symbolic simplification rules."
+        elif operation == "algebra_expand":
+            output = sp.expand(parsed)
+            explanation = "Expanded products and powers into polynomial form where possible."
+        elif operation == "algebra_factor":
+            output = sp.factor(parsed)
+            explanation = "Factored the expression into irreducible symbolic factors."
+        elif operation == "algebra_solve":
+            if isinstance(parsed, sp.Equality):
+                sols = sp.solve(parsed, x)
+            else:
+                sols = sp.solve(parsed, x)
+            output = sols
+            explanation = f"Solved for variable {x}."
+        elif operation == "calculus_limit":
+            if req.point is None:
+                return {"error": "calculus_limit requires 'point'"}
+            output = sp.limit(parsed, x, req.point)
+            explanation = f"Computed limit as {x} approaches {req.point}."
+        elif operation == "calculus_taylor":
+            point = 0 if req.point is None else req.point
+            order = max(1, min(req.order, 20))
+            output = sp.series(parsed, x, point, order + 1).removeO()
+            explanation = f"Computed Taylor polynomial around {x}={point} up to degree {order}."
+        elif operation == "calculus_tangent_line":
+            if req.point is None:
+                return {"error": "calculus_tangent_line requires 'point'"}
+            f_point = sp.simplify(parsed.subs(x, req.point))
+            slope = sp.simplify(sp.diff(parsed, x).subs(x, req.point))
+            output = sp.expand(slope * (x - req.point) + f_point)
+            explanation = f"Computed tangent line at {x}={req.point} using y = f(a) + f'(a)(x-a)."
+        else:
+            return {"error": f"Unknown symbolic operation: {operation}"}
+
+        payload = {
+            "operation": operation,
+            "input": expression,
+            "variable": str(x),
+            "output": str(output),
+            "steps": [
+                {
+                    "rule": operation,
+                    "before": expression,
+                    "after": str(output),
+                    "explanation": explanation,
+                }
+            ],
+        }
+
+        return Response(content=json.dumps(payload), media_type="application/json")
+    except Exception as e:  # noqa: BLE001
+        return {"error": str(e)}
 
 
 @app.get("/integrate")

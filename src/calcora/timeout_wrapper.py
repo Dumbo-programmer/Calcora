@@ -82,8 +82,8 @@ def timeout(seconds: float = 3.0):
             
             else:
                 # Windows OR non-main thread: Use threading.Timer (portable but less precise)
-                result = [None]
-                exception = [None]
+                result: list[Any | None] = [None]
+                exception: list[BaseException | None] = [None]
                 
                 def target():
                     try:
@@ -110,7 +110,7 @@ def timeout(seconds: float = 3.0):
     return decorator
 
 
-def enforce_timeout(func: Callable, args: tuple = (), kwargs: dict = None, 
+def enforce_timeout(func: Callable, args: tuple = (), kwargs: dict[str, Any] | None = None, 
                    timeout_seconds: float = 3.0) -> Any:
     """
     Run function with enforced timeout.

@@ -11,7 +11,7 @@
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-    <link rel="stylesheet" href="/static/style.css?v=7" />
+    <link rel="stylesheet" href="/static/style.css?v=8" />
   </head>
   <body>
     <header>
@@ -112,12 +112,79 @@
 
     <main class="container">
       <section class="panel">
+        <div class="learning-hub" aria-label="Chapter wise calculator toolsets">
+          <div class="hub-head">
+            <h2><i class="fas fa-layer-group"></i> Chapter-Wise Calculator Hub</h2>
+            <p>Structured by Anton (Calculus, Linear Algebra) and Gill (Differential Equations). Choose a toolset instead of hunting through one dropdown.</p>
+          </div>
+          <div class="chapter-grid">
+            <article class="chapter-card">
+              <h3><i class="fas fa-chart-line"></i> Calculus Core</h3>
+              <p>Derivatives, integrals, limits, and geometric interpretation.</p>
+              <div class="tool-chip-row">
+                <button type="button" class="tool-chip active" data-op="differentiate" data-domain="calculus">Differentiate</button>
+                <button type="button" class="tool-chip" data-op="integrate" data-domain="calculus">Integrate</button>
+                <button type="button" class="tool-chip" data-op="calculus_limit" data-domain="calculus">Limit</button>
+                <button type="button" class="tool-chip" data-op="calculus_taylor" data-domain="calculus">Taylor</button>
+                <button type="button" class="tool-chip" data-op="calculus_tangent_line" data-domain="calculus">Tangent Line</button>
+                <button type="button" class="tool-chip" data-op="multivariable_partial" data-domain="calculus">Partial Derivative</button>
+                <button type="button" class="tool-chip" data-op="multivariable_gradient" data-domain="calculus">Gradient</button>
+                <button type="button" class="tool-chip" data-op="multivariable_directional" data-domain="calculus">Directional</button>
+                <button type="button" class="tool-chip" data-op="multivariable_jacobian" data-domain="calculus">Jacobian</button>
+              </div>
+            </article>
+            <article class="chapter-card">
+              <h3><i class="fas fa-superscript"></i> Algebra Toolkit</h3>
+              <p>Symbolic simplification, expansion, factoring, and equation solving.</p>
+              <div class="tool-chip-row">
+                <button type="button" class="tool-chip" data-op="algebra_simplify" data-domain="algebra">Simplify</button>
+                <button type="button" class="tool-chip" data-op="algebra_expand" data-domain="algebra">Expand</button>
+                <button type="button" class="tool-chip" data-op="algebra_factor" data-domain="algebra">Factor</button>
+                <button type="button" class="tool-chip" data-op="algebra_solve" data-domain="algebra">Solve</button>
+              </div>
+            </article>
+            <article class="chapter-card">
+              <h3><i class="fas fa-vector-square"></i> Matrix & Transformations</h3>
+              <p>Determinants, inverse, RREF, eigen-analysis, LU, and geometric mappings.</p>
+              <div class="tool-chip-row">
+                <button type="button" class="tool-chip" data-op="matrix_multiply" data-domain="linear">Multiply</button>
+                <button type="button" class="tool-chip" data-op="matrix_determinant" data-domain="linear">Determinant</button>
+                <button type="button" class="tool-chip" data-op="matrix_inverse" data-domain="linear">Inverse</button>
+                <button type="button" class="tool-chip" data-op="matrix_rref" data-domain="linear">RREF</button>
+                <button type="button" class="tool-chip" data-op="matrix_eigenvalues" data-domain="linear">Eigenvalues</button>
+                <button type="button" class="tool-chip" data-op="matrix_lu" data-domain="linear">LU</button>
+                <button type="button" class="tool-chip tool-chip-disabled" disabled title="Planned">Transformation Matrix</button>
+              </div>
+            </article>
+            <article class="chapter-card">
+              <h3><i class="fas fa-project-diagram"></i> Differential Equations (Gill-aligned)</h3>
+              <p>First order and linear ODE workflows are planned in this same interface.</p>
+              <div class="tool-chip-row">
+                <button type="button" class="tool-chip tool-chip-disabled" disabled title="Planned">Separable ODE</button>
+                <button type="button" class="tool-chip tool-chip-disabled" disabled title="Planned">Linear ODE</button>
+                <button type="button" class="tool-chip tool-chip-disabled" disabled title="Planned">2nd Order ODE</button>
+              </div>
+            </article>
+          </div>
+        </div>
+
         <div class="row">
-          <label for="operationType">
+          <label for="operationType" class="hidden-op-select">
             Operation
             <select id="operationType" aria-label="Select mathematical operation">
               <option value="differentiate" selected>Differentiate</option>
               <option value="integrate">Integrate</option>
+              <option value="calculus_limit">Calculus: Limit</option>
+              <option value="calculus_taylor">Calculus: Taylor Polynomial</option>
+              <option value="calculus_tangent_line">Calculus: Tangent Line</option>
+              <option value="multivariable_partial">Multivariable: Partial Derivative</option>
+              <option value="multivariable_gradient">Multivariable: Gradient</option>
+              <option value="multivariable_directional">Multivariable: Directional Derivative</option>
+              <option value="multivariable_jacobian">Multivariable: Jacobian</option>
+              <option value="algebra_simplify">Algebra: Simplify</option>
+              <option value="algebra_expand">Algebra: Expand</option>
+              <option value="algebra_factor">Algebra: Factor</option>
+              <option value="algebra_solve">Algebra: Solve Equation</option>
               <option value="matrix_multiply">Matrix Multiply</option>
               <option value="matrix_determinant">Matrix Determinant</option>
               <option value="matrix_inverse">Matrix Inverse</option>
@@ -162,6 +229,8 @@
           </label>
 
           <button id="run" class="btn-primary" aria-label="Run computation"><i class="fas fa-play-circle" aria-hidden="true"></i> Run</button>
+          <button id="clearInputsBtn" type="button" class="btn-secondary" aria-label="Clear visible inputs"><i class="fas fa-eraser" aria-hidden="true"></i> Clear Visible Inputs</button>
+          <button id="randomSuggestionBtn" type="button" class="btn-secondary" aria-label="Load a random advanced suggestion"><i class="fas fa-shuffle" aria-hidden="true"></i> Surprise Me</button>
         </div>
 
         <div id="calcInput">
@@ -188,6 +257,41 @@
             <button class="example-btn" data-expr="1/x" aria-label="Example: logarithm">ln(x)</button>
             <button class="example-btn" data-expr="x*sin(x)" aria-label="Example: integration by parts">By Parts</button>
             <button class="example-btn" data-expr="1/(x**2+1)" aria-label="Example: arctangent">arctan</button>
+          </div>
+        </div>
+
+        <div id="multivarInput" style="display: none;">
+          <label class="block" for="multiExpr">
+            <i class="fas fa-function" aria-hidden="true"></i> Multivariable Expression
+            <input id="multiExpr" type="text" value="x**2 + y**2" spellcheck="false" placeholder="Example: x**2 + y**2" aria-label="Multivariable expression" />
+          </label>
+
+          <label class="block" for="multiFunctions" id="multiFunctionsLabel" style="display:none;">
+            <i class="fas fa-list" aria-hidden="true"></i> Vector Function Components (comma-separated)
+            <input id="multiFunctions" type="text" value="x*y, x**2 + y" spellcheck="false" placeholder="f1, f2, ..." aria-label="Vector function components for Jacobian" />
+          </label>
+
+          <div class="row">
+            <label for="multiVariables">
+              Variables
+              <input id="multiVariables" type="text" value="x,y" spellcheck="false" placeholder="x,y" aria-label="Variables list" />
+            </label>
+            <label for="multiPoint">
+              Point (optional)
+              <input id="multiPoint" type="text" value="x:1,y:2" spellcheck="false" placeholder="x:1,y:2" aria-label="Evaluation point" />
+            </label>
+            <label for="multiDirection" id="multiDirectionLabel" style="display:none;">
+              Direction (for directional derivative)
+              <input id="multiDirection" type="text" value="1,1" spellcheck="false" placeholder="1,1" aria-label="Direction vector" />
+            </label>
+          </div>
+
+          <div class="examples">
+            <span class="examples-label">Multivariable Examples:</span>
+            <button class="multi-example-btn" data-op="multivariable_partial" data-expr="x**2*y + sin(y)" data-vars="x,y">Partial</button>
+            <button class="multi-example-btn" data-op="multivariable_gradient" data-expr="x**2 + y**2 + z**2" data-vars="x,y,z" data-point="x:1,y:2,z:3">Gradient</button>
+            <button class="multi-example-btn" data-op="multivariable_directional" data-expr="x**2 + y**2" data-vars="x,y" data-point="x:1,y:2" data-direction="3,4">Directional</button>
+            <button class="multi-example-btn" data-op="multivariable_jacobian" data-functions="x*y, x**2 + y**2" data-vars="x,y" data-point="x:1,y:2">Jacobian</button>
           </div>
         </div>
 
@@ -273,6 +377,125 @@
         <div style="position: relative; height: 400px; background: var(--bg-secondary); border-radius: 12px; padding: 16px;">
           <canvas id="graphCanvas"></canvas>
         </div>
+      </section>
+
+      <section class="panel learning-resources-panel">
+        <div class="result-header">
+          <h2><i class="fas fa-compass"></i> Guided Learning Mode</h2>
+        </div>
+        <div class="chapter-progress" id="chapterProgressMode">
+          <h3><i class="fas fa-route"></i> Chapter Progression Mode</h3>
+          <p>Follow textbook flow with completion tracking and mastery score.</p>
+          <div class="progress-toolbar">
+            <label for="chapterSelect">Chapter</label>
+            <select id="chapterSelect" aria-label="Select chapter progression">
+              <option value="anton_limits">Anton Calculus Ch2: Limits & Continuity</option>
+              <option value="anton_diff">Anton Calculus Ch3-4: Derivatives & Applications</option>
+              <option value="anton_int">Anton Calculus Ch5-7: Integrals & Techniques</option>
+              <option value="anton_series">Anton Calculus Ch11: Sequences & Series</option>
+              <option value="anton_parametric">Anton Calculus Ch10: Parametric & Polar</option>
+              <option value="anton_multivar">Anton Calculus Ch13-14: Multivariable & Jacobians</option>
+              <option value="anton_vectorcalc">Anton Calculus Ch15-16: Vector Calculus</option>
+              <option value="anton_linalg">Anton Linear Algebra: Matrix Methods</option>
+              <option value="anton_linalg_adv">Anton Linear Algebra: Eigen and Decompositions</option>
+              <option value="gill_ode">Gill Diff-Eqn: First-Order Models</option>
+              <option value="gill_linear_ode">Gill Diff-Eqn: Linear Higher-Order ODE</option>
+            </select>
+            <button id="startChapterBtn" type="button" class="btn-secondary">Start Chapter</button>
+            <button id="completeChapterTaskBtn" type="button" class="btn-secondary">Mark Objective Done</button>
+          </div>
+          <div class="mastery-row">
+            <span id="chapterScoreBadge" class="badge">Mastery: 0%</span>
+            <span id="chapterObjectiveMeta" class="timing">0/0 objectives completed</span>
+          </div>
+          <ul id="chapterObjectiveList" class="chapter-objective-list"></ul>
+          <div class="chapter-page-map-wrap">
+            <h4><i class="fas fa-map-marked-alt"></i> Chapter Page Map (Anton/Gill Reference)</h4>
+            <ul id="chapterPageMap" class="chapter-page-map"></ul>
+          </div>
+          <div class="chapter-practice-wrap">
+            <h4><i class="fas fa-dumbbell"></i> Suggested Practice Problems</h4>
+            <ul id="chapterPracticeList" class="chapter-practice-list"></ul>
+          </div>
+        </div>
+
+        <div class="learning-summary-grid">
+          <article class="learning-card">
+            <h3><i class="fas fa-book-open"></i> Theory & Wiki Links</h3>
+            <div class="tool-meta-row">
+              <span id="activeToolBadge" class="active-tool-pill">Differentiation</span>
+              <span id="chapterAutoSyncNote" class="micro-note">Book mapping auto-syncs with selected tool.</span>
+            </div>
+            <p id="toolTheoryText">Choose a toolset to see the core theorem and interpretation.</p>
+            <div class="link-row">
+              <a id="wikiTheoryLink" href="https://en.wikipedia.org/wiki/Derivative" target="_blank" rel="noopener noreferrer">Wikipedia Theory</a>
+              <a id="bookReferenceLink" href="https://archive.org/details/anton-calculus" target="_blank" rel="noopener noreferrer">Book Chapter Reference</a>
+            </div>
+            <p class="micro-note" id="chapterReferenceText">Anton Calculus: Differential Calculus chapter.</p>
+            <ul id="bookConnectionList" class="book-connection-list"></ul>
+          </article>
+
+          <article class="learning-card">
+            <h3><i class="fas fa-lightbulb"></i> Student Mode (Similar Problems)</h3>
+            <p>Generate targeted practice by difficulty and learning goal, then load and solve instantly.</p>
+            <div class="student-toolbar">
+              <label for="studentDifficulty">Difficulty
+                <select id="studentDifficulty" aria-label="Filter suggestions by difficulty">
+                  <option value="all" selected>All</option>
+                  <option value="core">Core</option>
+                  <option value="advanced">Advanced</option>
+                  <option value="challenge">Challenge</option>
+                </select>
+              </label>
+              <label for="studentGoal">Goal
+                <select id="studentGoal" aria-label="Filter suggestions by learning goal">
+                  <option value="all" selected>All</option>
+                  <option value="concept">Concept</option>
+                  <option value="exam">Exam</option>
+                  <option value="modeling">Modeling</option>
+                </select>
+              </label>
+              <button id="suggestProblemsBtn" type="button" class="btn-secondary"><i class="fas fa-wand-magic-sparkles"></i> Refresh Set</button>
+            </div>
+            <ul id="studentSuggestions" class="student-suggestion-list"></ul>
+          </article>
+        </div>
+
+        <div class="learning-summary-grid">
+          <article class="learning-card">
+            <h3><i class="fas fa-chalkboard-teacher"></i> Assignments & Worked Examples</h3>
+            <div class="assignment-grid">
+              <button type="button" class="assignment-btn" data-op="differentiate" data-expr="x**4 - 3*x + 2" data-var="x">Anton Calc Ex 1.3</button>
+              <button type="button" class="assignment-btn" data-op="differentiate" data-expr="sin(x**2)" data-var="x">Anton Calc Ex 2.5</button>
+              <button type="button" class="assignment-btn" data-op="integrate" data-expr="x*cos(x)" data-var="x">Anton Calc Ex 7.1</button>
+              <button type="button" class="assignment-btn" data-op="integrate" data-expr="1/(x**2+1)" data-var="x">Anton Calc Ex 7.4</button>
+              <button type="button" class="assignment-btn" data-op="matrix_determinant" data-a="[[2,1,-1],[1,0,2],[3,4,1]]">Anton LA Ex 4.2</button>
+              <button type="button" class="assignment-btn" data-op="matrix_rref" data-a="[[1,2,3],[2,4,7],[1,1,1]]">Anton LA Ex 3.6</button>
+            </div>
+          </article>
+
+          <article class="learning-card">
+            <h3><i class="fas fa-video"></i> Video References</h3>
+            <ul class="resource-list" id="videoReferenceList">
+              <li><a href="https://www.youtube.com/results?search_query=chain+rule+worked+examples" target="_blank" rel="noopener noreferrer">Chain Rule Worked Examples</a></li>
+              <li><a href="https://www.youtube.com/results?search_query=integration+by+parts+tutorial" target="_blank" rel="noopener noreferrer">Integration by Parts Walkthrough</a></li>
+              <li><a href="https://www.youtube.com/results?search_query=matrix+inverse+gauss+jordan" target="_blank" rel="noopener noreferrer">Matrix Inverse with Gauss-Jordan</a></li>
+              <li><a href="https://www.youtube.com/results?search_query=eigenvalues+eigenvectors+intuition" target="_blank" rel="noopener noreferrer">Eigenvalues and Transformations Intuition</a></li>
+            </ul>
+          </article>
+        </div>
+
+        <article class="learning-card">
+          <h3><i class="fas fa-city"></i> Real-Life Applications & Interdisciplinary Links</h3>
+          <div class="application-grid" id="applicationGrid">
+            <div class="application-card"><strong>Physics:</strong> dy/dx is slope, slope is instantaneous velocity, d2y/dx2 is acceleration.</div>
+            <div class="application-card"><strong>Economics:</strong> Derivatives model marginal cost and marginal revenue optimization.</div>
+            <div class="application-card"><strong>Biology:</strong> Differential equations model growth and decay in populations.</div>
+            <div class="application-card"><strong>Graphics:</strong> Matrix transforms rotate, scale, and project scenes.</div>
+            <div class="application-card"><strong>Engineering:</strong> Integrals estimate work, accumulated flow, and signal energy.</div>
+            <div class="application-card"><strong>Geometry + Calculus:</strong> Tangent slope ties geometric intuition to analytical derivative.</div>
+          </div>
+        </article>
       </section>
 
       <section class="panel features-panel">
@@ -407,15 +630,74 @@
       window.currentResultData = null;
       
       function preprocessLatex(text) {
-        // Convert raw math notation to proper LaTeX
+        // Convert common SymPy-style notation to cleaner LaTeX for KaTeX.
         if (!text) return text;
-        
-        // Replace ** with ^ for powers (must come before * replacement)
-        let result = text.replace(/\*\*/g, '^');
-        
-        // Replace * with \cdot for multiplication
-        result = result.replace(/\*/g, '\\cdot ');
-        
+
+        function replaceFunctionCalls(input, functionName, formatter) {
+          const token = `${functionName}(`;
+          let result = '';
+          let i = 0;
+
+          while (i < input.length) {
+            const start = input.indexOf(token, i);
+            if (start === -1) {
+              result += input.slice(i);
+              break;
+            }
+
+            result += input.slice(i, start);
+            let j = start + token.length;
+            let depth = 1;
+
+            while (j < input.length && depth > 0) {
+              if (input[j] === '(') depth += 1;
+              if (input[j] === ')') depth -= 1;
+              j += 1;
+            }
+
+            if (depth !== 0) {
+              result += input.slice(start);
+              break;
+            }
+
+            const inner = input.slice(start + token.length, j - 1);
+            result += formatter(inner);
+            i = j;
+          }
+
+          return result;
+        }
+
+        let result = String(text).trim();
+
+        // Powers and constants first.
+        result = result.replace(/\*\*/g, '^');
+        result = result.replace(/\bpi\b/g, '\\pi');
+        result = result.replace(/\boo\b/g, '\\infty');
+
+        // Function name normalization.
+        result = result.replace(/\basin\(/g, '\\arcsin(');
+        result = result.replace(/\bacos\(/g, '\\arccos(');
+        result = result.replace(/\batan\(/g, '\\arctan(');
+        result = result.replace(/\bsin\(/g, '\\sin(');
+        result = result.replace(/\bcos\(/g, '\\cos(');
+        result = result.replace(/\btan\(/g, '\\tan(');
+        result = result.replace(/\bsec\(/g, '\\sec(');
+        result = result.replace(/\bcsc\(/g, '\\csc(');
+        result = result.replace(/\bcot\(/g, '\\cot(');
+        result = result.replace(/\bsinh\(/g, '\\sinh(');
+        result = result.replace(/\bcosh\(/g, '\\cosh(');
+        result = result.replace(/\btanh\(/g, '\\tanh(');
+        result = result.replace(/\blog\(/g, '\\ln(');
+
+        // Structural transforms.
+        result = replaceFunctionCalls(result, 'sqrt', (inner) => `\\sqrt{${inner}}`);
+        result = replaceFunctionCalls(result, 'exp', (inner) => `e^{${inner}}`);
+
+        // Basic multiplication cleanup.
+        result = result.replace(/\*/g, ' \\cdot ');
+        result = result.replace(/\s+/g, ' ').trim();
+
         return result;
       }
       
@@ -555,6 +837,6 @@
         }
       }
     </script>
-    <script src="/static/app.js?v=6"></script>
+    <script src="/static/app.js?v=7"></script>
   </body>
 </html>

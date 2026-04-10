@@ -23,6 +23,7 @@ import socket
 import traceback
 from pathlib import Path
 from datetime import datetime
+from types import SimpleNamespace
 
 # Version constant (keep in sync with pyproject.toml)
 VERSION = "0.3.0"
@@ -48,7 +49,7 @@ def get_available_port() -> int:
         port = s.getsockname()[1]
     return port
 
-def show_error_dialog(title: str, message: str, details: str = None):
+def show_error_dialog(title: str, message: str, details: str | None = None):
     """
     Show a GUI error dialog. Falls back to console if GUI unavailable.
     
@@ -159,18 +160,16 @@ def open_browser(port: int, delay: float = 1.5):
 
 def main():
     """Main entry point for Calcora Desktop."""
+    Fore = SimpleNamespace(GREEN='', YELLOW='', CYAN='', RED='', RESET='')
+    Style = SimpleNamespace(BRIGHT='', RESET_ALL='')
+
     # Try to use colorama for colored output (fallback gracefully if not available)
     try:
         from colorama import init, Fore, Style
         init(autoreset=True)
-        use_colors = True
     except ImportError:
         # Fallback: no colors
-        class Fore:
-            GREEN = YELLOW = CYAN = RED = RESET = ''
-        class Style:
-            BRIGHT = RESET_ALL = ''
-        use_colors = False
+        pass
     
     # Header
     print()
@@ -258,10 +257,8 @@ def main():
         try:
             from colorama import Fore, Style
         except:
-            class Fore:
-                YELLOW = CYAN = ''
-            class Style:
-                BRIGHT = RESET_ALL = ''
+            Fore = SimpleNamespace(YELLOW='', CYAN='')
+            Style = SimpleNamespace(BRIGHT='', RESET_ALL='')
         
         print(f"\n\n{Fore.YELLOW}{'─' * 70}")
         print(f"{Fore.YELLOW}  Shutting down Calcora...")

@@ -6,6 +6,7 @@ These tests verify that DoS protection via execution timeout works correctly.
 import pytest
 import sys
 import os
+from typing import Any, cast
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
 from calcora.integration_engine import IntegrationEngine
@@ -161,7 +162,7 @@ class TestTimeoutWrapper:
             validate_timeout_value(100.0)  # Too large (max is 30)
         
         with pytest.raises(ValueError):
-            validate_timeout_value("not a number")  # Wrong type
+            validate_timeout_value(cast(Any, "not a number"))  # Wrong type
 
 
 if __name__ == "__main__":

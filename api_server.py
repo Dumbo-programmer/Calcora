@@ -8,6 +8,7 @@ from calcora.renderers.json_renderer import JsonRenderer
 import json
 import os
 import sys
+import sympy as sp
 
 # Determine static folder location (dev vs PyInstaller bundle)
 if getattr(sys, 'frozen', False):
@@ -21,9 +22,60 @@ else:
 app = Flask(__name__, static_folder=STATIC_FOLDER, static_url_path='/static')
 CORS(app)
 
+
+def _validate_verbosity(verbosity: str) -> str | None:
+    if verbosity not in ('concise', 'detailed', 'teacher'):
+        return f"Invalid verbosity '{verbosity}'. Valid options: concise, detailed, teacher"
+    return None
+
+
+def _parse_multivariable_expression(expression: str, variables: list[str]):
+    if not expression or not expression.strip():
+        raise ValueError("Missing required field 'expression'")
+    if not variables:
+        raise ValueError("Missing required field 'variables' (example: ['x','y'])")
+
+    symbols = [sp.Symbol(v.strip()) for v in variables if v and v.strip()]
+    if not symbols:
+        raise ValueError('Variables list cannot be empty')
+
+    local_symbols = {str(sym): sym for sym in symbols}
+    expr = sp.sympify(expression, locals=local_symbols)
+    return expr, symbols
+
+
+def _evaluation_subs(point: dict[str, float] | None, symbols: list[sp.Symbol]):
+    if not point:
+        return None
+    subs = {}
+    for sym in symbols:
+        name = str(sym)
+        if name not in point:
+            raise ValueError(f"Point missing coordinate '{name}'")
+        subs[sym] = point[name]
+    return subs
+
+
+def _parse_equation_or_expression(expression: str):
+    if '=' in expression:
+        left, right = expression.split('=', 1)
+        left_expr = sp.sympify(left.strip())
+        right_expr = sp.sympify(right.strip())
+        return sp.Eq(left_expr, right_expr)
+    return sp.sympify(expression)
+
 @app.route('/')
 def index():
     return send_from_directory(STATIC_FOLDER, 'index.html')
+
+
+@app.route('/favicon.ico')
+def favicon():
+    icon_dir = os.path.join(os.path.dirname(__file__), 'media')
+    icon_path = os.path.join(icon_dir, 'calcora-icon.ico')
+    if os.path.exists(icon_path):
+        return send_from_directory(icon_dir, 'calcora-icon.ico', mimetype='image/x-icon')
+    return '', 204
 
 # GET endpoint for differentiate (used by src/calcora/web/app.js)
 @app.route('/differentiate', methods=['GET', 'OPTIONS'])
@@ -67,9 +119,13 @@ def integrate_get():
         
         expr = request.args.get('expr')
         variable = request.args.get('variable', 'x')
-        lower_limit = request.args.get('lower', None)
-        upper_limit = request.args.get('upper', None)
+        lower_limit = request.args.get('lower_limit', request.args.get('lower', None))
+        upper_limit = request.args.get('upper_limit', request.args.get('upper', None))
         verbosity = request.args.get('verbosity', 'detailed')
+
+        err = _validate_verbosity(verbosity)
+        if err:
+            return jsonify({'error': err}), 400
         
         if not expr:
             return jsonify({'error': 'Missing required parameter: expr'}), 400
@@ -106,7 +162,7 @@ def matrix_operation(operation):
         return '', 204
     
     try:
-        data = request.get_json()
+        data = request.get_json(silent=True) or {}
         
         # For multiply: app.js sends matrix_a and matrix_b
         # For other ops: app.js sends matrix
@@ -121,6 +177,9 @@ def matrix_operation(operation):
                 return jsonify({'error': 'Missing required field: matrix'}), 400
         
         verbosity = data.get('verbosity', 'detailed')
+        err = _validate_verbosity(verbosity)
+        if err:
+            return jsonify({'error': err}), 400
         
         engine = default_engine(load_entry_points=True)
         
@@ -150,13 +209,298 @@ def matrix_operation(operation):
         response_data = json.loads(rendered) if isinstance(rendered, str) else rendered
         
         return jsonify(response_data), 200
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 400
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/multivariable/partial', methods=['POST', 'OPTIONS'])
+def multivariable_partial():
+    if request.method == 'OPTIONS':
+        return '', 204
+    try:
+        req = request.get_json(silent=True) or {}
+        verbosity = req.get('verbosity', 'detailed')
+        err = _validate_verbosity(verbosity)
+        if err:
+            return jsonify({'error': err}), 400
+
+        expr, symbols = _parse_multivariable_expression(req.get('expression', ''), req.get('variables', []))
+        target = symbols[0]
+        derivative = sp.diff(expr, target)
+        subs = _evaluation_subs(req.get('point'), symbols)
+
+        payload = {
+            'operation': 'partial_derivative',
+            'input': req.get('expression', ''),
+            'variable': str(target),
+            'variables': [str(s) for s in symbols],
+            'output': str(derivative),
+            'steps': [
+                {
+                    'rule': 'Partial differentiation',
+                    'before': str(expr),
+                    'after': str(derivative),
+                    'explanation': f'Differentiate with respect to {target} while treating other variables as constants.'
+                }
+            ]
+        }
+        if subs:
+            payload['evaluated_at_point'] = str(sp.N(derivative.subs(subs)))
+            payload['point'] = req.get('point')
+        return jsonify(payload), 200
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 400
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/multivariable/gradient', methods=['POST', 'OPTIONS'])
+def multivariable_gradient():
+    if request.method == 'OPTIONS':
+        return '', 204
+    try:
+        req = request.get_json(silent=True) or {}
+        verbosity = req.get('verbosity', 'detailed')
+        err = _validate_verbosity(verbosity)
+        if err:
+            return jsonify({'error': err}), 400
+
+        expr, symbols = _parse_multivariable_expression(req.get('expression', ''), req.get('variables', []))
+        grad = [sp.diff(expr, s) for s in symbols]
+        subs = _evaluation_subs(req.get('point'), symbols)
+
+        payload = {
+            'operation': 'gradient',
+            'input': req.get('expression', ''),
+            'variables': [str(s) for s in symbols],
+            'output': json.dumps([str(g) for g in grad]),
+            'gradient': [str(g) for g in grad],
+            'steps': [
+                {
+                    'rule': 'Gradient operator',
+                    'before': str(expr),
+                    'after': '[' + ', '.join(str(g) for g in grad) + ']',
+                    'explanation': 'Compute all first-order partial derivatives to form the gradient vector.'
+                }
+            ]
+        }
+        if subs:
+            payload['gradient_at_point'] = [str(sp.N(g.subs(subs))) for g in grad]
+            payload['point'] = req.get('point')
+        return jsonify(payload), 200
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 400
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/multivariable/directional', methods=['POST', 'OPTIONS'])
+def multivariable_directional():
+    if request.method == 'OPTIONS':
+        return '', 204
+    try:
+        req = request.get_json(silent=True) or {}
+        verbosity = req.get('verbosity', 'detailed')
+        err = _validate_verbosity(verbosity)
+        if err:
+            return jsonify({'error': err}), 400
+
+        expr, symbols = _parse_multivariable_expression(req.get('expression', ''), req.get('variables', []))
+        point = req.get('point')
+        direction = req.get('direction')
+        if not point:
+            return jsonify({'error': "Directional derivative requires 'point' with values for all variables"}), 400
+        if not direction:
+            return jsonify({'error': "Directional derivative requires 'direction' vector"}), 400
+        if len(direction) != len(symbols):
+            return jsonify({'error': 'Direction vector length must match number of variables'}), 400
+
+        subs = _evaluation_subs(point, symbols)
+        grad = [sp.diff(expr, s) for s in symbols]
+        grad_at_point = [sp.N(g.subs(subs)) for g in grad]
+
+        direction_vec = sp.Matrix(direction)
+        norm = sp.sqrt(sum(c ** 2 for c in direction_vec))
+        if norm == 0:
+            return jsonify({'error': 'Direction vector cannot be zero'}), 400
+        unit_direction = direction_vec / norm
+        directional_value = sp.N(sp.Matrix(grad_at_point).dot(unit_direction))
+
+        payload = {
+            'operation': 'directional_derivative',
+            'input': req.get('expression', ''),
+            'variables': [str(s) for s in symbols],
+            'point': point,
+            'direction': direction,
+            'output': str(directional_value),
+            'gradient_at_point': [str(v) for v in grad_at_point],
+            'unit_direction': [str(sp.N(v)) for v in unit_direction],
+            'steps': [
+                {
+                    'rule': 'Directional derivative',
+                    'before': 'grad(f) dot u',
+                    'after': str(directional_value),
+                    'explanation': 'Evaluate gradient at the point and dot it with the normalized direction vector.'
+                }
+            ]
+        }
+        return jsonify(payload), 200
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 400
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/multivariable/jacobian', methods=['POST', 'OPTIONS'])
+def multivariable_jacobian():
+    if request.method == 'OPTIONS':
+        return '', 204
+    try:
+        req = request.get_json(silent=True) or {}
+        verbosity = req.get('verbosity', 'detailed')
+        err = _validate_verbosity(verbosity)
+        if err:
+            return jsonify({'error': err}), 400
+
+        expressions = req.get('expressions')
+        variables = req.get('variables')
+        point = req.get('point')
+        if not expressions or not isinstance(expressions, list):
+            return jsonify({'error': "Missing required field 'expressions' as a list"}), 400
+        if not variables or not isinstance(variables, list):
+            return jsonify({'error': "Missing required field 'variables' as a list"}), 400
+
+        symbols = [sp.Symbol(v.strip()) for v in variables if v and v.strip()]
+        local_symbols = {str(sym): sym for sym in symbols}
+        funcs = [sp.sympify(e, locals=local_symbols) for e in expressions]
+        jac = sp.Matrix(funcs).jacobian(symbols)
+
+        payload = {
+            'operation': 'jacobian',
+            'inputs': expressions,
+            'variables': [str(s) for s in symbols],
+            'output': json.dumps([[str(cell) for cell in row] for row in jac.tolist()]),
+            'jacobian': [[str(cell) for cell in row] for row in jac.tolist()],
+            'steps': [
+                {
+                    'rule': 'Jacobian matrix',
+                    'before': 'Vector function',
+                    'after': 'Matrix of first-order partial derivatives',
+                    'explanation': 'Differentiate each component function with respect to each variable.'
+                }
+            ]
+        }
+
+        if point:
+            subs = {}
+            for sym in symbols:
+                name = str(sym)
+                if name not in point:
+                    return jsonify({'error': f"Point missing coordinate '{name}'"}), 400
+                subs[sym] = point[name]
+            jac_num = jac.subs(subs)
+            payload['point'] = point
+            payload['jacobian_at_point'] = [[str(sp.N(cell)) for cell in row] for row in jac_num.tolist()]
+
+        return jsonify(payload), 200
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 400
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/symbolic/compute', methods=['POST', 'OPTIONS'])
+def symbolic_compute():
+    if request.method == 'OPTIONS':
+        return '', 204
+    try:
+        req = request.get_json(silent=True) or {}
+        verbosity = req.get('verbosity', 'detailed')
+        err = _validate_verbosity(verbosity)
+        if err:
+            return jsonify({'error': err}), 400
+
+        operation = (req.get('operation') or '').strip().lower()
+        expression = (req.get('expression') or '').strip()
+        variable = (req.get('variable') or 'x').strip()
+        point = req.get('point')
+        order = int(req.get('order', 5))
+
+        if not operation:
+            return jsonify({'error': "Missing required field 'operation'"}), 400
+        if not expression:
+            return jsonify({'error': "Missing required field 'expression'"}), 400
+
+        x = sp.Symbol(variable)
+        parsed = _parse_equation_or_expression(expression)
+
+        if operation == 'algebra_simplify':
+            output = sp.simplify(parsed)
+            explanation = 'Applied symbolic simplification rules.'
+        elif operation == 'algebra_expand':
+            output = sp.expand(parsed)
+            explanation = 'Expanded products and powers into polynomial form where possible.'
+        elif operation == 'algebra_factor':
+            output = sp.factor(parsed)
+            explanation = 'Factored the expression into irreducible symbolic factors.'
+        elif operation == 'algebra_solve':
+            output = sp.solve(parsed, x)
+            explanation = f'Solved for variable {x}.'
+        elif operation == 'calculus_limit':
+            if point is None:
+                return jsonify({'error': "calculus_limit requires 'point'"}), 400
+            output = sp.limit(parsed, x, point)
+            explanation = f'Computed limit as {x} approaches {point}.'
+        elif operation == 'calculus_taylor':
+            series_point = 0 if point is None else point
+            safe_order = max(1, min(order, 20))
+            output = sp.series(parsed, x, series_point, safe_order + 1).removeO()
+            explanation = f'Computed Taylor polynomial around {x}={series_point} up to degree {safe_order}.'
+        elif operation == 'calculus_tangent_line':
+            if point is None:
+                return jsonify({'error': "calculus_tangent_line requires 'point'"}), 400
+            f_point = sp.simplify(parsed.subs(x, point))
+            slope = sp.simplify(sp.diff(parsed, x).subs(x, point))
+            output = sp.expand(slope * (x - point) + f_point)
+            explanation = f"Computed tangent line at {x}={point} using y = f(a) + f'(a)(x-a)."
+        else:
+            return jsonify({'error': f'Unknown symbolic operation: {operation}'}), 400
+
+        payload = {
+            'operation': operation,
+            'input': expression,
+            'variable': str(x),
+            'output': str(output),
+            'steps': [
+                {
+                    'rule': operation,
+                    'before': expression,
+                    'after': str(output),
+                    'explanation': explanation,
+                }
+            ],
+        }
+        return jsonify(payload), 200
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 400
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
 @app.route('/<path:path>')
 def serve_static(path):
     # Don't serve API routes as static files
-    if path.startswith('api/') or path.startswith('.netlify/') or path.startswith('differentiate') or path.startswith('integrate') or path.startswith('matrix/'):
+    if (
+        path.startswith('api/')
+        or path.startswith('.netlify/')
+        or path.startswith('differentiate')
+        or path.startswith('integrate')
+        or path.startswith('matrix/')
+        or path.startswith('multivariable/')
+        or path.startswith('symbolic/')
+        or path.startswith('favicon.ico')
+    ):
         return '', 404
     return send_from_directory(STATIC_FOLDER, path)
 

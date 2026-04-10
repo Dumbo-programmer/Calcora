@@ -4,11 +4,18 @@ Generate Calcora application icon (calcora.ico)
 
 Creates a professional calculator-themed icon with mathematical symbols.
 """
-from PIL import Image, ImageDraw, ImageFont
 import os
+import importlib
 
 def create_icon():
     """Generate a professional icon for Calcora."""
+    try:
+        Image = importlib.import_module("PIL.Image")
+        ImageDraw = importlib.import_module("PIL.ImageDraw")
+        ImageFont = importlib.import_module("PIL.ImageFont")
+    except ImportError as exc:
+        raise RuntimeError("Pillow is required to generate icons. Install with: pip install pillow") from exc
+
     # Create multiple sizes for .ico format (Windows standard)
     sizes = [256, 128, 64, 48, 32, 16]
     images = []
