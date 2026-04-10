@@ -67,7 +67,7 @@ const TOOL_CONTEXT = {
     theory: 'Derivative as an instantaneous rate of change; dy/dx is slope of the tangent line.',
     wiki: 'https://en.wikipedia.org/wiki/Derivative',
     chapter: 'Anton Calculus: Differentiation chapters',
-    chapterLink: 'https://archive.org/details/anton-calculus',
+    chapterLink: 'https://archive.org/details/calculus0000anto_z8c2',
     applications: [
       'Velocity from position data and acceleration from velocity.',
       'Optimization in economics: maximizing profit and minimizing cost.'
@@ -78,7 +78,7 @@ const TOOL_CONTEXT = {
     theory: 'Integral as accumulation and signed area under a curve.',
     wiki: 'https://en.wikipedia.org/wiki/Integral',
     chapter: 'Anton Calculus: Integration chapters',
-    chapterLink: 'https://archive.org/details/anton-calculus',
+    chapterLink: 'https://archive.org/details/calculus0000anto_z8c2',
     applications: [
       'Work and energy accumulation in mechanics.',
       'Total flow, charge, or population accumulation over time.'
@@ -89,7 +89,7 @@ const TOOL_CONTEXT = {
     theory: 'Limit describes function behavior near a point and underpins continuity and derivatives.',
     wiki: 'https://en.wikipedia.org/wiki/Limit_(mathematics)',
     chapter: 'Anton Calculus: Limits and continuity (early chapters)',
-    chapterLink: 'https://archive.org/details/anton-calculus',
+    chapterLink: 'https://archive.org/details/calculus0000anto_z8c2',
     applications: [
       'Modeling asymptotic behavior in engineering systems.',
       'Continuity checks in physical models near critical points.'
@@ -100,7 +100,7 @@ const TOOL_CONTEXT = {
     theory: 'Taylor expansion approximates nonlinear behavior locally using derivatives at a point.',
     wiki: 'https://en.wikipedia.org/wiki/Taylor_series',
     chapter: 'Anton Calculus: Series and polynomial approximations',
-    chapterLink: 'https://archive.org/details/anton-calculus',
+    chapterLink: 'https://archive.org/details/calculus0000anto_z8c2',
     applications: [
       'Approximation for fast scientific computation.',
       'Model linearization in control and robotics.'
@@ -111,7 +111,7 @@ const TOOL_CONTEXT = {
     theory: 'Tangent line is the local linear approximation using slope dy/dx at a point.',
     wiki: 'https://en.wikipedia.org/wiki/Tangent',
     chapter: 'Anton Calculus: Derivative as slope',
-    chapterLink: 'https://archive.org/details/anton-calculus',
+    chapterLink: 'https://archive.org/details/calculus0000anto_z8c2',
     applications: [
       'Linear approximation around operating points.',
       'Geometric interpretation of instantaneous rate.'
@@ -122,7 +122,7 @@ const TOOL_CONTEXT = {
     theory: 'Symbolic simplification rewrites expressions into equivalent compact forms.',
     wiki: 'https://en.wikipedia.org/wiki/Simplification_of_algebraic_expressions',
     chapter: 'Anton algebra prerequisites: symbolic manipulation',
-    chapterLink: 'https://archive.org/details/anton-calculus',
+    chapterLink: 'https://archive.org/details/calculus0000anto_z8c2',
     applications: [
       'Reducing symbolic complexity in derivations.',
       'Improving readability of analytical solutions.'
@@ -133,7 +133,7 @@ const TOOL_CONTEXT = {
     theory: 'Expansion distributes products and powers to explicit polynomial forms.',
     wiki: 'https://en.wikipedia.org/wiki/Polynomial',
     chapter: 'Anton algebra prerequisites: polynomial operations',
-    chapterLink: 'https://archive.org/details/anton-calculus',
+    chapterLink: 'https://archive.org/details/calculus0000anto_z8c2',
     applications: [
       'Preparing expressions for term-wise integration or differentiation.',
       'Canonical forms in computer algebra pipelines.'
@@ -144,7 +144,7 @@ const TOOL_CONTEXT = {
     theory: 'Factoring expresses expressions as multiplicative structure for roots and simplification.',
     wiki: 'https://en.wikipedia.org/wiki/Factorization',
     chapter: 'Anton algebra prerequisites: factoring techniques',
-    chapterLink: 'https://archive.org/details/anton-calculus',
+    chapterLink: 'https://archive.org/details/calculus0000anto_z8c2',
     applications: [
       'Root finding and intercept analysis.',
       'Partial fraction preparation.'
@@ -155,7 +155,7 @@ const TOOL_CONTEXT = {
     theory: 'Solving equations finds variable values that satisfy symbolic constraints.',
     wiki: 'https://en.wikipedia.org/wiki/Equation_solving',
     chapter: 'Anton algebra prerequisites: equation solving',
-    chapterLink: 'https://archive.org/details/anton-calculus',
+    chapterLink: 'https://archive.org/details/calculus0000anto_z8c2',
     applications: [
       'Physical equilibrium and design constraints.',
       'Parameter recovery in inverse problems.'
@@ -166,7 +166,7 @@ const TOOL_CONTEXT = {
     theory: 'Partial derivatives quantify change along one axis while holding the other variables fixed.',
     wiki: 'https://en.wikipedia.org/wiki/Partial_derivative',
     chapter: 'Anton Calculus: Multivariable derivatives',
-    chapterLink: 'https://archive.org/details/anton-calculus',
+    chapterLink: 'https://archive.org/details/calculus0000anto_z8c2',
     applications: [
       'Heat maps and concentration fields in physics and chemistry.',
       'Sensitivity analysis in machine learning loss functions.'
@@ -177,7 +177,7 @@ const TOOL_CONTEXT = {
     theory: 'The gradient points in the direction of steepest increase with magnitude equal to maximal local rate of change.',
     wiki: 'https://en.wikipedia.org/wiki/Gradient',
     chapter: 'Anton Calculus: Gradient and tangent planes',
-    chapterLink: 'https://archive.org/details/anton-calculus',
+    chapterLink: 'https://archive.org/details/calculus0000anto_z8c2',
     applications: [
       'Optimization methods including gradient descent.',
       'Terrain steepness and direction analysis in GIS.'
@@ -188,7 +188,7 @@ const TOOL_CONTEXT = {
     theory: 'Directional derivative projects gradient along a chosen direction vector.',
     wiki: 'https://en.wikipedia.org/wiki/Directional_derivative',
     chapter: 'Anton Calculus: Directional derivatives',
-    chapterLink: 'https://archive.org/details/anton-calculus',
+    chapterLink: 'https://archive.org/details/calculus0000anto_z8c2',
     applications: [
       'Wind-aligned temperature change in meteorology.',
       'Material stress evaluation along preferred axes.'
@@ -199,7 +199,7 @@ const TOOL_CONTEXT = {
     theory: 'Jacobian matrix captures first-order local linearization of vector-valued maps.',
     wiki: 'https://en.wikipedia.org/wiki/Jacobian_matrix_and_determinant',
     chapter: 'Anton Calculus: Vector functions and Jacobians',
-    chapterLink: 'https://archive.org/details/anton-calculus',
+    chapterLink: 'https://archive.org/details/calculus0000anto_z8c2',
     applications: [
       'Nonlinear coordinate transforms and robotics kinematics.',
       'Multivariate Newton methods and system sensitivity.'
@@ -210,7 +210,7 @@ const TOOL_CONTEXT = {
     theory: 'Composition of linear transformations.',
     wiki: 'https://en.wikipedia.org/wiki/Matrix_multiplication',
     chapter: 'Anton Linear Algebra: Matrix operations',
-    chapterLink: 'https://archive.org/details/anton-linear-algebra',
+    chapterLink: 'https://archive.org/details/ElementryLinearAlgebraByHowardAnton10thEdition',
     applications: [
       'Computer graphics transformations.',
       'State transition modeling in control systems.'
@@ -221,7 +221,7 @@ const TOOL_CONTEXT = {
     theory: 'Determinant measures area/volume scaling and invertibility.',
     wiki: 'https://en.wikipedia.org/wiki/Determinant',
     chapter: 'Anton Linear Algebra: Determinants',
-    chapterLink: 'https://archive.org/details/anton-linear-algebra',
+    chapterLink: 'https://archive.org/details/ElementryLinearAlgebraByHowardAnton10thEdition',
     applications: [
       'Testing singular systems in engineering models.',
       'Jacobian scaling in coordinate transforms.'
@@ -232,7 +232,7 @@ const TOOL_CONTEXT = {
     theory: 'Inverse matrix undoes a linear transform when determinant is non-zero.',
     wiki: 'https://en.wikipedia.org/wiki/Invertible_matrix',
     chapter: 'Anton Linear Algebra: Inverse matrices',
-    chapterLink: 'https://archive.org/details/anton-linear-algebra',
+    chapterLink: 'https://archive.org/details/ElementryLinearAlgebraByHowardAnton10thEdition',
     applications: [
       'Solving linear systems Ax=b in modeling.',
       'Calibration and coordinate recovery problems.'
@@ -243,7 +243,7 @@ const TOOL_CONTEXT = {
     theory: 'Gaussian elimination exposes rank and system consistency.',
     wiki: 'https://en.wikipedia.org/wiki/Row_echelon_form',
     chapter: 'Anton Linear Algebra: Gaussian elimination',
-    chapterLink: 'https://archive.org/details/anton-linear-algebra',
+    chapterLink: 'https://archive.org/details/ElementryLinearAlgebraByHowardAnton10thEdition',
     applications: [
       'Constraint solving in optimization.',
       'Feasibility analysis for linear models.'
@@ -254,7 +254,7 @@ const TOOL_CONTEXT = {
     theory: 'Eigenvectors preserve direction under linear transformation; eigenvalues scale them.',
     wiki: 'https://en.wikipedia.org/wiki/Eigenvalues_and_eigenvectors',
     chapter: 'Anton Linear Algebra: Eigen theory',
-    chapterLink: 'https://archive.org/details/anton-linear-algebra',
+    chapterLink: 'https://archive.org/details/ElementryLinearAlgebraByHowardAnton10thEdition',
     applications: [
       'Principal component analysis and data compression.',
       'Stability analysis in dynamic systems.'
@@ -265,7 +265,7 @@ const TOOL_CONTEXT = {
     theory: 'Factorization PA=LU accelerates repeated solves.',
     wiki: 'https://en.wikipedia.org/wiki/LU_decomposition',
     chapter: 'Anton Linear Algebra: Matrix factorization',
-    chapterLink: 'https://archive.org/details/anton-linear-algebra',
+    chapterLink: 'https://archive.org/details/ElementryLinearAlgebraByHowardAnton10thEdition',
     applications: [
       'Efficient simulation pipelines with repeated right-hand sides.',
       'Numerical methods in finite element systems.'
@@ -2416,3 +2416,4 @@ function evaluateExpression(expr, x) {
     return null;
   }
 }
+
