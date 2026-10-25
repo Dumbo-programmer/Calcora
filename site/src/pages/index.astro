@@ -2,13 +2,20 @@
 import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout title="Calcora — Open-Source Mathematical Computation Engine" currentPage="home">
+<Layout
+    title="Calcora — Open-Source Mathematical Computation Engine"
+    description="Open-source math engine with step-by-step explanations, trusted by more than 1,000 lifetime users. Solve derivatives, integrals, matrices, and symbolic math."
+    currentPage="home"
+>
     <!-- Hero Section -->
     <section class="hero">
         <h1>Open-Source Mathematical<br>Computation Engine</h1>
         <p class="subtitle">
             Free, open-source computational mathematics with step-by-step explanations. 
             Differentiation, integration, matrix operations — offline, private, explainable.
+        </p>
+        <p style="text-align: center; margin: 1.5rem 0 0; color: var(--text-secondary);">
+            <strong>Trusted by more than 1,000 lifetime users</strong>
         </p>
         <div class="hero-buttons">
             <a href="/demo" class="btn btn-primary">

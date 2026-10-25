@@ -12,7 +12,7 @@ This document explains the SEO optimizations implemented for Calcora and how to 
   - Homepage: "Calcora — Open-Source Mathematical Computation Engine | Step-by-Step Math Solver"
   - Demo: "Calcora Interactive Demo — Try Free Math Solver Online | Differentiation & Matrix Calculator"
 
-- **Meta descriptions** - Compelling summaries (155-160 chars)
+- **Meta descriptions** - Compelling summaries (155-160 chars) that mention Calcora is trusted by more than 1,000 lifetime users
 - **Keywords** - Relevant search terms: "calcora, math solver, step by step math, differentiation calculator, matrix calculator, symbolic math, open source math"
 
 - **Open Graph tags** - For Facebook/LinkedIn sharing
@@ -52,6 +52,9 @@ Created redirects for common search terms:
 - `/matrix-calculator` → `/demo.html`
 
 ### 5. Content Optimization
+
+**Social proof:**
+- The homepage and its metadata mention that Calcora is trusted by more than 1,000 lifetime users
 
 **Keywords targeted:**
 - Primary: "calcora", "step by step math solver", "open source math calculator"
